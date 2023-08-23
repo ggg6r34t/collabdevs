@@ -16,7 +16,7 @@ Collaborative DevLink is a web application that brings developers together to sh
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/yourusername/collaborative-devlink.git`
+1. Clone the repository: `git clone https://github.com/ggg6r34t/collabdevs.git`
 2. Install dependencies: `npm install` or `yarn install`
 3. Set up environment variables: Create a `.env` file based on `.env.example`.
 
