@@ -25,7 +25,7 @@ Collaborative DevLink is a web application that brings developers together to sh
 1. Start the development server: `npm start` or `yarn start`
 2. Access the application in your browser: `http://localhost:3000`
 
-## Contributing
+<!--## Contributing
 
 We welcome contributions from developers of all skill levels. To contribute to the Collaborative DevLink project, follow these steps:
 
@@ -33,7 +33,7 @@ We welcome contributions from developers of all skill levels. To contribute to t
 2. Create a new branch for your feature: `git checkout -b feature-name`
 3. Commit your changes: `git commit -m 'Add new feature'`
 4. Push the changes to your fork: `git push origin feature-name`
-5. Submit a pull request.
+5. Submit a pull request. -->
 
 ## License
 
