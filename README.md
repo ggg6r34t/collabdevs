@@ -10,7 +10,7 @@ Collaborative DevLink is a web application that brings developers together to sh
 - Upvote and downvote shared links to highlight the best ones.
 - Leave comments to provide valuable feedback to fellow developers.
 - Multi-platform authentication: GitHub, Google, GitLab, and more.
-- Secure and responsive design built using ReactJS and Material-UI.
+- Secure and responsive design built using ReactJS and Tailwind CSS.
 - State management using Redux and Redux Toolkit.
 - Backend powered by Express, MongoDB, and Mongoose.
 
