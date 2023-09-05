@@ -1,15 +1,16 @@
-import express from "express";
+import express, { Express } from "express";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
 
-import "./config.ts/passport";
+import "./config/passport";
 import User from "./models/User";
 import linkRoutes from "./routes/linkRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
 
-const app = express();
+const app: Express = express();
+app.use(express.json());
 
 // middleware setup
 app.use(express.json());
