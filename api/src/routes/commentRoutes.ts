@@ -9,6 +9,6 @@ const router = express.Router();
 
 // POST route to create a new comment
 router.post("/api/comments", isAuthenticated, createCommentController);
-router.delete("/api/comments", isAuthenticated, deleteCommentController);
+router.delete("/api/comments/:id", isAuthenticated, deleteCommentController);
 
 export default router;

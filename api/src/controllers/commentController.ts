@@ -32,10 +32,10 @@ export const deleteCommentController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const commentId = req.body._id;
-  const userId = req.body.user;
+  const commentId = req.params._id;
+
   try {
-   const commment = await deleteCommentService(commentId, userId);
+    const commment = await deleteCommentService(commentId);
     res.status(201).json("comment delect successfully");
   } catch (error) {
     next(error);
