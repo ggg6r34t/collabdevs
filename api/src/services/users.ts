@@ -13,28 +13,96 @@ export const createUserService = async (
     );
   }
 };
-
 export const findUserByEmailService = async (
-  userEmail: string
-): Promise<UserDocument> => {
-  try {
-    // using select query to avoid sending user password to the client
-    const foundUser = await User.findOne({ email: userEmail }).select(
-      "-password"
-    );
+  email: string,
+  ): Promise<UserDocument> => {
+  const foundUser = await User.findOne({ email: email, isBanned:false });
+  
+  if (!foundUser) {
+    throw new NotFoundError(`User with ${email} not found`);
+  }
+  return foundUser;
+};
 
-    if (!foundUser) {
-      throw new NotFoundError(`User not found with the email ${userEmail}.`);
+// get userByID service
+export const getUserByIdService = async (
+  userId: string
+): Promise<UserDocument> => {
+  const userById = await User.findById(userId);
+  if (!userById) {
+    throw new NotFoundError(`No user found having ${userId}`);
+  }
+  return userById;
+};
+
+// user list service
+export const getUserListService = async (): Promise<UserDocument[]> => {
+  const userList = await User.find();
+  return userList;
+};
+// update UserInformation
+export const updateUserByIdService = async (
+  userId: string,
+  updateUserInformation: Partial<UserDocument>
+): Promise<UserDocument> => {
+  const userById = await User.findByIdAndUpdate(userId, updateUserInformation, {
+    new: true,
+  });
+  if (!userById) {
+    throw new NotFoundError(`No user found having ${userId}`);
+  }
+  return userById;
+};
+
+// update user role
+export const updateRoleService = async (userId: string) => {
+  const foundUser = await User.findOne({ _id: userId });
+  if (foundUser) {
+    if (foundUser.role === "admin") {
+      foundUser.role = "user";
+    } else {
+      // avoid making a "banned user" admin by mistake
+      if (foundUser.isBanned === true) {
+        foundUser.role = "user";
+      } else {
+        foundUser.role = "admin";
+      }
     }
-    return foundUser;
-  } catch (error) {
-    console.error("Error finding user by email:", error);
-    throw new InternalServerError(
-      "An error occured while searching for the user."
-    );
+    const updatedUser = updateUserByIdService(userId, foundUser);
+    return updatedUser;
+  } else {
+    throw new NotFoundError(`User not found with ${userId}`);
   }
 };
 
+// update ristrictions (Banning)
+export const updateRistrictionService = async (userId: string) => {
+  const foundUser = await User.findOne({ _id: userId });
+  if (foundUser) {
+    if (foundUser.isBanned === false) {
+      foundUser.isBanned = true;
+    } else {
+      foundUser.isBanned = false;
+    }
+
+    const updatedUser = updateUserByIdService(userId, foundUser);
+    return updatedUser;
+  } else {
+    throw new NotFoundError(`User not found with ${userId}`);
+  }
+};
+// delete user
+export const deleteUserByIdService = async (
+  userId: string
+): Promise<UserDocument> => {
+  const userById = await User.findByIdAndDelete(userId);
+  if (!userById) {
+    throw new NotFoundError(`No user found having ${userId}`);
+  }
+  return userById;
+};
+
+//TODO ::  google
 export const findOrCreateUserService = async (
   payload: Partial<UserDocument>
 ): Promise<UserDocument> => {
@@ -45,7 +113,7 @@ export const findOrCreateUserService = async (
   } else {
     const newUser = new User({
       email: payload.email,
-      username: payload.username,
+      userName: payload.userName,
       avatar: payload.avatar,
     });
 
