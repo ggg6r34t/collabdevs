@@ -3,7 +3,7 @@ import cors from "cors";
 import passport from "passport";
 import session from "express-session";
 
-import "./config.ts/passport";
+import "./config/passport";
 import User from "./models/User";
 import linkRoutes from "./routes/linkRoutes";
 import commentRoutes from "./routes/commentRoutes";

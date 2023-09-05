@@ -1,19 +1,31 @@
 import Comment, { CommentDocument } from "../models/Comment";
 
 export const createCommentService = async (
-  text: string,
-  linkId: string,
-  userId: string
+  comment: CommentDocument
 ): Promise<CommentDocument> => {
   try {
     const newComment = await Comment.create({
-      text,
-      link: linkId,
-      user: userId,
+      comment,
     });
     return newComment;
   } catch (error) {
     throw new Error("Could not create comment");
+  }
+};
+
+export const deleteCommentService = async (
+  commentId: string,
+  user: string
+): Promise<CommentDocument> => {
+  try {
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      throw new Error(`Could not find comment from ${user}`);
+    } else {
+      comment.deleteOne;
+    }
+  } catch (error) {
+    throw new Error("Could not delete comment");
   }
 };
 
