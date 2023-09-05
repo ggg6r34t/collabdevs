@@ -6,20 +6,14 @@ import {
   upvoteLinkController,
   downvoteLinkController,
 } from "../controllers/linkController";
-// import { isAuthenticated } from "../controllers/authController";
+import { isAuthenticated } from "../controllers/authController";
 
 const router = express.Router();
 
 router.get("/links", getLinksController);
-
-// FINAL CODE WILL HAVE 'isAuthenticated'
-// router.post("/links", isAuthenticated, createLinkController);
-// router.put("/links/:linkId/upvote", isAuthenticated, upvoteLinkController);
-// router.put("/links/:linkId/downvote", isAuthenticated, downvoteLinkController);
-
 router.post("/links", createLinkController);
-router.get("/links/:id", getLinkById);
-router.put("/links/:id/upvote", upvoteLinkController);
-router.put("/links/:id/downvote", downvoteLinkController);
+router.get("/links/:id", isAuthenticated, getLinkById);
+router.put("/links/:id/upvote", isAuthenticated, upvoteLinkController);
+router.put("/links/:id/downvote", isAuthenticated, downvoteLinkController);
 
 export default router;
