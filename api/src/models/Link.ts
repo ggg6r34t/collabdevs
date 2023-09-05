@@ -15,7 +15,6 @@ const linkSchema = new Schema<LinkDocument>(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     upvotes: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },
