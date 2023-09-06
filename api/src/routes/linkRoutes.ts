@@ -1,4 +1,6 @@
 import express from "express";
+import passport from "passport";
+
 import {
   createLinkController,
   getLinksController,
@@ -6,14 +8,29 @@ import {
   upvoteLinkController,
   downvoteLinkController,
 } from "../controllers/linkController";
-import { isAuthenticated } from "../controllers/authController";
 
 const router = express.Router();
 
 router.get("/links", getLinksController);
-router.post("/links", createLinkController);
-router.get("/links/:id", isAuthenticated, getLinkById);
-router.put("/links/:id/upvote", isAuthenticated, upvoteLinkController);
-router.put("/links/:id/downvote", isAuthenticated, downvoteLinkController);
+router.post(
+  "/links",
+  passport.authenticate("jwt", { session: false }),
+  createLinkController
+);
+router.get(
+  "/links/:id",
+  passport.authenticate("jwt", { session: false }),
+  getLinkById
+);
+router.put(
+  "/links/:id/upvote",
+  passport.authenticate("jwt", { session: false }),
+  upvoteLinkController
+);
+router.put(
+  "/links/:id/downvote",
+  passport.authenticate("jwt", { session: false }),
+  downvoteLinkController
+);
 
 export default router;
