@@ -4,6 +4,7 @@ export type CommentDocument = Document & {
   text: string;
   link: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId;
+  createAt: Date;
 };
 
 const commentSchema = new Schema<CommentDocument>(
