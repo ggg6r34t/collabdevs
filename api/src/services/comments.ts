@@ -3,10 +3,7 @@ import Comment, { CommentDocument } from "../models/Comment";
 export const createCommentService = async (
   comment: CommentDocument
 ): Promise<CommentDocument> => {
-  const newComment = await Comment.create({
-    comment,
-  });
-  return newComment;
+  return await comment.save();
 };
 
 export const deleteCommentService = async (
