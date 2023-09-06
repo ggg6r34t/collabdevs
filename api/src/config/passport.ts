@@ -96,7 +96,11 @@ export const gitlabStrategy = new GitLabStrategy(
     clientSecret: "process.env.GITLAB_CLIENT_SECRET",
     callbackURL: "/auth/gitlab/callback", // this URL should match your route
   },
+<<<<<<< HEAD
   async (_: any, __: any, profile: any, done: any) => {
+=======
+  async (_, __, profile, done) => {
+>>>>>>> origin/comments
     try {
       // create a payload object with relevant data
       const userPayload = {
