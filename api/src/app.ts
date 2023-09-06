@@ -8,6 +8,7 @@ import User from "./models/User";
 import linkRoutes from "./routes/linkRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
+import userRoutes from "./routes/userRoutes";
 
 const app: Express = express();
 app.use(express.json());
@@ -40,8 +41,9 @@ passport.deserializeUser(async (id: string, done) => {
 });
 
 // routes
-app.use("/api", linkRoutes);
-app.use("/api", commentRoutes);
+app.use("/api/v1", userRoutes);
+app.use("/api/v1", linkRoutes);
+app.use("/api/v1", commentRoutes);
 
 // error handler
 app.use(apiErrorHandler);
