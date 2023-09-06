@@ -46,7 +46,7 @@ export const upvoteLinkService = async (
       throw new NotFoundError(`Link ${link} not found`);
     }
 
-    link.upvotes += 1;
+    link.voteScore += 1;
 
     const updatedLink = await link.save();
 
@@ -67,7 +67,7 @@ export const downvoteLinkService = async (
       throw new NotFoundError(`Link ${link} not found`);
     }
 
-    link.downvotes -= 1;
+    link.voteScore -= 1;
 
     const updatedLink = await link.save();
 

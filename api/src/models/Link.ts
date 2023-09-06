@@ -4,8 +4,7 @@ export type LinkDocument = Document & {
   title: string;
   url: string;
   userId: mongoose.Types.ObjectId;
-  upvotes: number;
-  downvotes: number;
+  voteScore: number;
 };
 
 const linkSchema = new Schema<LinkDocument>(
@@ -16,8 +15,7 @@ const linkSchema = new Schema<LinkDocument>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    upvotes: { type: Number, default: 0 },
-    downvotes: { type: Number, default: 0 },
+    voteScore: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
