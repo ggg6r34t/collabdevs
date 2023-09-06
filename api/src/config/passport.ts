@@ -41,11 +41,7 @@ export const githubStrategy = new GitHubStrategy(
     clientSecret: "process.env.GITHUB_CLIENT_SECRET",
     callbackURL: "/auth/github/callback", // this URL should match your route
   },
-<<<<<<< HEAD
   async (_: any, __: any, profile: any, done: any) => {
-=======
-  async (_, __, profile, done) => {
->>>>>>> 3fdee522079f7cc7bdfdd2b311b993cddeacdb5f
     try {
       // create a payload object with relevant data
       const userPayload = {
