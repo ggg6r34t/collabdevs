@@ -5,7 +5,7 @@ import express from "express";
 //   upvoteLink,
 //   downvoteLink,
 // } from "../controllers/linkController";
-import { isAuthenticated } from "../controllers/authController";
+// import { isAuthenticated } from "../controllers/authController";
 
 const router = express.Router();
 

@@ -11,14 +11,14 @@ export const createCommentController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { text, linkId } = req.body;
-  const userId = req.body._id;
-
+  const { text, link } = req.body;
+  const user = req.body._id;
   const comment = new Comment({
     text,
-    linkId,
-    userId,
+    link,
+    user
   });
+   
   try {
     const newComment = await createCommentService(comment);
     res.status(201).json(newComment);
@@ -33,7 +33,6 @@ export const deleteCommentController = async (
   next: NextFunction
 ) => {
   const commentId = req.params._id;
-
   try {
     const commment = await deleteCommentService(commentId);
     res.status(201).json("comment delect successfully");

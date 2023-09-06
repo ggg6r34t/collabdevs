@@ -1,4 +1,11 @@
 {
+  "name": "CollabHub",
+  "version": "1.0.0",
+  "description": "CodeCollab Connect is a platform that empowers developers to share their projects for collaboration and feedback. Using React, Material-UI, and Redux, users can log in, post links to their code, upvote/downvote, comment, and engage with other developers' work.",
+  "main": "index.js",
+  "repository": "https://github.com/ggg6r34t/collabhub",
+  "author": "ggg6r34t",
+  "license": "MIT",
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
@@ -24,15 +31,10 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   },
-  "name": "CollabHub",
-  "version": "1.0.0",
-  "description": "CodeCollab Connect is a platform that empowers developers to share their projects for collaboration and feedback. Using React, Material-UI, and Redux, users can log in, post links to their code, upvote/downvote, comment, and engage with other developers' work.",
-  "main": "index.js",
-  "repository": "https://github.com/ggg6r34t/collabhub",
-  "author": "ggg6r34t",
-  "license": "MIT",
-
   "scripts": {
-    "start": "nodemon --watch \"src/*\" --ext \"ts,json\" --ignore \"src//.spec.ts\" --exec \"ts-node src/server.ts\""
+    "start": "nodemon --watch \"src/*\" --ext \"ts,json\" --ignore \"src//.spec.ts\" --exec \"ts-node src/server.ts"
+  },
+  "engines": {
+    "node": ">=14.20.1"
   }
 }
