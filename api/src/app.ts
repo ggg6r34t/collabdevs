@@ -1,3 +1,4 @@
+import express, { Express } from "express";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
@@ -7,7 +8,6 @@ import User from "./models/User";
 import linkRoutes from "./routes/linkRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
-import express, { Express } from "express";
 
 // middleware setup
 const app: Express = express();

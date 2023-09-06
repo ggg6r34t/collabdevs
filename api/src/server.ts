@@ -13,7 +13,7 @@ const PORT =
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: "commentDB",
+  dbName: "CollabDevDB",
 };
 
 mongoose.set("strictQuery", false);

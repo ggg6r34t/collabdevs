@@ -10,8 +10,8 @@ export type CommentDocument = Document & {
 const commentSchema = new Schema<CommentDocument>(
   {
     text: { type: String, required: true },
-    link: { type: Schema.Types.ObjectId, ref: "Link" },
-    user: { type: Schema.Types.ObjectId, ref: "User" },
+    link: { type: Schema.Types.ObjectId, ref: "Link", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );
