@@ -11,24 +11,33 @@ import {
 
 const router = express.Router();
 
-router.get("/links", getLinksController);
+// get all links (public route)
+router.get("/", getLinksController);
+
+// create a new link (protected route, requires authentication)
 router.post(
-  "/links",
+  "/",
   passport.authenticate("jwt", { session: false }),
   createLinkController
 );
+
+// get a specific link by its ID (protected route, requires authentication)
 router.get(
-  "/links/:id",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   getLinkById
 );
+
+// dpvote a specific link by its ID (protected route, requires authentication)
 router.put(
-  "/links/:id/upvote",
+  "/:id/upvote",
   passport.authenticate("jwt", { session: false }),
   upvoteLinkController
 );
+
+// downvote a specific link by its ID (protected route, requires authentication)
 router.put(
-  "/links/:id/downvote",
+  "/:id/downvote",
   passport.authenticate("jwt", { session: false }),
   downvoteLinkController
 );

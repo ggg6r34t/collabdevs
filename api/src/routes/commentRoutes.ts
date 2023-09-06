@@ -7,8 +7,10 @@ import { isAuthenticated } from "../controllers/userController";
 
 const router = express.Router();
 
-// POST route to create a new comment
-router.post("/comments", isAuthenticated, createCommentController);
-router.delete("/comments/:id", isAuthenticated, deleteCommentController);
+// create a new comment (protected route, requires authentication)
+router.post("/", isAuthenticated, createCommentController);
+
+// delete a comment by its ID (protected route, requires authentication)
+router.delete("/:id", isAuthenticated, deleteCommentController);
 
 export default router;

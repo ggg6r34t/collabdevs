@@ -41,9 +41,9 @@ passport.deserializeUser(async (id: string, done) => {
 });
 
 // routes
-app.use("/api/v1", userRoutes);
-app.use("/api/v1", linkRoutes);
-app.use("/api/v1", commentRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/links", linkRoutes);
+app.use("/api/v1/comments", commentRoutes);
 
 // error handler
 app.use(apiErrorHandler);
