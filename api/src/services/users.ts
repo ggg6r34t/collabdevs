@@ -40,7 +40,7 @@ export const getUserListService = async (): Promise<UserDocument[]> => {
   const userList = await User.find();
   return userList;
 };
-// update UserInformation
+// update user information
 export const updateUserByIdService = async (
   userId: string,
   updateUserInformation: Partial<UserDocument>
@@ -54,7 +54,7 @@ export const updateUserByIdService = async (
   return userById;
 };
 
-// update user role
+// update user role (admin/user)
 export const updateRoleService = async (userId: string) => {
   const foundUser = await User.findOne({ _id: userId });
   if (foundUser) {
@@ -75,8 +75,8 @@ export const updateRoleService = async (userId: string) => {
   }
 };
 
-// update ristrictions (Banning)
-export const updateRistrictionService = async (userId: string) => {
+// update restrictions (Banning)
+export const updateRestrictionService = async (userId: string) => {
   const foundUser = await User.findOne({ _id: userId });
   if (foundUser) {
     if (foundUser.isBanned === false) {

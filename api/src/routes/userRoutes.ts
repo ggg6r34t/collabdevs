@@ -15,20 +15,20 @@ import adminCheck from "../middlewares/adminCheck";
 
 const router = Router();
 
-//register
+//get: register user
 router.post("/register", createUserController);
 
-//login
+//post: login user
 router.post("/login", logInUserController);
 
-// get userbyID
+//get: get userbyID
 router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   getUserByIdController
 );
 
-// get the list of users
+//get:  get the list of users
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
@@ -36,14 +36,14 @@ router.get(
   getUserListController
 );
 
-//update a user info
+//put: update a user info
 router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   updateUserInfoController
 );
 
-//put: updae role
+//put: updae role (admin/user)
 router.put(
   "/:userId/update-role",
   passport.authenticate("jwt", { session: false }),
@@ -51,15 +51,15 @@ router.put(
   updateRoleController
 );
 
-//put: update ristrictions
+//put: update restrictions (ban/unban user)
 router.put(
-  "/:userId/toggle-ristriction",
+  "/:userId/update-restriction",
   passport.authenticate("jwt", { session: false }),
   adminCheck,
   updateRestrictionController
 );
 
-// delete a user
+//delete: delete a user
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),

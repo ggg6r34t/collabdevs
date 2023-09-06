@@ -10,7 +10,7 @@ import {
   findUserByEmailService,
   getUserByIdService,
   getUserListService,
-  updateRistrictionService,
+  updateRestrictionService,
   updateRoleService,
   updateUserByIdService,
 } from "../services/users";
@@ -189,7 +189,7 @@ export const updateRestrictionController = async (
   try {
     const userId = req.params.userId;
 
-    const updatedUser = await updateRistrictionService(userId);
+    const updatedUser = await updateRestrictionService(userId);
 
     res.status(201).json(updatedUser);
   } catch (error) {
@@ -198,15 +198,15 @@ export const updateRestrictionController = async (
 };
 //delete: delete a user
 export const deleteUserByIdController = async (
-  request: Request,
-  response: Response,
+  req: Request,
+  res: Response,
   next: NextFunction
 ) => {
   try {
-    const userById = request.params.id;
+    const userById = req.params.id;
     const userList = await deleteUserByIdService(userById);
 
-    response.status(403).send();
+    res.status(403).send();
   } catch (error) {
     next(error);
   }
