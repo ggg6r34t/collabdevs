@@ -1,13 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export type LinkDocument = Document & {
+export type PostDocument = Document & {
   title: string;
   url: string;
   userId: mongoose.Types.ObjectId;
   voteScore: number;
 };
 
-const linkSchema = new Schema<LinkDocument>(
+const postSchema = new Schema<PostDocument>(
   {
     title: { type: String, required: true },
     url: { type: String, required: true },
@@ -20,6 +20,6 @@ const linkSchema = new Schema<LinkDocument>(
   { timestamps: true }
 );
 
-const Link = mongoose.model<LinkDocument>("Link", linkSchema);
+const Post = mongoose.model<PostDocument>("Post", postSchema);
 
-export default Link;
+export default Post;

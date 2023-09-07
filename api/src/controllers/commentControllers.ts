@@ -11,14 +11,14 @@ export const createCommentController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { text, link } = req.body;
+  const { text, post } = req.body;
   const user = req.body._id;
   const comment = new Comment({
     text,
-    link,
-    user
+    post,
+    user,
   });
-   
+
   try {
     const newComment = await createCommentService(comment);
     res.status(201).json(newComment);

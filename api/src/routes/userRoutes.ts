@@ -10,7 +10,7 @@ import {
   updateRestrictionController,
   updateRoleController,
   updateUserInfoController,
-} from "../controllers/userController";
+} from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
 
 const router = Router();

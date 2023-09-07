@@ -16,22 +16,6 @@ import {
 } from "../services/users";
 import User from "../models/User";
 
-export const isAuthenticated = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-
-    res.status(401).json({ message: "Unauthorized" });
-  } catch (error) {
-    next(error);
-  }
-};
-
 //post: Create a new user
 export const createUserController = async (
   req: Request,
@@ -72,7 +56,7 @@ export const logInUserController = async (
   next: NextFunction
 ) => {
   const { email, password } = req.body;
-  
+
   try {
     const userData = await findUserByEmailService(email.toLowerCase());
 
@@ -80,7 +64,7 @@ export const logInUserController = async (
       return res.status(403).json({ message: "Invalid credentials" });
     }
     //check for password before generating the token
-    
+
     const hashedPassword = userData.password;
     const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
     if (!isPasswordCorrect) {
