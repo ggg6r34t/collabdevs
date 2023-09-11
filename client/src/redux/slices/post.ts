@@ -4,10 +4,12 @@ import { Post } from "../../type/types";
 
 type PostState = {
   posts: Post[];
+  showShareModal: { [postId: string]: boolean };
 };
 
 const initialState: PostState = {
   posts: [],
+  showShareModal: {},
 };
 
 const postsSlice = createSlice({
@@ -16,6 +18,9 @@ const postsSlice = createSlice({
   reducers: {
     addPost: (state, action) => {
       state.posts.unshift(action.payload);
+    },
+    setShowShareModal: (state, action) => {
+      state.showShareModal = action.payload;
     },
   },
 });
