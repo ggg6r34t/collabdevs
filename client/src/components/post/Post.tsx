@@ -1,22 +1,27 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import {
   faComment,
   faBookmark,
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
-import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-import { postActions } from "../../redux/slices/post";
-import { Post } from "../../type/types";
 import CommentForm from "../forms/CommentForm";
+import ShareButtons from "../share/ShareButtons";
+import { postActions } from "../../redux/slices/post";
+import { RootState } from "../../redux/store";
+import { Post } from "../../type/types";
 
 type Props = {
   post: Post;
 };
 
 function PostItem({ post }: Props) {
+  const showShareModal = useSelector(
+    (state: RootState) => state.posts.showShareModal[post._id] || false
+  );
   const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
@@ -34,6 +39,10 @@ function PostItem({ post }: Props) {
 
   const toggleCommentSection = () => {
     setShowComments(!showComments);
+  };
+
+  const handleShareClick = () => {
+    dispatch(postActions.setShowShareModal({ [post._id]: true }));
   };
 
   return (
@@ -73,7 +82,7 @@ function PostItem({ post }: Props) {
                 Comment
               </button>
 
-              <button className="text-gray-600 ml-4">
+              <button className="text-gray-600 ml-4" onClick={handleShareClick}>
                 <FontAwesomeIcon
                   icon={faShareFromSquare}
                   className="w-40 h-40 mr-2"
@@ -91,6 +100,7 @@ function PostItem({ post }: Props) {
             </div>
           </div>
         </div>
+        {showShareModal && <ShareButtons post={post} />}
         {showComments && <CommentForm />}
       </div>
     </div>

@@ -60,7 +60,7 @@ const posts = [
     author: "Mustafa",
   },
   {
-    _id: "1",
+    _id: "4",
     postTitle:
       "Building a Real-time Chat Application with Full-Stack Development",
     timestamp: "1",
@@ -77,7 +77,7 @@ const posts = [
     author: "Habeeb",
   },
   {
-    _id: "2",
+    _id: "5",
     postTitle: "Scaling Your Full-Stack Web App: Best Practices and Strategies",
     timestamp: "8",
     content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -94,7 +94,7 @@ const posts = [
   },
 
   {
-    _id: "3",
+    _id: "6",
     postTitle: "Secure Coding Practices for Full-Stack Developers",
     timestamp: "24",
     content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
