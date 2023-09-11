@@ -13,20 +13,16 @@ function App() {
   const [showImage, setShowImage] = useState(true);
 
   useEffect(() => {
-    // Check if the user has already seen the image
     const hasSeenImage = localStorage.getItem("hasSeenImage");
 
     if (hasSeenImage) {
-      // User has seen the image before, hide it immediately
       setShowImage(false);
     } else {
-      // User is seeing the image for the first time, set a timer to hide it after 5 seconds
       setTimeout(() => {
         setShowImage(false);
 
-        // Mark that the user has seen the image to prevent it from showing again
         localStorage.setItem("hasSeenImage", "true");
-      }, 3000); // 3000 milliseconds = 5 seconds
+      }, 3000);
     }
   }, []);
 
