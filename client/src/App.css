@@ -1,38 +1,60 @@
-.App {
-  text-align: center;
+/* QUILL RICH TEXT EDITOR */
+
+.my-custom-quill .ql-editor {
+  overflow-y: hidden;
+  padding: 4px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.my-custom-quill .ql-container {
+  font-size: 15px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.comment .ql-container {
+  height: 183px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.reply .ql-container {
+  height: 155px;
 }
 
-.App-link {
-  color: #61dafb;
+.snow .ql-container {
+  width: 708px;
+  height: 183px;
+  border-color: #050404a8 !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.snow .ql-editor {
+  border-top: unset;
+}
+
+.snow .ql-toolbar {
+  background-color: #f6f7f8;
+  border-color: #050404a8 !important;
+  border-bottom: unset !important;
+}
+
+/* NAVBAR */
+
+.dropdown-shape::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  background-color: #ffffff;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.dropdown-shape-footer::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 35px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  background-color: #ffffff;
+  transform: translateY(-50%) rotate(45deg);
 }
