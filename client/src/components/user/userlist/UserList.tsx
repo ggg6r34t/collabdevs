@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
-
-import { User } from "../../../type/types";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faBan, faUserCog } from "@fortawesome/free-solid-svg-icons";
+
+import { User } from "../../../type/types";
 
 type Props = {
   users: User[];
@@ -15,7 +15,7 @@ function UserList({ users }: Props) {
   const [userRoles, setUserRoles] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
-    axios.get("/api/user-roles").then((response) => {
+    axios.get("/api/v1/users").then((response) => {
       setUserRoles(response.data);
     });
   }, []);
@@ -25,16 +25,18 @@ function UserList({ users }: Props) {
   };
 
   const handleBan = (userId: number) => {
-    axios.post(`/api/ban-user/${userId}`).then((response) => {
-      setBannedUsers([...bannedUsers, userId]);
-    });
+    axios
+      .post(`/api/v1/users/${userId}/update-restriction`)
+      .then((response) => {
+        setBannedUsers([...bannedUsers, userId]);
+      });
   };
 
   const handleChangeRole = (userId: number) => {
     const newRole = userRoles[userId] === "admin" ? "user" : "admin";
 
     axios
-      .post(`/api/change-role/${userId}`, { role: newRole })
+      .post(`/api/v1/users/${userId}/update-role`, { role: newRole })
       .then((response) => {
         setUserRoles({ ...userRoles, [userId]: newRole });
       });
