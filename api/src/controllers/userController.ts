@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -10,11 +10,12 @@ import {
   findUserByEmailService,
   getUserByIdService,
   getUserListService,
+  updateLastLoginService,
   updateRestrictionService,
   updateRoleService,
   updateUserByIdService,
 } from "../services/users";
-import User from "../models/User";
+import User, { UserDocument } from "../models/User";
 
 export const isAuthenticated = (
   req: Request,
@@ -22,9 +23,9 @@ export const isAuthenticated = (
   next: NextFunction
 ) => {
   try {
-    if (req.isAuthenticated()) {
-      return next();
-    }
+    // if (req.isAuthenticated()) {
+    //   return next();
+    // }
 
     res.status(401).json({ message: "Unauthorized" });
   } catch (error) {
@@ -38,31 +39,36 @@ export const createUserController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { profileId, email, password, firstName, lastName, userName, avatar } =
-    req.body;
+  const { email, password, firstName, lastName, userName, avatar } = req.body;
+
   // can add validation logic to check fields are not empty
-  try {
-    //hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  if (password!== "" ) {
+    try {
+      //hash password
+      console.log(password, "inside");
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-    const userInformation = new User({
-      profileId,
-      email: email.toLowerCase(),
-      password: hashedPassword,
-      firstName,
-      lastName,
-      userName,
-      avatar,
-    });
+      const userInformation = new User({
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        firstName,
+        lastName,
+        userName,
+        avatar,
+      });
 
-    const newUser = await createUserService(userInformation);
+      const newUser = await createUserService(userInformation);
 
-    res.status(201).json(newUser);
-  } catch (error) {
-    next(error);
+      res.status(201).json(newUser);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    res.status(500).send("Password required");
   }
 };
+
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 //post: login user
@@ -72,7 +78,7 @@ export const logInUserController = async (
   next: NextFunction
 ) => {
   const { email, password } = req.body;
-  
+
   try {
     const userData = await findUserByEmailService(email.toLowerCase());
 
@@ -80,9 +86,12 @@ export const logInUserController = async (
       return res.status(403).json({ message: "Invalid credentials" });
     }
     //check for password before generating the token
-    
+
     const hashedPassword = userData.password;
     const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+
+    await updateLastLoginService(userData._id);
+
     if (!isPasswordCorrect) {
       throw new UnauthorizedError();
     }
@@ -95,6 +104,7 @@ export const logInUserController = async (
       JWT_SECRET,
       { expiresIn: "1h" }
     );
+
     res.json({ userData, token });
   } catch (error) {
     next(error);
@@ -138,16 +148,13 @@ export const updateUserInfoController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { firstName, lastName, gender, country, interests } = req.body;
+  const { firstName, lastName } = req.body;
   if (firstName !== "" && lastName !== "") {
     try {
       const userId = req.params.id;
       const updatedInformation = {
         firstName,
         lastName,
-        gender,
-        country,
-        interests,
       };
       const updatedUser = await updateUserByIdService(
         userId,
@@ -207,6 +214,34 @@ export const deleteUserByIdController = async (
     const userList = await deleteUserByIdService(userById);
 
     res.status(403).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+// google
+export const googleAuthenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+    const token = jwt.sign(
+      {
+        email: userData.email,
+        _id: userData._id,
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    if (!userData) {
+      res.json({ message: "can't find user with this email" });
+      return;
+    } else {
+      res.json({ token, userData });
+    }
+    await updateLastLoginService(userData._id);
   } catch (error) {
     next(error);
   }

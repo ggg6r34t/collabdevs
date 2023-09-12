@@ -9,6 +9,7 @@ import linkRoutes from "./routes/linkRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
 import userRoutes from "./routes/userRoutes";
+import { googleStrategy, jwtStrategy } from "./config/passport";
 
 const app: Express = express();
 app.use(express.json());
@@ -29,6 +30,8 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+passport.use(jwtStrategy);
+passport.use(googleStrategy)
 
 // needs work, doesn't work as intended
 passport.serializeUser(function (user, done) {
