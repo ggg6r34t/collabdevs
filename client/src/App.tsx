@@ -11,6 +11,7 @@ import Banner from "./components/layouts/banner/Banner";
 import SignIn from "./components/user/sign-in/SignIn";
 import SignUp from "./components/user/sign-up/SignUp";
 import UserSection from "./components/user/userlist/UserSection";
+import Profile from "./components/user/profile/Profile";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
@@ -40,6 +41,7 @@ function App() {
             <Route path="/" element={<Post />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/users" element={<UserSection />} />
             <Route path="/create-post" element={<PostForm />} />
             <Route path="/comment" element={<CommentForm />} />
