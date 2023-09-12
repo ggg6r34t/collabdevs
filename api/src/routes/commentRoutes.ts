@@ -1,14 +1,25 @@
 import express from "express";
+import passport from "passport";
+
 import {
   createCommentController,
   deleteCommentController,
-} from "../controllers/commentController";
-import { isAuthenticated } from "../controllers/userController";
+} from "../controllers/commentControllers";
 
 const router = express.Router();
 
-// POST route to create a new comment
-router.post("/comments", isAuthenticated, createCommentController);
-router.delete("/comments/:id", isAuthenticated, deleteCommentController);
+// create a new comment (protected route, requires authentication)
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  createCommentController
+);
+
+// delete a comment by its ID (protected route, requires authentication)
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  deleteCommentController
+);
 
 export default router;

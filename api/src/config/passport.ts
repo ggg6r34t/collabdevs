@@ -13,6 +13,7 @@ import { UnauthorizedError } from "../helpers/apiError";
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
+
 export const jwtStrategy = new JwtStrategy(
   {
     secretOrKey: JWT_SECRET,
@@ -27,6 +28,7 @@ export const jwtStrategy = new JwtStrategy(
       if (!foundUser) {
         throw new UnauthorizedError("User not found.");
       }
+
       done(null, foundUser);
     } catch (error) {
       console.error("JWT Strategy Error", error);
@@ -63,18 +65,20 @@ export const githubStrategy = new GitHubStrategy(
   }
 );
 
-export const googleStrategy = new GoogleStrategy(
+const clientId = process.env.GOOGLE_CLIENT_ID as string
+const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string
+export const googleStrategy = new GoogleTokenStrategy(
   {
-    clientID: "process.env.GOOGLE_CLIENT_ID",
-    clientSecret: "process.env.GOOGLE_CLIENT_SECRET",
-    callbackURL: "/auth/google/callback", // this URL should match your route
+    clientID: clientId,
+// clientSecret: clientSecret,
+  //callbackURL: "http://localhost:8000/api/v1/users/google-login", // this URL should match your route
   },
   async (parsedToken: any, googleId: string, done: any) => {
     try {
       const userPayload = {
         firstName: parsedToken?.payload?.given_name,
         lastName: parsedToken?.payload?.family_name,
-        username: parsedToken?.payload?.username,
+        userName: parsedToken?.payload?.displayName,
         email: parsedToken?.payload?.email,
         avatar: parsedToken?.payload?.avatar,
       };

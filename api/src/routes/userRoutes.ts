@@ -6,11 +6,12 @@ import {
   deleteUserByIdController,
   getUserByIdController,
   getUserListController,
+  googleAuthenticate,
   logInUserController,
   updateRestrictionController,
   updateRoleController,
   updateUserInfoController,
-} from "../controllers/userController";
+} from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
 
 const router = Router();
@@ -65,6 +66,15 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   adminCheck,
   deleteUserByIdController
+);
+
+
+//google
+router.post(
+  "/google-login",
+  passport.authenticate("google-id-token", { session: false }),
+  // user -  from passport
+  googleAuthenticate
 );
 
 export default router;

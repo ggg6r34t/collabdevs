@@ -22,11 +22,19 @@ const UserSchema = new Schema<UserDocument>(
   {
     // type from database
     //profileId: { type: String, required: true },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    userName: { type: String, unique: true, required: true },
+    firstName: { type: String, 
+      required: true
+     },
+    lastName: { type: String, 
+     required: true
+     },
+    userName: { type: String, unique: true,
+      // required: true
+     },
     email: { type: String, unique: true, required: true },
-    password: { type: String, required: true },
+    password: { type: String,
+       //required: true
+       },
     lastLogin: { type: Date, default: null },
     role: { type: String, enum: Role, default: Role.user, required: true },
     isBanned: { type: Boolean, default: false },

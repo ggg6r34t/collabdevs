@@ -14,12 +14,25 @@ export const createUserService = async (
   }
 };
 export const findUserByEmailService = async (
-  email: string,
-  ): Promise<UserDocument> => {
-  const foundUser = await User.findOne({ email: email, isBanned:false });
-  
+  email: string
+): Promise<UserDocument> => {
+  const foundUser = await User.findOne({ email: email, isBanned: false });
+
   if (!foundUser) {
     throw new NotFoundError(`User with ${email} not found`);
+  }
+  return foundUser;
+};
+
+export const updateLastLoginService = async (
+  id: string
+): Promise<UserDocument> => {
+  const foundUser = await User.findByIdAndUpdate(id, {
+    lastLogin: Date.now(),
+  });
+
+  if (!foundUser) {
+    throw new NotFoundError(`User with ${id} not found`);
   }
   return foundUser;
 };
@@ -91,6 +104,7 @@ export const updateRestrictionService = async (userId: string) => {
     throw new NotFoundError(`User not found with ${userId}`);
   }
 };
+
 // delete user
 export const deleteUserByIdService = async (
   userId: string
@@ -114,6 +128,8 @@ export const findOrCreateUserService = async (
     const newUser = new User({
       email: payload.email,
       userName: payload.userName,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
       avatar: payload.avatar,
     });
 
