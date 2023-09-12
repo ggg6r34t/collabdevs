@@ -6,9 +6,9 @@ import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparen
 
 // mock User to test the navbar (right section) functionality
 const user = {
-  loggedIn: false,
+  loggedIn: true,
   username: "JohnDoe",
-  isAdmin: false,
+  isAdmin: true,
 };
 
 function Navbar() {
@@ -93,22 +93,34 @@ function Navbar() {
                     </a>
                   </li>
                   <li>
-                    <a
-                      href="/give-feeback"
-                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                    >
-                      Give Feedback
-                    </a>
-                  </li>
-                  {user.isAdmin && (
-                    <li>
+                    {!user.isAdmin && (
                       <a
-                        href="/users"
+                        href="/give-feeback"
                         className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                       >
-                        Users
+                        Give Feedback
                       </a>
-                    </li>
+                    )}
+                  </li>
+                  {user.isAdmin && (
+                    <>
+                      <li>
+                        <a
+                          href="/feedbacks"
+                          className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                        >
+                          Feedbacks
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/users"
+                          className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                        >
+                          Users
+                        </a>
+                      </li>
+                    </>
                   )}
                   <li>
                     <a
