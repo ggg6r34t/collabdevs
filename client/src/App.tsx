@@ -12,6 +12,7 @@ import SignIn from "./components/user/sign-in/SignIn";
 import SignUp from "./components/user/sign-up/SignUp";
 import UserSection from "./components/user/userlist/UserSection";
 import Profile from "./components/user/profile/Profile";
+import SavedPosts from "./components/savedPost/SavedPost";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
@@ -38,6 +39,7 @@ function App() {
         <>
           <Navbar />
           <Routes>
+            <Route path="/saved-post" element={<SavedPosts />} />
             <Route path="/" element={<Post />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
