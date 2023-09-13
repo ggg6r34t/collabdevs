@@ -17,7 +17,7 @@ router.get("/", getpostController);
 // create a new post (protected route, requires authentication)
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   createPostController
 );
 

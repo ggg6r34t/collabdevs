@@ -9,6 +9,8 @@ import postRoutes from "./routes/postRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
 import userRoutes from "./routes/userRoutes";
+import { jwtStrategy } from "./config/passport";
+import replyRoutes from "./routes/replyRoutes";
 
 const app: Express = express();
 app.use(express.json());
@@ -29,6 +31,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+passport.use(jwtStrategy);
 
 // needs work, doesn't work as intended
 passport.serializeUser(function (user, done) {
@@ -44,6 +47,7 @@ passport.deserializeUser(async (id: string, done) => {
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
 app.use("/api/v1/comments", commentRoutes);
+app.use("/api/v1/replies", replyRoutes);
 
 // error handler
 app.use(apiErrorHandler);

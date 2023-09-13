@@ -1,17 +1,23 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export type CommentDocument = Document & {
+export type ReplyDocument = Document & {
   postId: mongoose.Types.ObjectId;
+  commentId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   userName: string;
   content: string;
 };
 
-const commentSchema = new Schema<CommentDocument>(
+const replySchema = new Schema<ReplyDocument>(
   {
     postId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
+      required: true,
+    },
+    commentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Reply",
       required: true,
     },
     userId: {
@@ -25,6 +31,6 @@ const commentSchema = new Schema<CommentDocument>(
   { timestamps: true }
 );
 
-const Comment = mongoose.model<CommentDocument>("Comment", commentSchema);
+const Reply = mongoose.model<ReplyDocument>("Reply", replySchema);
 
-export default Comment;
+export default Reply;
