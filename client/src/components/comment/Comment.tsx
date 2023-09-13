@@ -1,18 +1,16 @@
 import { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faComment,
-  faShareFromSquare,
-} from "@fortawesome/free-regular-svg-icons";
+import { faComment } from "@fortawesome/free-regular-svg-icons";
 import ReplyForm from "../forms/ReplyForm";
-import { Post } from "../../type/types";
+import { Comment } from "../../type/types";
 import ReplySection from "../reply/ReplySection";
 
 type Props = {
-  comment: Partial<Post>;
+  comment: Comment;
 };
 
-function Comment({ comment }: Props) {
+function CommentItem({ comment }: Props) {
   const [showReply, setShowReply] = useState(false);
 
   const toggleReplySection = () => {
@@ -25,7 +23,8 @@ function Comment({ comment }: Props) {
         <div className="flex flex-row p-2">
           <div className="flex-shrink-0 w-7 h-7 bg-gray-300 rounded-full mr-4"></div>
           <p className="text-gray-600">
-            {comment.author} • {comment.timestamp} hour ago
+            {comment.userName} •{" "}
+            {formatDistanceToNow(new Date(comment.createdAt))} hour ago
           </p>
         </div>
 
@@ -35,14 +34,6 @@ function Comment({ comment }: Props) {
             <FontAwesomeIcon icon={faComment} className="w-4.5 h-4.5 mr-2" />
             Reply
           </button>
-
-          <button className="text-gray-600 ml-4 mr-auto">
-            <FontAwesomeIcon
-              icon={faShareFromSquare}
-              className="w-4.5 h-4.5 mr-2"
-            />
-            Share
-          </button>
         </div>
         {showReply && <ReplySection />}
         {showReply && <ReplyForm />}
@@ -51,4 +42,4 @@ function Comment({ comment }: Props) {
   );
 }
 
-export default Comment;
+export default CommentItem;

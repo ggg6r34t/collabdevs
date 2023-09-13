@@ -1,8 +1,11 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import Comment from "./Comment";
+import { AppDispatch, RootState } from "../../redux/store";
+import { fetchCommentData } from "../../redux/thunk/comments";
+import CommentItem from "./Comment";
 
-const comments = [
+const comment = [
   {
     _id: "1",
     timestamp: "1",
@@ -13,35 +16,22 @@ const comments = [
       accumsan non nisi sit amet rutrum. `,
     author: "Habeeb",
   },
-  {
-    _id: "2",
-    timestamp: "8",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-      turpis. Vivamus eget ornare sapien. `,
-    author: "Zaka",
-  },
-
-  {
-    _id: "3",
-    timestamp: "24",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-    author: "Mustafa",
-  },
-  {
-    _id: "4",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet.`,
-    author: "Habeeb",
-  },
 ];
 
 function CommentSection() {
+  const comments = useSelector((state: RootState) => state.comments.comments);
+
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    fetchDispatch(fetchCommentData());
+  }, [fetchDispatch]);
+
   return (
     <div>
       <ul className="mt-4">
         {comments.map((comment, index) => (
-          <Comment key={index} comment={comment} />
+          <CommentItem key={index} comment={comment} />
         ))}
       </ul>
     </div>
