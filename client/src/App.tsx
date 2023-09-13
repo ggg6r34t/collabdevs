@@ -39,7 +39,7 @@ function App() {
         <>
           <Navbar />
           <Routes>
-            <Route path="/saved-post" element={<SavedPosts />} />
+            <Route path="/saved-posts/:id" element={<SavedPosts />} />
             <Route path="/" element={<Post />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />

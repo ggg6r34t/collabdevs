@@ -27,7 +27,7 @@ function ShareButtons({ post }: Props) {
   const shareToTwitter = (post: Post) => {
     const postURL = encodeURIComponent(window.location.href);
     const tweetText = encodeURIComponent(
-      `Check out this project: ${post.postTitle}`
+      `Check out this project: ${post.title}`
     );
     const twitterShareUrl = `https://twitter.com/intent/tweet?url=${postURL}&text=${tweetText}`;
     window.open(twitterShareUrl, "_blank");
@@ -36,7 +36,7 @@ function ShareButtons({ post }: Props) {
   const shareToFacebook = () => {
     const postURL = encodeURIComponent(window.location.href);
     const facebookText = encodeURIComponent(
-      `Check out this project: ${post.postTitle}`
+      `Check out this project: ${post.title}`
     );
     const facebookShareURL = `https://www.facebook.com/sharer/sharer.php?u=${postURL}&title=${facebookText}`;
     window.open(facebookShareURL, "_blank");

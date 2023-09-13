@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleUp,
@@ -5,7 +7,6 @@ import {
   faThumbsUp,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
 
 import { Post } from "../../type/types";
 
@@ -47,9 +48,10 @@ function SavedPostItem({ post, onRemove }: Props) {
               </button>
             </div>
           </div>
-          <h3 className="text-lg font-semibold mt-2 mb-1">{post.postTitle}</h3>
+          <h3 className="text-lg font-semibold mt-2 mb-1">{post.title}</h3>
           <p className="text-gray-600 text-xs">
-            Posted by {post.author} • {post.timestamp} hour ago
+            Posted by {post.userName} •{" "}
+            {formatDistanceToNow(new Date(post.createdAt))} hour ago
           </p>
           {isExpanded && (
             <div className="text-gray-800 mt-2">{post.content}</div>
