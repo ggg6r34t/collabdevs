@@ -10,7 +10,6 @@ import Footer from "./components/layouts/footer/Footer";
 import Banner from "./components/layouts/banner/Banner";
 import SignIn from "./components/user/sign-in/SignIn";
 import SignUp from "./components/user/sign-up/SignUp";
-import UserSection from "./components/user/userlist/UserSection";
 import Profile from "./components/user/profile/Profile";
 import SavedPosts from "./components/savedPost/SavedPost";
 import UserSection from "./components/admin/userlist/UserSection";
