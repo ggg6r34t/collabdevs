@@ -1,27 +1,24 @@
-import React from "react";
-import Reply from "./Reply";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const replies = [
-  {
-    _id: "",
-    timestamp: "24",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-    author: "Mustafa",
-  },
-  {
-    _id: "2",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet.`,
-    author: "Habeeb",
-  },
-];
+import { AppDispatch, RootState } from "../../redux/store";
+import { fetchReplyData } from "../../redux/thunk/replies";
+import ReplyItem from "./Reply";
 
 function ReplySection() {
+  const replies = useSelector((state: RootState) => state.replies.replies);
+
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    fetchDispatch(fetchReplyData());
+  }, [fetchDispatch]);
+
   return (
     <div>
       <ul className="mt-4">
         {replies.map((reply, index) => (
-          <Reply key={index} reply={reply} />
+          <ReplyItem key={index} reply={reply} />
         ))}
       </ul>
     </div>
