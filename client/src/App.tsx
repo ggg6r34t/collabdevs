@@ -13,6 +13,7 @@ import SignUp from "./components/user/sign-up/SignUp";
 import UserSection from "./components/user/userlist/UserSection";
 import Profile from "./components/user/profile/Profile";
 import SavedPosts from "./components/savedPost/SavedPost";
+import UserSection from "./components/admin/userlist/UserSection";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
