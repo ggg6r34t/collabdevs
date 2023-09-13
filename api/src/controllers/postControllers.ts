@@ -9,6 +9,7 @@ import {
   upvotePostService,
 } from "../services/posts";
 import Post from "../models/Post";
+import User from "../models/User";
 
 type Payload = JwtPayload & {
   _id: string;
@@ -34,6 +35,8 @@ export const createPostController = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { title, content, url } = req.body;
+
   const token = req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
@@ -44,11 +47,20 @@ export const createPostController = async (
     const decoded = jwt.verify(token, JWT_SECRET) as Payload;
     const userId = decoded._id;
 
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const userName = user.userName;
+
     const newPost = new Post({
-      title: req.body.title,
-      content: req.body.content,
-      url: req.body.url,
-      userId: userId,
+      title,
+      content,
+      url,
+      userId,
+      userName,
     });
 
     const post = await createPostService(newPost);

@@ -3,9 +3,12 @@ import mongoose, { Document, Schema } from "mongoose";
 export type PostDocument = Document & {
   title: string;
   content: string;
-  url: string;
+  url?: string;
   userId: mongoose.Types.ObjectId;
+  userName: string;
   voteScore: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const postSchema = new Schema<PostDocument>(
@@ -18,6 +21,7 @@ const postSchema = new Schema<PostDocument>(
       ref: "User",
       required: true,
     },
+    userName: { type: String, required: true },
     voteScore: { type: Number, default: 0 },
   },
   { timestamps: true }

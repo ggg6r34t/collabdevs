@@ -5,6 +5,8 @@ export type CommentDocument = Document & {
   userId: mongoose.Types.ObjectId;
   userName: string;
   content: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const commentSchema = new Schema<CommentDocument>(
