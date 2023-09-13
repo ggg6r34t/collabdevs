@@ -11,6 +11,7 @@ import apiErrorHandler from "./middlewares/apiErrorHandler";
 import userRoutes from "./routes/userRoutes";
 import { jwtStrategy } from "./config/passport";
 import replyRoutes from "./routes/replyRoutes";
+import savedPostRoutes from "./routes/savedPostRoutes";
 
 const app: Express = express();
 app.use(express.json());
@@ -46,6 +47,7 @@ passport.deserializeUser(async (id: string, done) => {
 // routes
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
+app.use("/api/v1/savedposts", savedPostRoutes);
 app.use("/api/v1/comments", commentRoutes);
 app.use("/api/v1/replies", replyRoutes);
 
