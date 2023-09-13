@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -32,7 +33,7 @@ function PostItem({ post }: Props) {
       isSaved: isSaved,
     };
 
-    dispatch(postActions.addPost(newPost));
+    dispatch(postActions.createPost(newPost));
 
     setIsSaved(!isSaved);
   };
@@ -66,9 +67,10 @@ function PostItem({ post }: Props) {
           </div>
           <div className="flex flex-col">
             <div className="p-2">
-              <h3 className="text-lg font-semibold mb-2">{post.postTitle}</h3>
+              <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
               <p className="text-gray-600">
-                Posted by {post.author} • {post.timestamp} hour ago
+                Posted by {post.userName} •{" "}
+                {formatDistanceToNow(new Date(post.createdAt))} hour ago
               </p>
             </div>
             <div className="p-2">
