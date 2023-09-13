@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { User } from "../../types/types";
+import { User } from "../../type/types";
 
 type SingleUser = {
   userInformation: User | null;
@@ -25,7 +25,7 @@ const userSlice = createSlice({
     },
     removeUserData: (state) => {
       state.userInformation = initialState.userInformation;
-      localStorage.removeItem("userToken")
+      localStorage.removeItem("userToken");
       state.isLogin = false;
       state.isLoading = false;
     },

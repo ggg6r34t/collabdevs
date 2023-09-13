@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { User } from "../../types/types";
+import { User } from "../../type/types";
 
 type UserList = {
   users: User[];
@@ -16,11 +16,10 @@ const usersSlice = createSlice({
   name: "userList",
   initialState,
   reducers: {
-  setUserList: (state, action: PayloadAction<User[]>) => {
+    setUserList: (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
       state.isLoading = false;
     },
-
   },
 });
 

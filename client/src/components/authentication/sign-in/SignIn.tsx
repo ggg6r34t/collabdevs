@@ -1,15 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebook,
-  faGithub,
-  faGoogle,
-} from "@fortawesome/free-brands-svg-icons";
+import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faGithub } from "@fortawesome/free-brands-svg-icons";
+
 import { userActions } from "../../../redux/slices/user";
 import { useNavigate } from "react-router-dom";
-import GoogleLogIn from "../../users/login/GoogleLogin";
+import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
 
 function SignIn() {
   const [invalidCredential, setInvalidCredential] = useState("");
@@ -55,7 +52,7 @@ function SignIn() {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md">
-        <GoogleLogIn />
+        <AuthWithGoogle />
 
         <button className="w-65 h-9.5 flex flex-row items-center justify-center bg-[#181717] text-white py-2 border rounded-[12px] hover:bg-blue-200 mb-2">
           <FontAwesomeIcon
