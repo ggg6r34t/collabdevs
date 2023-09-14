@@ -9,7 +9,7 @@ import postRoutes from "./routes/postRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
 import userRoutes from "./routes/userRoutes";
-import { jwtStrategy } from "./config/passport";
+import { googleStrategy, jwtStrategy } from "./config/passport";
 import replyRoutes from "./routes/replyRoutes";
 import savedPostRoutes from "./routes/savedPostRoutes";
 
