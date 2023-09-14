@@ -6,6 +6,8 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
 import { useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [signUpInformation, setSignUpInformation] = useState({
@@ -17,7 +19,7 @@ function SignUp() {
     lastName: "",
     avatar: "",
   });
-
+const navigate = useNavigate()
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
     setSignUpInformation({ ...signUpInformation, email: event.target.value });
   }
@@ -59,30 +61,31 @@ function SignUp() {
     event.preventDefault();
 
     function onSuccess() {
-      // confirmAlert({
-      //   title: `Congratulation! ${userInformation.userName}`,
-      //   message: "You successfully created an account. Click OK to login",
-      //   buttons: [
-      //     {
-      //       label: "OK",
-      //       onClick: () => navigate("/users/signin"),
-      //     },
-      //   ],
-      // });
+      confirmAlert({
+        title: `Congratulation! ${signUpInformation.userName}`,
+        message: "You successfully created an account. Click OK to login.",
+        buttons: [
+          {
+            label: "OK",
+            onClick: () => navigate("/signin"),
+          },
+        ],
+      });
     }
+
     if (
       signUpInformation.password?.toString().toLowerCase() !==
       signUpInformation.confirmPassword?.toString().toLowerCase()
     ) {
-      // confirmAlert({
-      //   title: "Careful!",
-      //   message: "Password and Confirm Password does not match.",
-      //   buttons: [
-      //     {
-      //       label: "OK",
-      //     },
-      //   ],
-      // });
+      confirmAlert({
+        title: "Careful!",
+        message: "Password and Confirm Password does not match.",
+        buttons: [
+          {
+            label: "OK",
+          },
+        ],
+      });
     } else {
       const endpoint = `http://localhost:8000/api/v1/users/register`;
       axios
@@ -96,15 +99,15 @@ function SignUp() {
         .catch((error) => {
           console.log(error);
           if (error.response.status === 409) {
-            //   confirmAlert({
-            //     title: "Error!",
-            //     message: "User name or email already registered.",
-            //     buttons: [
-            //       {
-            //         label: "OK",
-            //       },
-            //     ],
-            //   });
+              confirmAlert({
+                title: "Error!",
+                message: "User name or email already registered.",
+                buttons: [
+                  {
+                    label: "OK",
+                  },
+                ],
+              });
           }
         });
     }
