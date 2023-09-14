@@ -8,19 +8,23 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Post } from "../../type/types";
+import { SavedPost } from "../../type/types";
 
 type Props = {
-  post: Post;
+  savedPost: SavedPost;
   onRemove: () => void;
 };
 
-function SavedPostItem({ post, onRemove }: Props) {
+function SavedPostItem({ savedPost, onRemove }: Props) {
+  const { postId } = savedPost;
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+  console.log(savedPost);
 
   return (
     <div className="w-full max-w-xl mx-auto my-4">
@@ -38,8 +42,9 @@ function SavedPostItem({ post, onRemove }: Props) {
                 />
               </button>
               <p className="text-gray-600 text-sm mx-2">
-                <FontAwesomeIcon icon={faThumbsUp} /> 234
+                <FontAwesomeIcon icon={faThumbsUp} /> {postId.voteScore}
               </p>
+
               <button
                 className="text-gray-600 hover:text-gray-800"
                 onClick={onRemove}
@@ -47,14 +52,17 @@ function SavedPostItem({ post, onRemove }: Props) {
                 <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
               </button>
             </div>
+            <p className="text-gray-600 text-xs ml-auto">
+              Saved {formatDistanceToNow(new Date(savedPost.savedAt))} ago
+            </p>
           </div>
-          <h3 className="text-lg font-semibold mt-2 mb-1">{post.title}</h3>
+          <h3 className="text-lg font-semibold mt-2 mb-1">{postId.title}</h3>
           <p className="text-gray-600 text-xs">
-            Posted by {post.userName} •{" "}
-            {formatDistanceToNow(new Date(post.createdAt))} hour ago
+            Posted by {postId.userName} •{" "}
+            {formatDistanceToNow(new Date(postId.createdAt))} hour ago
           </p>
           {isExpanded && (
-            <div className="text-gray-800 mt-2">{post.content}</div>
+            <div className="text-gray-800 mt-2">{postId.content}</div>
           )}
         </div>
       </div>

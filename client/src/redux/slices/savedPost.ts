@@ -1,14 +1,16 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-import { SavedPost } from "../../type/types";
+import { Post, SavedPost } from "../../type/types";
 
 type SavedPostState = {
   savedPosts: SavedPost[];
+  postById: Record<string, Post>;
   error: Error | null;
 };
 
 const initialState: SavedPostState = {
   savedPosts: [],
+  postById: {},
   error: null,
 };
 
@@ -19,6 +21,13 @@ const savedPostsSlice = createSlice({
     getSavedPosts: (state, action: PayloadAction<SavedPost[]>) => {
       state.savedPosts = action.payload;
       state.error = null;
+    },
+    getPostById: (
+      state,
+      action: PayloadAction<{ postId: string; post: Post }>
+    ) => {
+      const { postId, post } = action.payload;
+      state.postById[postId] = post;
     },
     addSavedPost: (state, action: PayloadAction<SavedPost>) => {
       state.savedPosts.unshift(action.payload);

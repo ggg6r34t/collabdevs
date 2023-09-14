@@ -30,10 +30,10 @@ export type Reply = Post &
     content: string;
   };
 
-export type SavedPost = Post & {
+export type SavedPost = {
   _id: string;
   userId: string;
-  postId: string;
+  postId: Post;
   savedAt: Date;
 };
 
