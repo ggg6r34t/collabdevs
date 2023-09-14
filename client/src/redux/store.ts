@@ -6,12 +6,14 @@ import postsReducer from "./slices/post";
 import commentsReducer from "./slices/comment";
 import repliesReducer from "./slices/reply";
 import savedPostsReducer from "./slices/savedPost";
+import postDetailReducer from "./slices/postDetail";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     userList: usersReducer,
     posts: postsReducer,
+    postDetails: postDetailReducer,
     savedPosts: savedPostsReducer,
     comments: commentsReducer,
     replies: repliesReducer,

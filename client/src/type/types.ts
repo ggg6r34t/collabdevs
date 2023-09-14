@@ -6,11 +6,20 @@ export type Post = {
   userId: string;
   userName: string;
   voteScore: number;
+  comments: Comment[];
   createdAt: string;
   updatedAt: string;
 };
 
-export type User = { id: number; username: string; email: string };
+export type User = {
+  _id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  token: string;
+};
 
 export type Comment = Post & {
   postId: string;
