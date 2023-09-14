@@ -12,3 +12,12 @@ export type Feedback = {
   id: number;
   feedback: string;
 };
+
+export type UserGoogle = {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  avatar: string;
+};
