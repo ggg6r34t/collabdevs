@@ -215,6 +215,6 @@ const navigate = useNavigate()
     </div>
   );
 } else 
-return <div> No data!!! redirecting to home...</div>
+ { return <div> No data!!! redirecting to home... </div>}
 } 
 export default Profile;
