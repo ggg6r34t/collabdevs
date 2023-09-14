@@ -14,7 +14,7 @@ export const createPostService = async (
 
 export const getAllPostService = async (): Promise<PostDocument[]> => {
   try {
-    const posts = await Post.find().exec();
+    const posts = await Post.find().sort({ createdAt: -1 }).exec();
 
     if (!posts || posts.length === 0) {
       throw new NotFoundError(`Post not found`);
@@ -67,7 +67,9 @@ export const downvotePostService = async (
       throw new NotFoundError(`Post ${post} not found`);
     }
 
-    post.voteScore -= 1;
+    if (post.voteScore > 0) {
+      post.voteScore -= 1;
+    }
 
     const updatedPost = await post.save();
 
