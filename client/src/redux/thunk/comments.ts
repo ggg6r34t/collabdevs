@@ -3,8 +3,8 @@ import { BASE_URL } from "../../api/api";
 import { commentActions } from "../slices/comment";
 import { AppDispatch } from "../store";
 
-export function fetchCommentData() {
-  const commentUrl = `${BASE_URL}/api/v1/comments/`;
+export function fetchCommentData(postId: string) {
+  const commentUrl = `${BASE_URL}/api/v1/posts/${postId}/comments`;
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.get(commentUrl);

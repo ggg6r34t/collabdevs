@@ -1,20 +1,29 @@
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
-import ReplyForm from "../forms/ReplyForm";
-import { Comment } from "../../type/types";
+
 import ReplySection from "../reply/ReplySection";
+import { RootState } from "../../redux/store";
+import { replyActions } from "../../redux/slices/reply";
+import { Comment, Post } from "../../type/types";
+import { commentActions } from "../../redux/slices/comment";
 
 type Props = {
   comment: Comment;
+  post: Post;
 };
 
-function CommentItem({ comment }: Props) {
-  const [showReply, setShowReply] = useState(false);
+function CommentItem({ comment, post }: Props) {
+  const showReply = useSelector(
+    (state: RootState) => state.replies.showReply[comment._id]
+  );
+
+  const dispatch = useDispatch();
 
   const toggleReplySection = () => {
-    setShowReply(!showReply);
+    dispatch(replyActions.toggleShowReply(comment._id));
+    dispatch(commentActions.toggleHideComment());
   };
 
   return (
@@ -35,8 +44,7 @@ function CommentItem({ comment }: Props) {
             Reply
           </button>
         </div>
-        {showReply && <ReplySection />}
-        {showReply && <ReplyForm />}
+        {showReply && <ReplySection comment={comment} post={post} />}
       </li>
     </div>
   );
