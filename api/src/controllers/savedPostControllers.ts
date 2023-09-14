@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import SavedPosts from "../models/SavedPost";
 import {
+  getSavedPostsByIdService,
   getSavedPostsService,
   removeSavedPostService,
   savePostService,
@@ -30,7 +31,22 @@ export const savePostController = async (
   }
 };
 
-// Controller function to get saved posts by a user
+// controller function to get saved posts by post id
+export const getSavedPostById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const postId = req.params.id;
+    const savedPosts = await getSavedPostsByIdService(postId);
+    res.status(200).json(savedPosts);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// controller function to get saved posts by a user
 export const getSavedPostController = async (
   req: Request,
   res: Response,

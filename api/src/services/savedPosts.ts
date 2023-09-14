@@ -12,6 +12,16 @@ export const savePostService = async (
   return savedPost.save();
 };
 
+export const getSavedPostsByIdService = async (
+  postId: string
+): Promise<SavedPostsDocument> => {
+  const savedPost = await SavedPosts.findById(postId);
+  if (!savedPost) {
+    throw new NotFoundError(`Saved post ${postId} not found.`);
+  }
+  return savedPost;
+};
+
 export const getSavedPostsService = async (
   userId: string
 ): Promise<SavedPostsDocument[]> => {
