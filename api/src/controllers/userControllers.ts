@@ -42,7 +42,7 @@ export const createUserController = async (
   const { email, password, firstName, lastName, userName, avatar } = req.body;
 
   // can add validation logic to check fields are not empty
-  if (password!== "" ) {
+  if (password !== "") {
     try {
       //hash password
       console.log(password, "inside");
@@ -226,7 +226,8 @@ export const googleAuthenticate = async (
   next: NextFunction
 ) => {
   try {
-    const userData = req.user as UserDocument;
+    const userData = req.body.user as UserDocument;
+
     const token = jwt.sign(
       {
         email: userData.email,
