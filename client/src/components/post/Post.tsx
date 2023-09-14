@@ -70,7 +70,7 @@ function PostItem({ post }: Props) {
               <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
               <p className="text-gray-600">
                 Posted by {post.userName} •{" "}
-                {formatDistanceToNow(new Date(post.createdAt))} hour ago
+                {formatDistanceToNow(new Date(post.createdAt))} ago
               </p>
             </div>
             <div className="p-2">

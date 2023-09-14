@@ -24,7 +24,7 @@ function CommentItem({ comment }: Props) {
           <div className="flex-shrink-0 w-7 h-7 bg-gray-300 rounded-full mr-4"></div>
           <p className="text-gray-600">
             {comment.userName} •{" "}
-            {formatDistanceToNow(new Date(comment.createdAt))} hour ago
+            {formatDistanceToNow(new Date(comment.createdAt))} ago
           </p>
         </div>
 
