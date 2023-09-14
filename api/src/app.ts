@@ -33,6 +33,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(jwtStrategy);
+passport.use(googleStrategy);
 
 // needs work, doesn't work as intended
 passport.serializeUser(function (user, done) {
