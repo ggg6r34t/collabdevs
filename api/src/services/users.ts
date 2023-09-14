@@ -1,18 +1,17 @@
-import { InternalServerError, NotFoundError } from "../helpers/apiError";
+import { AlreadyExist, InternalServerError, NotFoundError } from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
 
 export const createUserService = async (
   newUser: UserDocument
 ): Promise<UserDocument> => {
-  try {
-    return await newUser.save();
-  } catch (error) {
-    console.error("Error creating account:", error);
-    throw new InternalServerError(
-      "An error occured while creating the account."
-    );
-  }
-};
+  
+    const alreadyExist = await User.findOne({ email: newUser.email });
+    if (alreadyExist) {
+      throw new AlreadyExist(`User with ${newUser.email} Already Exist`);
+    } else return await newUser.save();
+  };
+ 
+
 export const findUserByEmailService = async (
   email: string
 ): Promise<UserDocument> => {
@@ -69,6 +68,7 @@ export const updateUserByIdService = async (
 
 // update user role (admin/user)
 export const updateRoleService = async (userId: string) => {
+  
   const foundUser = await User.findOne({ _id: userId });
   if (foundUser) {
     if (foundUser.role === "admin") {

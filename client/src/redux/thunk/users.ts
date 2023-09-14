@@ -18,8 +18,7 @@ export function getUserList() {
       },
     });
     const fetchedUserList: User[] = await response.json();
-    console.log(fetchedUserList);
-    dispatch(usersActions.setUserList(fetchedUserList));
+     dispatch(usersActions.setUserList(fetchedUserList));
   };
 }
 

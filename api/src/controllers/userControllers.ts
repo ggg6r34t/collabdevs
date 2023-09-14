@@ -45,7 +45,7 @@ export const createUserController = async (
   if (password!== "" ) {
     try {
       //hash password
-      console.log(password, "inside");
+     
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 

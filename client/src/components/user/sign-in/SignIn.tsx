@@ -10,6 +10,7 @@ import axios from "axios";
 import { userActions } from "../../../redux/slices/user";
 import { useNavigate } from "react-router-dom";
 import GoogleLogIn from "../../users/login/GoogleLogin";
+import { User } from "../../../types/types";
 
 function SignIn() {
   const [invalidCredential, setInvalidCredential] = useState("");
@@ -37,13 +38,20 @@ function SignIn() {
 
       .then((response) => {
         if (response.status === 200) {
-          dispatch(userActions.setUserData(response.data.userData)); // store userinformation to the redux
+          const user = response.data.userData;
 
           const userToken = response.data.token; // from data object. get and assign the token
-
+          // const userId = currentUser?._id
           localStorage.setItem("userToken", userToken); // save it (token) to the localStorage
+          const currentUserInformation: User = {
+            ...user,
+            token: userToken,
+          };
+          const id = user._id;
+          dispatch(userActions.setUserData(response.data.userData)); // store userinformation to the redux
 
-          navigate("/");
+          dispatch(userActions.userLogin(true));
+          navigate(`/profile/${id}`);
         }
       })
       .catch((error) => {

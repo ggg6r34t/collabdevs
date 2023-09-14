@@ -43,3 +43,9 @@ export class BadRequestError extends ApiError {
     super(400, message, source);
   }
 }
+
+export class AlreadyExist extends ApiError {
+  constructor(readonly message: string = "User Already Registered", source?: Error | any) {
+    super(409, message, source);
+  }
+}

@@ -1,7 +1,6 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as GitHubStrategy } from "passport-github2";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Strategy as GitLabStrategy } from "passport-gitlab2";
+import GoogleTokenStrategy from "passport-google-id-token";
 import dotenv from "dotenv";
 
 import {
@@ -89,38 +88,6 @@ export const googleStrategy = new GoogleTokenStrategy(
       return done(null, foundUser);
     } catch (error) {
       console.error("Google Strategy Error", error);
-      done(error, false);
-    }
-  }
-);
-
-export const gitlabStrategy = new GitLabStrategy(
-  {
-    clientID: "process.env.GITLAB_CLIENT_ID",
-    clientSecret: "process.env.GITLAB_CLIENT_SECRET",
-    callbackURL: "/auth/gitlab/callback", // this URL should match your route
-  },
-<<<<<<< HEAD
-  async (_: any, __: any, profile: any, done: any) => {
-=======
-  async (_, __, profile, done) => {
->>>>>>> origin/comments
-    try {
-      // create a payload object with relevant data
-      const userPayload = {
-        firstName: profile?.given_name,
-        lastName: profile?.family_name,
-        username: profile?.username,
-        email: profile?.email,
-        avatar: profile?.avatar,
-      };
-
-      // use the findOrCreateUserService function
-      const user = await findOrCreateUserService(userPayload);
-
-      return done(null, user);
-    } catch (error) {
-      console.error("GitLab Strategy Error", error);
       done(error, false);
     }
   }

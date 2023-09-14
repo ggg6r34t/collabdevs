@@ -24,7 +24,7 @@ const userSlice = createSlice({
     setUserData: (state, action: PayloadAction<User>) => {
       state.userInformation = action.payload;
       state.isLogin = true;
-      state.isLoading = false;
+      state.isLoading = true;
     },
     userLogin: (state, action: PayloadAction<boolean>) => {
       state.isLogin = action.payload;
