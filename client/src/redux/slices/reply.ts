@@ -4,11 +4,13 @@ import { Reply } from "../../type/types";
 
 type ReplyState = {
   replies: Reply[];
+  showReply: { [commentId: string]: boolean };
   error: Error | null;
 };
 
 const initialState: ReplyState = {
   replies: [],
+  showReply: {},
   error: null,
 };
 
@@ -21,6 +23,10 @@ const repliesSlice = createSlice({
     },
     addReply: (state, action) => {
       state.replies.unshift(action.payload);
+    },
+    toggleShowReply: (state, action: PayloadAction<string>) => {
+      const commentId = action.payload;
+      state.showReply[commentId] = !state.showReply[commentId];
     },
     fetchReplyError: (state, action: PayloadAction<Error | null>) => {
       state.error = action.payload;

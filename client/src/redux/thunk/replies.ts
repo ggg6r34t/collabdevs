@@ -3,8 +3,8 @@ import { BASE_URL } from "../../api/api";
 import { replyActions } from "../slices/reply";
 import { AppDispatch } from "../store";
 
-export function fetchReplyData() {
-  const replyUrl = `${BASE_URL}/api/v1/replies/`;
+export function fetchReplyData(commentId: string) {
+  const replyUrl = `${BASE_URL}/api/v1/replies/${commentId}`;
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.get(replyUrl);

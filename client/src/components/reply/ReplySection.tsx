@@ -1,18 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComment } from "@fortawesome/free-regular-svg-icons";
 
+import ReplyItem from "./ReplyItem";
+import ReplyForm from "../forms/ReplyForm";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchReplyData } from "../../redux/thunk/replies";
-import ReplyItem from "./Reply";
+import { Comment, Post } from "../../type/types";
 
-function ReplySection() {
-  const replies = useSelector((state: RootState) => state.replies.replies);
+type Props = {
+  comment: Comment;
+  post: Post;
+};
+
+function ReplySection({ comment, post }: Props) {
+  const { replies, error } = useSelector((state: RootState) => state.replies);
 
   const fetchDispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    fetchDispatch(fetchReplyData());
-  }, [fetchDispatch]);
+    fetchDispatch(fetchReplyData(comment._id));
+  }, [fetchDispatch, comment._id]);
+
+  if (error) {
+    return <div>Error fetching comments: {error.message}</div>;
+  }
 
   return (
     <div>
@@ -21,6 +34,7 @@ function ReplySection() {
           <ReplyItem key={index} reply={reply} />
         ))}
       </ul>
+      <ReplyForm comment={comment} post={post} />
     </div>
   );
 }
