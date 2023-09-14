@@ -14,16 +14,10 @@ import {
 import CommentSection from "../comment/CommentSection";
 import ShareButtons from "../share/ShareButtons";
 import { AppDispatch, RootState } from "../../redux/store";
-import { commentActions } from "../../redux/slices/comment";
 import { fetchPostDetails } from "../../redux/thunk/posts";
 import { postDetailActions } from "../../redux/slices/postDetail";
-import { Post } from "../../type/types";
 
-type Props = {
-  post: Post;
-};
-
-function PostDetail({ post }: Props) {
+function PostDetail() {
   const postDetail = useSelector(
     (state: RootState) => state.postDetails.postDetail
   );
@@ -34,7 +28,8 @@ function PostDetail({ post }: Props) {
     (state: RootState) => state.user.userInformation
   );
   const showShareModal = useSelector(
-    (state: RootState) => state.posts.showShareModal[post._id] || false
+    (state: RootState) =>
+      state.posts.showShareModal[postDetail?._id || ""] || false
   );
 
   const [votes, setVotes] = useState(0);
@@ -47,7 +42,6 @@ function PostDetail({ post }: Props) {
   const param = useParams();
   const postId = param.postId as string | undefined;
 
-  console.log(postId, "param");
   useEffect(() => {
     if (postId) {
       fetchDispatch(fetchPostDetails(postId));
@@ -240,7 +234,7 @@ function PostDetail({ post }: Props) {
             </div>
           </div>
           {showShareModal && <ShareButtons post={postDetail} />}
-          {showComments && <CommentSection post={post} />}
+          {showComments && <CommentSection post={postDetail} />}
         </div>
       </div>
     </div>
