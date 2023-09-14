@@ -8,11 +8,11 @@ import CommentForm from "./components/forms/CommentForm";
 import Navbar from "./components/layouts/navbar/Navbar";
 import Footer from "./components/layouts/footer/Footer";
 import Banner from "./components/layouts/banner/Banner";
-import SignIn from "./components/user/sign-in/SignIn";
-import SignUp from "./components/user/sign-up/SignUp";
+import SignIn from "./components/authentication/sign-in/SignIn";
+import SignUp from "./components/authentication/sign-up/SignUp";
 import Profile from "./components/user/profile/Profile";
 import SavedPosts from "./components/savedPost/SavedPost";
-import UserSection from "./components/admin/userlist/UserSection";
+import UserList from "./components/admin/userlist/UserList";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
@@ -43,8 +43,8 @@ function App() {
             <Route path="/" element={<Post />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/users" element={<UserSection />} />
+            <Route path="/profile/:userId" element={<Profile />} />
+            <Route path="/users" element={<UserList />} />
             <Route path="/create-post" element={<PostForm />} />
             <Route path="/comment" element={<CommentForm />} />
             <Route path="/banner" element={<Banner />} />

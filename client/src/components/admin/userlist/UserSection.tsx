@@ -13,7 +13,7 @@ const users = [
 function UserSection() {
   return (
     <div>
-      <UserList users={users} />
+      {/* <UserList users={users} /> */}
     </div>
   );
 }

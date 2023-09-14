@@ -1,17 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebook,
-  faGithub,
-  faGoogle,
-} from "@fortawesome/free-brands-svg-icons";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faGithub } from "@fortawesome/free-brands-svg-icons";
+
 import { userActions } from "../../../redux/slices/user";
 import { useNavigate } from "react-router-dom";
-import GoogleLogIn from "../../users/login/GoogleLogin";
-import { RootState } from "../../../redux/store";
-import { User } from "../../../types/types";
+import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
 
 function SignIn() {
   const [invalidCredential, setInvalidCredential] = useState("");
@@ -19,9 +14,7 @@ function SignIn() {
     email: "",
     password: "",
   });
-  const currentUser = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -41,20 +34,13 @@ function SignIn() {
 
       .then((response) => {
         if (response.status === 200) {
-          const user = response.data.userData;
-
-          const userToken = response.data.token; // from data object. get and assign the token
-          // const userId = currentUser?._id
-          localStorage.setItem("userToken", userToken); // save it (token) to the localStorage
-          const currentUserInformation: User = {
-            ...user,
-            token: userToken,
-          };
-          const id = user._id;
           dispatch(userActions.setUserData(response.data.userData)); // store userinformation to the redux
 
-          dispatch(userActions.userLogin(true));
-          navigate(`/profile/${id}`);
+          const userToken = response.data.token; // from data object. get and assign the token
+
+          localStorage.setItem("userToken", userToken); // save it (token) to the localStorage
+
+          navigate("/");
         }
       })
       .catch((error) => {
@@ -66,7 +52,7 @@ function SignIn() {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md">
-        <GoogleLogIn />
+        <AuthWithGoogle />
 
         <button className="w-65 h-9.5 flex flex-row items-center justify-center bg-[#181717] text-white py-2 border rounded-[12px] hover:bg-blue-200 mb-2">
           <FontAwesomeIcon
