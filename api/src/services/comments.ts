@@ -1,19 +1,20 @@
 import Comment, { CommentDocument } from "../models/Comment";
 
-export const getAllCommentsService = async () => {
+export const createCommentService = async (
+  comment: CommentDocument
+): Promise<CommentDocument> => {
+  return await comment.save();
+};
+
+export const getCommentsByPostIdService = async (postId: string) => {
   try {
-    const comments = await Comment.find();
+    // find comments that belong to the given postId
+    const comments = await Comment.find({ postId });
 
     return comments;
   } catch (error) {
     throw error;
   }
-};
-
-export const createCommentService = async (
-  comment: CommentDocument
-): Promise<CommentDocument> => {
-  return await comment.save();
 };
 
 export const editCommentService = async (

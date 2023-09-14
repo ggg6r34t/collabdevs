@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 import Comment from "../models/Comment";
 import {
-  getAllCommentsService,
+  getCommentsByPostIdService,
   createCommentService,
   editCommentService,
   deleteCommentService,
@@ -17,13 +17,15 @@ type Payload = JwtPayload & {
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export const getAllCommentsController = async (
+export const getCommentsByPostIdController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const comments = await getAllCommentsService();
+    const { postId } = req.params;
+
+    const comments = await getCommentsByPostIdService(postId);
 
     // return the array of comments
     res.status(200).json(comments);
@@ -123,4 +125,7 @@ export const deleteCommentController = async (
   }
 };
 
+function getCommentsByPostId(postId: string) {
+  throw new Error("Function not implemented.");
+}
 // other comment-related controller functions as needed
