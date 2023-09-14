@@ -13,6 +13,7 @@ import Profile from "./components/user/profile/Profile";
 import SavedPosts from "./components/savedPost/SavedPost";
 import PostDetail from "./components/postDetail/PostDetail";
 import UserSection from "./components/admin/userlist/UserSection";
+import UserList from "./components/admin/userlist/UserList";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
@@ -44,8 +45,8 @@ function App() {
             <Route path="/posts/:postId" element={<PostDetail />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/users" element={<UserSection />} />
+            <Route path="/profile/:userId" element={<Profile />} />
+            <Route path="/users" element={<UserList />} />
             <Route path="/create-post" element={<PostForm />} />
 
             <Route path="/banner" element={<Banner />} />

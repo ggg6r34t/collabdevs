@@ -73,7 +73,6 @@ router.delete(
 router.post(
   "/google-login",
   passport.authenticate("google-id-token", { session: false }),
-  // user -  from passport
   googleAuthenticate
 );
 

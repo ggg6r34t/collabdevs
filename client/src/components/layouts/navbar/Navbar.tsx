@@ -1,17 +1,14 @@
-import { useSelector } from "react-redux";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparent_bg.png";
 import { RootState } from "../../../redux/store";
+import { userActions } from "../../../redux/slices/user";
 
 // mock User to test the navbar (right section) functionality
-const user = {
-  loggedIn: true,
-  username: "JohnDoe",
-  isAdmin: true,
-};
 
 function Navbar() {
   const userInformation = useSelector(
@@ -19,6 +16,13 @@ function Navbar() {
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const currentUser = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLogin);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -60,7 +64,7 @@ function Navbar() {
         </nav>
 
         {/* right section (User is logged in) */}
-        {user.loggedIn ? (
+        {isLoggedIn ? (
           <div className="flex items-center space-x-4 relative">
             <FontAwesomeIcon
               icon={faBell}
@@ -83,7 +87,7 @@ function Navbar() {
                 <ul className="py-2">
                   <li>
                     <a
-                      href="/profile"
+                      href={`/profile/${currentUser?._id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Profile
@@ -97,39 +101,29 @@ function Navbar() {
                       Saved
                     </a>
                   </li>
-                  <li>
-                    {!user.isAdmin && (
-                      <a
-                        href="/give-feeback"
-                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                      >
-                        Give Feedback
-                      </a>
-                    )}
-                  </li>
-                  {user.isAdmin && (
-                    <>
-                      <li>
-                        <a
-                          href="/feedback-list"
-                          className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                        >
-                          Feedbacks
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/users"
-                          className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                        >
-                          Users
-                        </a>
-                      </li>
-                    </>
-                  )}
+
                   <li>
                     <a
-                      href="/logout"
+                      href="/feedbacks"
+                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                    >
+                      Feedbacks
+                    </a>
+                  </li>
+                  {currentUser?.role === "admin" ? (
+                    <li>
+                      <a
+                        href="/users"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                      >
+                        Users
+                      </a>
+                    </li>
+                  ) : null}
+                  <li>
+                    <a
+                      href="/" // can create logout component containing only logout function
+                      onClick={signOut}
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Logout
@@ -138,6 +132,9 @@ function Navbar() {
                 </ul>
               </div>
             )}
+            <div className="text-white hover:text-blue-200 transition duration-300">
+              Hi! {currentUser?.firstName}
+            </div>
           </div>
         ) : (
           // right section (User is not logged in)
@@ -159,6 +156,13 @@ function Navbar() {
       </div>
     </div>
   );
+  function signOut(): void {
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("userId");
+
+    dispatch(userActions.removeUserData());
+    navigate("/signin");
+  }
 }
 
 export default Navbar;
