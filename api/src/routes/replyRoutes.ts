@@ -5,12 +5,12 @@ import {
   createReplyController,
   deleteReplyController,
   editReplyController,
-  getAllReplysController,
+  getRepliesByPostIdController,
 } from "../controllers/replyControllers";
 
 const router = express.Router();
 
-router.get("/", getAllReplysController);
+router.get("/:commentId", getRepliesByPostIdController);
 
 // create a new reply (protected route, requires authentication)
 router.post(

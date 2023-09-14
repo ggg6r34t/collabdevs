@@ -1,10 +1,11 @@
 import Reply, { ReplyDocument } from "../models/Reply";
 
-export const getAllReplysService = async () => {
+export const getRepliesByPostIdService = async (commentId: string) => {
   try {
-    const replys = await Reply.find();
+    // find replies that belong to the given commentId
+    const replies = await Reply.find({ commentId });
 
-    return replys;
+    return replies;
   } catch (error) {
     throw error;
   }

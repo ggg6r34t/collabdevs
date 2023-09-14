@@ -3,10 +3,10 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 import Reply from "../models/Reply";
 import {
-  getAllReplysService,
   createReplyService,
   editReplyService,
   deleteReplyService,
+  getRepliesByPostIdService,
 } from "../services/replies";
 import User from "../models/User";
 import Post from "../models/Post";
@@ -18,13 +18,15 @@ type Payload = JwtPayload & {
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export const getAllReplysController = async (
+export const getRepliesByPostIdController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const replies = await getAllReplysService();
+    const { commentId } = req.params;
+
+    const replies = await getRepliesByPostIdService(commentId);
 
     // return the array of replies
     res.status(200).json(replies);
