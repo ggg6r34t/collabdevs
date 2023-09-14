@@ -8,11 +8,14 @@ type SingleUser = {
   isLoading: boolean;
 };
 
-const initialState: SingleUser = {
-  userInformation: null,
-  isLogin: false,
-  isLoading: true,
-};
+const storedUserState = localStorage.getItem("userState");
+const initialState: SingleUser = storedUserState
+  ? JSON.parse(storedUserState)
+  : {
+      userInformation: null,
+      isLogin: false,
+      isLoading: true,
+    };
 
 const userSlice = createSlice({
   name: "users",
@@ -23,9 +26,14 @@ const userSlice = createSlice({
       state.isLogin = true;
       state.isLoading = false;
     },
+    userLogin: (state, action: PayloadAction<boolean>) => {
+      state.isLogin = action.payload;
+      localStorage.setItem("userState", JSON.stringify(state));
+    },
     removeUserData: (state) => {
       state.userInformation = initialState.userInformation;
       localStorage.removeItem("userToken")
+      localStorage.removeItem("userState")
       state.isLogin = false;
       state.isLoading = false;
     },

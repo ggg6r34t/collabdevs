@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { getUserDetails } from "../../../redux/thunk/users";
+import { useNavigate, useParams } from "react-router-dom";
 
 function Profile() {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
-
+const navigate = useNavigate()
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
     if (file) {
@@ -29,7 +33,16 @@ function Profile() {
       reader.readAsDataURL(file);
     }
   };
-
+  const currentUser = useSelector((state: RootState) => state.user.userInformation);
+  console.log(currentUser)
+  const { userId } = useParams<{ userId: string }>();
+  const singleUserURL = `http://localhost:8000//api/v1/users/${userId}`;
+  const dispatch = useDispatch();
+  const dispatchApp = useDispatch<AppDispatch>();
+  // useEffect(() => {
+  //   dispatchApp(getUserDetails(singleUserURL));
+  // }, [dispatchApp, singleUserURL]);
+  if (currentUser)  {
   return (
     <div className="max-w-4xl mx-auto my-6 p-6 bg-white shadow-lg rounded-lg">
       {/* user banner */}
@@ -67,14 +80,14 @@ function Profile() {
           </div>
         </label>
       </div>
-
+  
       {/* user details */}
       <div className="p-6">
-        <h2 className="text-lg font-semibold">User Name</h2>
-        <p className="text-gray-600">user@example.com</p>
+        <h2 className="text-lg font-semibold">{currentUser.firstName} {currentUser?.lastName}</h2>
+        <p className="text-gray-600">{currentUser.email}</p>
         <p className="text-gray-600">Location: City, Country</p>
-        <p className="text-gray-600">Member Since: September 3, 2023</p>
-
+         {/* <p >Last Login: {currentUser.lastLogin}</p>  */}
+         c
         {/* about me */}
         <div className="mt-6">
           <h3 className="text-lg font-semibold">About Me</h3>
@@ -201,6 +214,7 @@ function Profile() {
       </div>
     </div>
   );
-}
-
+} else 
+return <div> No data!!! redirecting to home...</div>
+} 
 export default Profile;
