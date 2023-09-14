@@ -1,8 +1,10 @@
+import { useSelector } from "react-redux";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
 
 import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparent_bg.png";
+import { RootState } from "../../../redux/store";
 
 // mock User to test the navbar (right section) functionality
 const user = {
@@ -12,6 +14,9 @@ const user = {
 };
 
 function Navbar() {
+  const userInformation = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -86,7 +91,7 @@ function Navbar() {
                   </li>
                   <li>
                     <a
-                      href="/saved"
+                      href={`/saved-posts/${userInformation?._id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Saved
@@ -106,7 +111,7 @@ function Navbar() {
                     <>
                       <li>
                         <a
-                          href="/feedbacks"
+                          href="/feedback-list"
                           className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                         >
                           Feedbacks
