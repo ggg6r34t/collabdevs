@@ -1,7 +1,9 @@
 import axios from "axios";
+
 import { BASE_URL } from "../../api/api";
-import { postActions } from "../slices/post";
 import { AppDispatch } from "../store";
+import { postActions } from "../slices/post";
+import { postDetailActions } from "../slices/postDetail";
 import { Post } from "../../type/types";
 
 export function fetchPostData() {
@@ -28,6 +30,20 @@ export function createPost(postData: Partial<Post>) {
     } catch (error) {
       console.error("Error creating post:", error);
       dispatch(postActions.createPostError(error as Error));
+    }
+  };
+}
+
+export function fetchPostDetails(postId: string) {
+  const postIdUrl = `${BASE_URL}/api/v1/posts/${postId}`;
+  return async (dispact: AppDispatch) => {
+    try {
+      const response = await axios.get(postIdUrl);
+      const postDetailData = response.data;
+      dispact(postDetailActions.getPostDetails(postDetailData));
+    } catch (error) {
+      console.error("Error creating post:", error);
+      dispact(postDetailActions.fetchPostError(error as Error));
     }
   };
 }

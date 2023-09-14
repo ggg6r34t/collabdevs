@@ -9,7 +9,7 @@ import "react-quill/dist/quill.bubble.css";
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchPostData } from "../../redux/thunk/posts";
-import Post from "./Post";
+import Post from "./PostItem";
 
 function PostSection() {
   const posts = useSelector((state: RootState) => state.posts.posts);
@@ -25,6 +25,7 @@ function PostSection() {
   function handleQuillClick() {
     navigate("/create-post");
   }
+
   return (
     <div className=" bg-white p-4 mb-4  flex flex-row items-start justify-center">
       <div className=" bg-white p-4 mb-4  flex flex-col items-center justify-center">
