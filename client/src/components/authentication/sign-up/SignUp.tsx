@@ -19,7 +19,7 @@ function SignUp() {
     lastName: "",
     avatar: "",
   });
-const navigate = useNavigate()
+  const navigate = useNavigate();
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
     setSignUpInformation({ ...signUpInformation, email: event.target.value });
   }
@@ -99,15 +99,15 @@ const navigate = useNavigate()
         .catch((error) => {
           console.log(error);
           if (error.response.status === 409) {
-              confirmAlert({
-                title: "Error!",
-                message: "User name or email already registered.",
-                buttons: [
-                  {
-                    label: "OK",
-                  },
-                ],
-              });
+            confirmAlert({
+              title: "Error!",
+              message: "User name or email already registered.",
+              buttons: [
+                {
+                  label: "OK",
+                },
+              ],
+            });
           }
         });
     }
