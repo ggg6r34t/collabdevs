@@ -21,6 +21,10 @@ export type User = {
   role: string;
   token: string;
   isBanned: boolean;
+  avatar: string;
+  banner: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Comment = Post & {

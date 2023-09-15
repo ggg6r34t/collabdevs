@@ -1,67 +1,53 @@
-import React, { useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../../redux/store";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 function Profile() {
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const [banner, setBanner] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<any | null>(null);
+  const [userMedia, setUserMedia] = useState({ avatar: null, banner: null });
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Get the selected file
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target && e.target.result) {
-          setAvatar(e.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMediaChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    mediaType: string
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target && e.target.result) {
-          setBanner(e.target.result as string);
+          setUserMedia({
+            ...userMedia,
+            [mediaType]: e.target.result as string,
+          });
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const { userId } = useParams<{ userId: string }>();
-  const singleUserURL = `http://localhost:8000/api/v1/users/${userId}`;
+  const currentUser = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
 
-  // Fetch user profile data when the component mounts
-  useEffect(() => {
-    axios
-      .get(singleUserURL)
-      .then((response) => {
-        setUserProfile(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user profile:", error);
-      });
-  }, [singleUserURL]);
+  if (currentUser) {
+    const lastLoginFormatted = new Date(currentUser?.updatedAt).toLocaleString(
+      undefined,
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }
+    );
 
-  // const currentUser = useSelector(
-  //   (state: RootState) => state.user.userInformation
-  // );
-
-  if (userProfile) {
     return (
       <div className="max-w-4xl mx-auto my-6 p-6 bg-white shadow-lg rounded-lg">
         {/* user banner */}
         <div
           className="h-60 bg-gradient-to-r bg-center from-blue-500 to-purple-500 rounded-t-lg relative overflow-hidden"
           style={{
-            backgroundImage: `url(${banner || "/default-banner.jpg"})`,
+            backgroundImage: `url(${userMedia.banner || currentUser.banner})`,
           }}
         ></div>
 
@@ -70,7 +56,11 @@ function Profile() {
           <label htmlFor="avatar-upload" className="cursor-pointer">
             <div className="relative">
               <img
-                src={avatar || "/default-avatar.jpg"}
+                src={
+                  userMedia.avatar ||
+                  currentUser.avatar ||
+                  "/default-avatar.jpg"
+                }
                 alt="User Avatar"
                 className="w-32 h-32 rounded-full border-4 border-white hover:opacity-80"
               />
@@ -86,7 +76,7 @@ function Profile() {
                   id="avatar-upload"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleAvatarChange}
+                  onChange={(e) => handleMediaChange(e, "avatar")}
                 />
               </div>
             </div>
@@ -96,11 +86,12 @@ function Profile() {
         {/* user details */}
         <div className="p-6">
           <h2 className="text-lg font-semibold">
-            {userProfile.firstName} {userProfile?.lastName}
+            {currentUser.firstName} {currentUser?.lastName}
           </h2>
-          <p className="text-gray-600">{userProfile.email}</p>
+          <p className="text-gray-600">{currentUser.email}</p>
           <p className="text-gray-600">Location: City, Country</p>
-          {/* <p >Last Login: {currentUser.lastLogin}</p>  */}c{/* about me */}
+          <p className="text-gray-600">Last Login: {lastLoginFormatted}</p>
+          {/* about me */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold">About Me</h3>
             <p className="text-gray-700">
@@ -134,7 +125,7 @@ function Profile() {
                     id="banner-upload"
                     accept="image/*"
                     className="hidden"
-                    onChange={handleBannerChange}
+                    onChange={(e) => handleMediaChange(e, "banner")}
                   />
                   <label
                     htmlFor="banner-upload"
