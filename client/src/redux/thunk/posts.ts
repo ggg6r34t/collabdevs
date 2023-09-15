@@ -42,7 +42,7 @@ export function fetchPostDetails(postId: string) {
       const postDetailData = response.data;
       dispact(postDetailActions.getPostDetails(postDetailData));
     } catch (error) {
-      console.error("Error creating post:", error);
+      console.error("Error fetching post:", error);
       dispact(postDetailActions.fetchPostError(error as Error));
     }
   };
