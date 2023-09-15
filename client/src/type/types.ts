@@ -20,6 +20,7 @@ export type User = {
   password: string;
   role: string;
   token: string;
+  isBanned: boolean;
 };
 
 export type Comment = Post & {

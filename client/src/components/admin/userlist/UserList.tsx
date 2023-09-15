@@ -7,18 +7,13 @@ import {
   faUserCog,
   faRemove,
 } from "@fortawesome/free-solid-svg-icons";
-import { confirmAlert } from "react-confirm-alert";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { getUserList } from "../../../redux/thunk/users";
-import { userActions } from "../../../redux/slices/user";
-import { fireEvent } from "@testing-library/react";
 
 function UserList() {
   const [editedUserId, setEditedUserId] = useState<string | null>(null);
-  // const [bannedUsers, setBannedUsers] = useState<string[]>([]);
-  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   const dispatch = useDispatch<AppDispatch>();
   const userList = useSelector((state: RootState) => state.userList.users);
@@ -216,7 +211,6 @@ function UserList() {
         </ul>
       </div>
     );
- 
 }
 
 export default UserList;
