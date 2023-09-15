@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./App.css";
 import Post from "./components/post/PostSection";
@@ -12,7 +12,7 @@ import SignUp from "./components/authentication/sign-up/SignUp";
 import Profile from "./components/user/profile/Profile";
 import SavedPosts from "./components/savedPost/SavedPost";
 import PostDetail from "./components/postDetail/PostDetail";
-import UserSection from "./components/admin/userlist/UserSection";
+// import UserSection from "./components/admin/userlist/UserSection";
 import UserList from "./components/admin/userlist/UserList";
 
 function App() {
