@@ -28,54 +28,67 @@ function PostItem({ post }: Props) {
   const showShareModal = useSelector(
     (state: RootState) => state.posts.showShareModal[post._id] || false
   );
-  const [votes, setVotes] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // initialize the votes state with the value from localStorage if it exists
   useEffect(() => {
-    const storedVoteScore = localStorage.getItem(`voteScore_${post._id}`);
-    if (storedVoteScore) {
-      setVotes(parseInt(storedVoteScore));
-    }
+    localStorage.getItem(`voteScore_${post._id}`);
   }, [post._id]);
 
-  // Function to update the voteScore in both state and localStorage
+  // function to update the voteScore in both state and localStorage
   const updateVoteScore = (postId: string, newVoteScore: number) => {
     localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-    setVotes(newVoteScore);
   };
 
   // function to upvote the post
-  const handleUpvote = async (postId: string) => {
+  const handleUpvote = async (
+    postId: string,
+    userId: string | undefined,
+    token: string | undefined
+  ) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/posts/${postId}/upvote`
+        `http://localhost:8000/api/v1/posts/${postId}/upvote`,
+        userId,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const newVoteScore = response.data.voteScore;
       updateVoteScore(postId, newVoteScore);
       localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-
-      setVotes(newVoteScore);
     } catch (error) {
       console.error("Error upvoting post:", error);
     }
   };
 
   // function to downvote the post
-  const handleDownvote = async (postId: string) => {
+  const handleDownvote = async (
+    postId: string,
+    userId: string | undefined,
+    token: string | undefined
+  ) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/posts/${postId}/downvote`
+        `http://localhost:8000/api/v1/posts/${postId}/downvote`,
+        userId,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const newVoteScore = response.data.voteScore;
       updateVoteScore(postId, newVoteScore);
       localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-
-      setVotes(newVoteScore);
     } catch (error) {
       console.error("Error downvoting post:", error);
     }
@@ -133,8 +146,30 @@ function PostItem({ post }: Props) {
     navigate(`/posts/${post._id}`);
   };
 
+  console.log(userInformation?.token, "postItem");
+
   const handleShareClick = () => {
     dispatch(postActions.setShowShareModal({ [post._id]: true }));
+  };
+
+  const handleUpvoteClick = () => {
+    if (upvoted) {
+      setDownvoted(false);
+    }
+
+    handleUpvote(post._id, userInformation?._id, userInformation?.token);
+    setUpvoted(true);
+    setDownvoted(false);
+  };
+
+  const handleDownvoteClick = () => {
+    if (downvoted) {
+      setDownvoted(false);
+    }
+
+    handleDownvote(post._id, userInformation?._id, userInformation?.token);
+    setDownvoted(true);
+    setUpvoted(false);
   };
 
   return (
@@ -142,19 +177,27 @@ function PostItem({ post }: Props) {
       <div className="border border-gray-400 rounded shadow">
         <div className="flex flex-row items-center justify-center">
           <div className="flex flex-col items-center p-2">
-            <button className="text-gray-600">
+            <button
+              className={`text-gray-600 border-2 rounded-full border-gray-400 ${
+                upvoted ? "border-blue-500" : ""
+              }`}
+              onClick={handleUpvoteClick}
+            >
               <FontAwesomeIcon
                 icon={faAngleUp}
                 className="w-[2rem] h-[1.3rem]"
-                onClick={() => handleUpvote(post._id)}
               />
             </button>
-            <p className="text-[20px] text-center">{votes}</p>
-            <button className="text-gray-600">
+            <p className="text-[20px] text-center">{post.voteScore}</p>
+            <button
+              className={`text-gray-600 border-2 rounded-full border-gray-400 ${
+                downvoted ? "border-red-500" : ""
+              }`}
+              onClick={handleDownvoteClick}
+            >
               <FontAwesomeIcon
                 icon={faAngleDown}
                 className="w-[2rem] h-[1.3rem]"
-                onClick={() => handleDownvote(post._id)}
               />
             </button>
           </div>
