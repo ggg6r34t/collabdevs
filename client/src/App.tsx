@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 
 import "./App.css";
 import routes from "./routes";
@@ -9,6 +9,11 @@ import Banner from "./components/layouts/banner/Banner";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     const hasSeenImage = localStorage.getItem("hasSeenImage");
