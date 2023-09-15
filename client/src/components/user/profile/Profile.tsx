@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { getUserDetails } from "../../../redux/thunk/users";
-import { useNavigate, useParams } from "react-router-dom";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../../../redux/store";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function Profile() {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState<any | null>(null);
+
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
     if (file) {
@@ -33,19 +34,27 @@ function Profile() {
       reader.readAsDataURL(file);
     }
   };
-  const currentUser = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
-  console.log(currentUser);
+
   const { userId } = useParams<{ userId: string }>();
-  const singleUserURL = `http://localhost:8000//api/v1/users/${userId}`;
-  const dispatch = useDispatch();
-  const dispatchApp = useDispatch<AppDispatch>();
-  // useEffect(() => {
-  //   dispatchApp(getUserDetails(singleUserURL));
-  // }, [dispatchApp, singleUserURL]);
- 
-  if (currentUser) {
+  const singleUserURL = `http://localhost:8000/api/v1/users/${userId}`;
+
+  // Fetch user profile data when the component mounts
+  useEffect(() => {
+    axios
+      .get(singleUserURL)
+      .then((response) => {
+        setUserProfile(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user profile:", error);
+      });
+  }, [singleUserURL]);
+
+  // const currentUser = useSelector(
+  //   (state: RootState) => state.user.userInformation
+  // );
+
+  if (userProfile) {
     return (
       <div className="max-w-4xl mx-auto my-6 p-6 bg-white shadow-lg rounded-lg">
         {/* user banner */}
@@ -87,9 +96,9 @@ function Profile() {
         {/* user details */}
         <div className="p-6">
           <h2 className="text-lg font-semibold">
-            {currentUser.firstName} {currentUser?.lastName}
+            {userProfile.firstName} {userProfile?.lastName}
           </h2>
-          <p className="text-gray-600">{currentUser.email}</p>
+          <p className="text-gray-600">{userProfile.email}</p>
           <p className="text-gray-600">Location: City, Country</p>
           {/* <p >Last Login: {currentUser.lastLogin}</p>  */}c{/* about me */}
           <div className="mt-6">
