@@ -42,11 +42,13 @@ function PostDetail() {
   const param = useParams();
   const postId = param.postId as string | undefined;
 
+  const token = userInformation?.token;
+
   useEffect(() => {
     if (postId) {
-      fetchDispatch(fetchPostDetails(postId));
+      fetchDispatch(fetchPostDetails(postId, token));
     }
-  }, [fetchDispatch, postId]);
+  }, [fetchDispatch, postId, param, token]);
 
   // function to upvote the post
   const handleUpvote = async (postId: string) => {

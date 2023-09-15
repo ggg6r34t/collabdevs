@@ -34,11 +34,15 @@ export function createPost(postData: Partial<Post>) {
   };
 }
 
-export function fetchPostDetails(postId: string) {
+export function fetchPostDetails(postId: string, token: string | undefined) {
   const postIdUrl = `${BASE_URL}/api/v1/posts/${postId}`;
   return async (dispact: AppDispatch) => {
     try {
-      const response = await axios.get(postIdUrl);
+      const response = await axios.get(postIdUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const postDetailData = response.data;
       dispact(postDetailActions.getPostDetails(postDetailData));
     } catch (error) {
