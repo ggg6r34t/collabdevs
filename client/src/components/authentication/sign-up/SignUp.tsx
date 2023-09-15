@@ -1,9 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebook,
-  faGithub,
-  faGoogle,
-} from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
 import { useState } from "react";
 import { confirmAlert } from "react-confirm-alert";
