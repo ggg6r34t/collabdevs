@@ -17,7 +17,7 @@ const replySchema = new Schema<ReplyDocument>(
     },
     commentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Reply",
+      ref: "Comment",
       required: true,
     },
     userId: {
