@@ -63,77 +63,93 @@ function Navbar() {
 
         {/* right section (User is logged in) */}
         {isLoggedIn ? (
-          <div className="flex items-center space-x-4 relative">
-            <FontAwesomeIcon
-              icon={faBell}
-              className="w-6 h-6 text-white hover:text-blue-200 transition duration-300 cursor-pointer"
-            />
-            <div onClick={toggleDropdown} className="cursor-pointer">
-              <img
-                src="https://e7.pngegg.com/pngimages/973/940/png-clipart-laptop-computer-icons-user-programmer-laptop-electronics-computer-thumbnail.png"
-                alt="User Avatar"
-                className="w-10 h-10 ml-1 rounded-full"
+          <>
+            <div className="flex items-center space-x-2.5 relative">
+              <FontAwesomeIcon
+                icon={faBell}
+                className="w-6 h-6 text-white hover:text-blue-200 transition duration-300 cursor-pointer"
               />
-            </div>
+              <div onClick={toggleDropdown} className="cursor-pointer">
+                <img
+                  src="https://e7.pngegg.com/pngimages/973/940/png-clipart-laptop-computer-icons-user-programmer-laptop-electronics-computer-thumbnail.png"
+                  alt="User Avatar"
+                  className="w-10 h-10 ml-1 rounded-full"
+                />
+              </div>
 
-            {/* dropdown menu */}
-            {isDropdownOpen && (
-              <div
-                className="dropdown-shape absolute top-10 right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10"
-                onClick={closeDropdown}
-              >
-                <ul className="py-2">
-                  <li>
-                    <Link
-                      to={`/profile/${currentUser?._id}`}
-                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={`/saved-posts/${userInformation?._id}`}
-                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                    >
-                      Saved
-                    </Link>
-                  </li>
-
-                  <li>
-                    <Link
-                      to="/feedbacks"
-                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                    >
-                      Feedbacks
-                    </Link>
-                  </li>
-                  {currentUser?.role === "admin" ? (
+              {/* dropdown menu */}
+              {isDropdownOpen && (
+                <div
+                  className="dropdown-shape absolute top-10 right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-10"
+                  onClick={closeDropdown}
+                >
+                  <ul className="py-2">
                     <li>
                       <Link
-                        to="/users"
+                        to={`/profile/${currentUser?._id}`}
                         className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                       >
-                        Users
+                        Profile
                       </Link>
                     </li>
-                  ) : null}
-                  <li>
-                    <Link
-                      to="/" // can create logout component containing only logout function
-                      onClick={signOut}
-                      className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-                    >
-                      Logout
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-            <div className="text-white hover:text-blue-200 transition duration-300">
-              Hi! {currentUser?.firstName}
+                    <li>
+                      <Link
+                        to={`/saved-posts/${userInformation?._id}`}
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                      >
+                        Saved
+                      </Link>
+                    </li>
+
+                    <li>
+                      {currentUser?.role === "user" && (
+                        <Link
+                          to="/give-feedback"
+                          className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                        >
+                          Give Feedback
+                        </Link>
+                      )}
+                    </li>
+                    {currentUser?.role === "admin" ? (
+                      <>
+                        <li>
+                          <Link
+                            to="/feedback"
+                            className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                          >
+                            Feedback
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/users"
+                            className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                          >
+                            Users
+                          </Link>
+                        </li>
+                      </>
+                    ) : null}
+                    <li>
+                      <Link
+                        to="/" // can create logout component containing only logout function
+                        onClick={signOut}
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                      >
+                        Sign out
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
-          </div>
+            <div className="text-white hover:text-blue-200 transition duration-300">
+              <p className="ml-2 text-lg font-semibold">
+                Hello, {currentUser?.firstName}!
+              </p>
+            </div>
+          </>
         ) : (
           // right section (User is not logged in)
           <div className="space-x-4">
