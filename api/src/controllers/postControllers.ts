@@ -89,9 +89,24 @@ export const upvotePostController = async (
   res: Response,
   next: NextFunction
 ) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
+    const decoded = jwt.verify(token, JWT_SECRET) as Payload;
+    const userId = decoded._id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
     const postId = req.params.id;
-    const post = await upvotePostService(postId);
+    const post = await upvotePostService(postId, userId);
 
     res.status(200).json(post);
   } catch (error) {
@@ -104,9 +119,24 @@ export const downvotePostController = async (
   res: Response,
   next: NextFunction
 ) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
+    const decoded = jwt.verify(token, JWT_SECRET) as Payload;
+    const userId = decoded._id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
     const postId = req.params.id;
-    const post = await downvotePostService(postId);
+    const post = await downvotePostService(postId, userId);
     res.status(200).json(post);
   } catch (error) {
     next(error);
