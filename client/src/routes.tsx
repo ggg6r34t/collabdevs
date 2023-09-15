@@ -6,6 +6,8 @@ import SignIn from "./components/authentication/sign-in/SignIn";
 import SignUp from "./components/authentication/sign-up/SignUp";
 import UserList from "./components/admin/userlist/UserList";
 import SavedPosts from "./components/savedPost/SavedPost";
+import FeedbackList from "./components/admin/feedbacklist/FeedbackList";
+import FeedbackForm from "./components/forms/FeedbackForm";
 
 const routes = [
   {
@@ -47,6 +49,16 @@ const routes = [
     path: "/profile/:userId",
     component: Profile,
     key: "profile",
+  },
+  {
+    path: "/feedback",
+    component: FeedbackList,
+    key: "feedback",
+  },
+  {
+    path: "/give-feedback",
+    component: FeedbackForm,
+    key: "give-feedback",
   },
   // {
   //     path: "/community",

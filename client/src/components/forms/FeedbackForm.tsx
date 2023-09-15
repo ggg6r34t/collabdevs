@@ -1,22 +1,83 @@
+import axios from "axios";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
-type Props = {
-  onSubmit: (feedback: string) => void;
-};
+function FeedbackForm() {
+  const userInformation = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
 
-function FeedbackForm({ onSubmit }: Props) {
-  const [feedback, setFeedback] = useState("");
-  const [isValid, setIsValid] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [formState, setFormState] = useState({
+    feedback: "",
+    isValid: true,
+    isSubmitting: false, // flag to track if a submission is in progress
+    error: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { feedback } = formState;
+
     if (feedback.trim() === "") {
-      setIsValid(false);
+      setFormState({ ...formState, isValid: false });
       return;
     }
-    setIsValid(true);
-    onSubmit(feedback);
-    setFeedback("");
+
+    // prevent multiple submissions
+    if (formState.isSubmitting) {
+      return;
+    }
+
+    try {
+      setFormState({ ...formState, isSubmitting: true });
+
+      // submit feedback
+      await submitFeedback(feedback);
+
+      // reset form state on successful submission
+      setFormState({
+        feedback: "",
+        isValid: true,
+        isSubmitting: false,
+        error: "",
+      });
+    } catch (error) {
+      setFormState({
+        ...formState,
+        isSubmitting: false,
+        error: "Error submitting feedback",
+      });
+    }
+  };
+
+  const submitFeedback = async (feedback: string) => {
+    try {
+      if (!userInformation) {
+        setError("User information is missing.");
+        return;
+      }
+
+      const { _id: userId, token } = userInformation;
+
+      const feedbackData = {
+        feedback,
+        userId,
+      };
+
+      await axios.post("http://localhost:8000/api/v1/feedback/", feedbackData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Feedback submitted successfully");
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      setError("Error submitting feedback. Please try again.");
+      throw error; // rethrow the error to be caught in the handleSubmit catch block
+    }
   };
 
   return (
@@ -25,31 +86,44 @@ function FeedbackForm({ onSubmit }: Props) {
       <form onSubmit={handleSubmit}>
         <textarea
           className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring ${
-            isValid ? "focus:border-blue-400" : "border-red-500"
+            formState.isValid ? "focus:border-blue-400" : "border-red-500"
           }`}
           rows={4}
           placeholder="Your feedback..."
-          value={feedback}
+          value={formState.feedback}
           onChange={(e) => {
-            setFeedback(e.target.value);
-            setIsValid(true);
+            setFormState({
+              ...formState,
+              feedback: e.target.value,
+              isValid: true,
+            });
+          }}
+          onBlur={() => {
+            if (formState.feedback.trim() === "") {
+              setFormState({ ...formState, isValid: false });
+            }
           }}
           required
         ></textarea>
-        {!isValid && (
+        {!formState.isValid && (
           <p className="text-red-500 text-sm mt-2">
             Please provide valid feedback.
           </p>
         )}
+        {formState.error && (
+          <p className="text-red-500 text-sm mt-2">{formState.error}</p>
+        )}
         <div className="mt-4">
           <button
-            type="submit"
             className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400"
+            type="submit"
+            disabled={formState.isSubmitting}
           >
-            Submit Feedback
+            {formState.isSubmitting ? "Submitting..." : "Submit Feedback"}
           </button>
         </div>
       </form>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </div>
   );
 }
