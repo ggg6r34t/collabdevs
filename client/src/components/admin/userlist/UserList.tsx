@@ -1,30 +1,24 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
   faBan,
   faUserCog,
-  faRemove,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { getUserList } from "../../../redux/thunk/users";
 
 function UserList() {
   const [editedUserId, setEditedUserId] = useState<string | null>(null);
-
   const dispatch = useDispatch<AppDispatch>();
   const userList = useSelector((state: RootState) => state.userList.users);
-
   const isLoading = useSelector((state: RootState) => state.userList.isLoading);
-
   const currentUser = useSelector(
     (state: RootState) => state.user.userInformation
   );
-
-  const excludeMe = userList.filter((user) => user._id !== currentUser?._id);
 
   useEffect(() => {
     dispatch(getUserList());
@@ -34,11 +28,11 @@ function UserList() {
     setEditedUserId(userId);
   };
 
-  function handleBan(_id: string, isBanned: boolean, email: string): void {
+  const handleBan = (_id: string, isBanned: boolean, email: string) => {
     if (_id !== currentUser?._id) {
-      const token = localStorage.getItem("userToken"); // token from local storage
-
+      const token = localStorage.getItem("userToken");
       const url = `http://localhost:8000/api/v1/users/${_id}/update-restriction`;
+
       axios
         .put(
           url,
@@ -52,25 +46,23 @@ function UserList() {
         )
         .then((response) => {
           if (response.status === 201) {
-            let status;
-            isBanned === true ? (isBanned = false) : (isBanned = true);
-            isBanned === true ? (status = "Banned") : (status = "Unbanned");
-            alert(`Successfully updated the status for ${email} to ${status} `);
+            const status = isBanned ? "Unbanned" : "Banned";
+            alert(`Successfully updated the status for ${email} to ${status}`);
           }
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            console.log(error); //   onError(); // in case of expiry
+            console.log(error);
             return;
           }
         });
     }
-  }
-  function handleChangeRole(_id: string, role: string, email: string): void {
-    // if (_id !== currentUser?._id) {
-    const token = localStorage.getItem("userToken"); // token from local storage
+  };
 
+  const handleChangeRole = (_id: string, role: string, email: string) => {
+    const token = localStorage.getItem("userToken");
     const url = `http://localhost:8000/api/v1/users/${_id}/update-role`;
+
     axios
       .put(
         url,
@@ -84,23 +76,22 @@ function UserList() {
       )
       .then((response) => {
         if (response.status === 201) {
-          role === "admin" ? (role = "user") : (role = "admin");
-
-          alert(`Successfully updated the role for ${email} to ${role} `);
+          role = role === "admin" ? "user" : "admin";
+          alert(`Successfully updated the role for ${email} to ${role}`);
         }
       })
       .catch((error) => {
         if (error.response.status === 401) {
-          console.log(error); //   onError(); // in case of expiry
+          console.log(error);
           return;
         }
       });
-    // }
-  }
-  function handelDelete(userId: string): void {
-    const token = localStorage.getItem("userToken"); // token from local storage
+  };
 
+  const handleDelete = (userId: string) => {
+    const token = localStorage.getItem("userToken");
     const url = `http://localhost:8000/api/v1/users/${userId}`;
+
     axios
       .delete(url, {
         headers: {
@@ -115,21 +106,22 @@ function UserList() {
       })
       .catch((error) => {
         if (error.response.status === 401) {
-          console.log(error); //   onError(); // in case of expiry
+          console.log(error);
           return;
         }
       });
-  }
+  };
+
   if (isLoading) {
-    return <div>loading...</div>;
+    return <div>Loading...</div>;
   } else if (currentUser?.role !== "admin") {
     return <div>Restricted access!</div>;
-  } else
+  } else {
     return (
       <div className="max-w-md mx-auto mt-6">
         <h2 className="text-2xl font-semibold mb-4">User Accounts</h2>
         <ul className="grid grid-cols-1 gap-4">
-          {excludeMe.map((user) => (
+          {userList.map((user) => (
             <li
               key={user._id}
               className="bg-white p-4 rounded-lg shadow-md flex items-center"
@@ -137,18 +129,14 @@ function UserList() {
               <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
               <div>
                 <h3 className="text-lg font-semibold">
-                  First Name:{user.firstName}
+                  First Name: {user.firstName}
                 </h3>
                 <p className="text-gray-600">Email: {user.email}</p>
                 <p className="text-gray-600">
-                  Role: {user.role} {/* change role */}
+                  Role: {user.role}
                   <button
                     className="text-gray-500 hover:text-red-700 mx-2"
-                    title={
-                      user.role === "admin"
-                        ? "Demote to user" + user.firstName
-                        : "Make admin " + user.firstName
-                    }
+                    title={`Toggle ${user.role === "admin" ? "user" : "admin"}`}
                     onClick={() =>
                       handleChangeRole(user._id, user.role, user.email)
                     }
@@ -157,60 +145,52 @@ function UserList() {
                   </button>
                 </p>
                 <p className="text-gray-600">
-                  Banned: {user.isBanned ? "Yes" : "No"} {/* ban user */}
+                  Banned: {user.isBanned ? "Yes" : "No"}
                   <button
                     className="text-gray-500 hover:text-red-700 mx-2"
-                    title={
-                      user.isBanned
-                        ? "Unban " + user.firstName
-                        : "Ban " + user.firstName
-                    }
+                    title={`${user.isBanned ? "Unban" : "Ban"} ${
+                      user.firstName
+                    }`}
                     onClick={() =>
                       handleBan(user._id, user.isBanned, user.email)
                     }
                   >
-                    {" "}
                     <FontAwesomeIcon icon={faBan} />
                   </button>
                 </p>
-                <button
-                  className="text-red-500 hover:text-red-700 mx-2"
-                  title={"Delete"}
-                  onClick={() => handelDelete(user._id)}
-                >
-                  {" "}
-                  <FontAwesomeIcon icon={faRemove} />
-                </button>
-                {editedUserId === user._id ? (
-                  // display edit form when editing
-                  <div>
-                    <input type="text" placeholder="Edit username" />
-                    <button
-                      onClick={() => {
-                        setEditedUserId(null);
-                      }}
-                    >
-                      Save
-                    </button>
-                  </div>
-                ) : (
-                  // display action buttons
-                  <div className="ml-auto">
-                    {/* edit user */}
-                    <button
-                      className="text-blue-500 hover:text-blue-700 mx-2"
-                      onClick={() => handleEdit(user._id)}
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                  </div>
-                )}
+                <div className="flex flex-row">
+                  <button
+                    className="text-red-500 hover:text-red-700 mx-2"
+                    title="Delete"
+                    onClick={() => handleDelete(user._id)}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                  {editedUserId === user._id ? (
+                    <div>
+                      <input type="text" placeholder="Edit username" />
+                      <button onClick={() => setEditedUserId(null)}>
+                        Save
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <button
+                        className="text-blue-500 hover:text-blue-700 mx-2"
+                        onClick={() => handleEdit(user._id)}
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </li>
           ))}
         </ul>
       </div>
     );
+  }
 }
 
 export default UserList;
