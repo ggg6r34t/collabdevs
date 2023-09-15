@@ -11,6 +11,8 @@ import {
   updateRestrictionController,
   updateRoleController,
   updateUserInfoController,
+  uploadAvatarController,
+  uploadBannerController,
 } from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
 
@@ -44,6 +46,20 @@ router.put(
   updateUserInfoController
 );
 
+// post: user upload avatar
+router.post(
+  "/:id/upload-avatar",
+  passport.authenticate("jwt", { session: false }),
+  uploadAvatarController
+);
+
+// post: user upload banner
+router.post(
+  "/:id/upload-banner",
+  passport.authenticate("jwt", { session: false }),
+  uploadBannerController
+);
+
 //put: updae role (admin/user)
 router.put(
   "/:userId/update-role",
@@ -67,7 +83,6 @@ router.delete(
   adminCheck,
   deleteUserByIdController
 );
-
 
 //google
 router.post(

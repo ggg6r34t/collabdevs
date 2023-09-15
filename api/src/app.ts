@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import multer from "multer";
 
 import "./config/passport";
 import User from "./models/User";
@@ -43,6 +44,28 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(async (id: string, done) => {
   const user = await User.findById(id);
   done(null, user);
+});
+
+// Configure multer to specify the storage location and file name
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    // Define the directory where uploaded files will be stored
+    callback(null, "./uploads/");
+  },
+  filename: (req, file, callback) => {
+    // Define the file name for uploaded files (you can customize this)
+    callback(null, new Date().toISOString() + "-" + file.originalname);
+  },
+});
+
+// Create a multer instance with the configured storage
+const upload = multer({ storage });
+
+// Example route that uses the multer middleware for file upload
+app.post("/upload", upload.single("file"), (req, res) => {
+  // req.file contains information about the uploaded file
+  // You can process it as needed (e.g., save to the database)
+  res.json({ message: "File uploaded successfully" });
 });
 
 // routes

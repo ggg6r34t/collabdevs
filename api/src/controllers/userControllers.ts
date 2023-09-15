@@ -45,7 +45,7 @@ export const createUserController = async (
   if (password !== "") {
     try {
       //hash password
-     
+
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -170,6 +170,42 @@ export const updateUserInfoController = async (
   }
 };
 
+// post: user upload avatar
+export const uploadAvatarController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const avatarData = req.file?.path;
+
+    const user = await uploadMediaService(userId, "avatar", avatarData);
+
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// post: user upload banner
+export const uploadBannerController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const bannerData = req.file?.path;
+
+    const user = await uploadMediaService(userId, "banner", bannerData);
+
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // put: update the role
 export const updateRoleController = async (
   req: Request,
@@ -247,3 +283,6 @@ export const googleAuthenticate = async (
     next(error);
   }
 };
+function uploadMediaService(userId: string, arg1: string, avatarData: any) {
+  throw new Error("Function not implemented.");
+}

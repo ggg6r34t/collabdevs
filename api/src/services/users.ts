@@ -1,16 +1,18 @@
-import { AlreadyExist, InternalServerError, NotFoundError } from "../helpers/apiError";
+import {
+  AlreadyExist,
+  InternalServerError,
+  NotFoundError,
+} from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
 
 export const createUserService = async (
   newUser: UserDocument
 ): Promise<UserDocument> => {
-  
-    const alreadyExist = await User.findOne({ email: newUser.email });
-    if (alreadyExist) {
-      throw new AlreadyExist(`User with ${newUser.email} Already Exist`);
-    } else return await newUser.save();
-  };
- 
+  const alreadyExist = await User.findOne({ email: newUser.email });
+  if (alreadyExist) {
+    throw new AlreadyExist(`User with ${newUser.email} Already Exist`);
+  } else return await newUser.save();
+};
 
 export const findUserByEmailService = async (
   email: string
@@ -66,9 +68,36 @@ export const updateUserByIdService = async (
   return userById;
 };
 
+// save media upload (user)
+export const saveMediaService = async (
+  userId: string,
+  mediaType: string,
+  mediaData: string
+): Promise<UserDocument> => {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new NotFoundError(`User with ID ${userId} not found`);
+    }
+
+    // check if mediaType is a valid property before assigning
+    if (mediaType === "avatar" || mediaType === "banner") {
+      user[mediaType] = mediaData;
+    } else {
+      throw new Error(`Invalid mediaType: ${mediaType}`);
+    }
+
+    await user.save();
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // update user role (admin/user)
 export const updateRoleService = async (userId: string) => {
-  
   const foundUser = await User.findOne({ _id: userId });
   if (foundUser) {
     if (foundUser.role === "admin") {
