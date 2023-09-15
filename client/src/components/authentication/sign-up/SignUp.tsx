@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { confirmAlert } from "react-confirm-alert";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [signUpInformation, setSignUpInformation] = useState({
@@ -183,29 +183,29 @@ function SignUp() {
         <div className="w-65 flex flex-col mt-4">
           <p className="text-xs mb-2">
             By clicking{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               “Sign up”
-            </a>
+            </Link>
             , you agree to our{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               terms of service
-            </a>{" "}
+            </Link>{" "}
             and acknowledge that you have read and understand our{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               privacy policy
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               code of conduct
-            </a>
+            </Link>
             .
           </p>
           <div>
             Already have an account?
             <span>
-              <a href="/signin" className="font-medium ml-1">
+              <Link to="/signin" className="font-medium ml-1">
                 Sign in
-              </a>
+              </Link>
             </span>
           </div>
         </div>

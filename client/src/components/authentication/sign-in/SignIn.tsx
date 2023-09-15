@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { userActions } from "../../../redux/slices/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
 import { User } from "../../../type/types";
 
@@ -92,9 +92,9 @@ function SignIn() {
           {invalidCredential !== "" ? (
             <div className="error">
               {invalidCredential} <br />
-              <a href="api/v1/users/register">
+              <Link to="api/v1/users/register">
                 Don't have an account yet? Sign Up
-              </a>
+              </Link>
             </div>
           ) : null}
           <div className="mb-4">
@@ -120,15 +120,15 @@ function SignIn() {
           </button>
         </form>
         <div className="w-65 flex flex-col mt-4">
-          <a href="/" className="font-medium">
+          <Link to="/" className="font-medium">
             Forgot password?
-          </a>
+          </Link>
           <div>
             Don't have an account?
             <span>
-              <a href="/signup" className="font-medium ml-1">
+              <Link to="/signup" className="font-medium ml-1">
                 Sign up
-              </a>
+              </Link>
             </span>
           </div>
         </div>

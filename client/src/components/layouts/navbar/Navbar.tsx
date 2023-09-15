@@ -2,13 +2,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparent_bg.png";
 import { RootState } from "../../../redux/store";
 import { userActions } from "../../../redux/slices/user";
-
-// mock User to test the navbar (right section) functionality
 
 function Navbar() {
   const userInformation = useSelector(
@@ -34,33 +32,33 @@ function Navbar() {
   return (
     <div className="navbar sticky bg-[#010536] top-0 p-4 z-10 py-4">
       <div className="container mx-auto flex justify-between items-center">
-        <a href="/" className="no-uderline">
+        <Link to="/" className="no-uderline">
           <div className="flex items-center">
             <div className="mr-4">
               <img src={CompanyLogo} alt="Logo" className="w-10 rounded-full" />
             </div>
             <div className="text-white text-2xl font-semibold">CollabDev</div>
           </div>
-        </a>
+        </Link>
         <nav className="space-x-6 ml-28 mr-auto">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="text-white hover:text-blue-200 transition duration-300"
           >
             Home
-          </a>
-          <a
-            href="/community"
+          </Link>
+          <Link
+            to="/community"
             className="text-white hover:text-blue-200 transition duration-300"
           >
             Community
-          </a>
-          <a
-            href="/support"
+          </Link>
+          <Link
+            to="/support"
             className="text-white  hover:text-blue-200 transition duration-300"
           >
             Support
-          </a>
+          </Link>
         </nav>
 
         {/* right section (User is logged in) */}
@@ -86,48 +84,48 @@ function Navbar() {
               >
                 <ul className="py-2">
                   <li>
-                    <a
-                      href={`/profile/${currentUser?._id}`}
+                    <Link
+                      to={`/profile/${currentUser?._id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Profile
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href={`/saved-posts/${userInformation?._id}`}
+                    <Link
+                      to={`/saved-posts/${userInformation?._id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Saved
-                    </a>
+                    </Link>
                   </li>
 
                   <li>
-                    <a
-                      href="/feedbacks"
+                    <Link
+                      to="/feedbacks"
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Feedbacks
-                    </a>
+                    </Link>
                   </li>
                   {currentUser?.role === "admin" ? (
                     <li>
-                      <a
-                        href="/users"
+                      <Link
+                        to="/users"
                         className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                       >
                         Users
-                      </a>
+                      </Link>
                     </li>
                   ) : null}
                   <li>
-                    <a
-                      href="/" // can create logout component containing only logout function
+                    <Link
+                      to="/" // can create logout component containing only logout function
                       onClick={signOut}
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     >
                       Logout
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -139,18 +137,18 @@ function Navbar() {
         ) : (
           // right section (User is not logged in)
           <div className="space-x-4">
-            <a
-              href="/signin"
+            <Link
+              to="/signin"
               className="text-white hover:text-blue-200 transition duration-300"
             >
               Sign In
-            </a>
-            <a
-              href="/signup"
+            </Link>
+            <Link
+              to="/signup"
               className="bg-white text-[#010536] hover:bg-blue-200 py-2 px-4 rounded-[12px] transition duration-300"
             >
               Sign Up
-            </a>
+            </Link>
           </div>
         )}
       </div>
