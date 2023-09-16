@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
@@ -15,7 +16,8 @@ import ShareButtons from "../share/ShareButtons";
 import { postActions } from "../../redux/slices/post";
 import { RootState } from "../../redux/store";
 import { Post } from "../../type/types";
-import { Link, useNavigate } from "react-router-dom";
+
+import { BASE_URL } from "../../api/api";
 
 type Props = {
   post: Post;
@@ -54,7 +56,7 @@ function PostItem({ post }: Props) {
   ) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/posts/${postId}/upvote`,
+        `${BASE_URL}/api/v1/posts/${postId}/upvote`,
         userId,
         {
           headers: {
@@ -78,7 +80,7 @@ function PostItem({ post }: Props) {
   ) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/posts/${postId}/downvote`,
+        `${BASE_URL}/api/v1/posts/${postId}/downvote`,
         userId,
         {
           headers: {
@@ -97,13 +99,10 @@ function PostItem({ post }: Props) {
   // function to save a post
   const handleSavePost = async (userId: string | undefined, postId: string) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/savedposts/save",
-        {
-          userId,
-          postId,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/v1/savedposts/save`, {
+        userId,
+        postId,
+      });
 
       console.log(postId, "postId");
       console.log(userId, "userId");
@@ -125,7 +124,7 @@ function PostItem({ post }: Props) {
   ) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/v1/savedposts/${userId}/${postId}`
+        `${BASE_URL}/api/v1/savedposts/${userId}/${postId}`
       );
 
       if (response.status === 204) {

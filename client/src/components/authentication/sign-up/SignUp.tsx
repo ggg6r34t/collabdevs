@@ -3,6 +3,8 @@ import { useState } from "react";
 import { confirmAlert } from "react-confirm-alert";
 import { Link, useNavigate } from "react-router-dom";
 
+import { BASE_URL } from "../../../api/api";
+
 function SignUp() {
   const [signUpInformation, setSignUpInformation] = useState({
     email: "",
@@ -81,7 +83,7 @@ function SignUp() {
         ],
       });
     } else {
-      const endpoint = `http://localhost:8000/api/v1/users/register`;
+      const endpoint = `${BASE_URL}/api/v1/users/register`;
       axios
         .post(endpoint, signUpInformation)
 

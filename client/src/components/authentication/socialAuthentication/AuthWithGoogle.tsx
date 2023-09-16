@@ -4,7 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
+
 import { userActions } from "../../../redux/slices/user";
+import { BASE_URL } from "../../../api/api";
 
 const AuthWithGoogle = () => {
   const functionDispatch = useDispatch();
@@ -14,7 +16,7 @@ const AuthWithGoogle = () => {
     credentialResponse: GoogleCredentialResponse
   ) => {
     try {
-      const url = "http://localhost:8000/api/v1/users/google-login";
+      const url = `${BASE_URL}/api/v1/users/google-login`;
       const credential = credentialResponse.credential;
       const response = await axios.post(url, { id_token: credential });
 

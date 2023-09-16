@@ -6,6 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import DOMPurify from "dompurify";
 
 import { RootState } from "../../redux/store";
+import { BASE_URL } from "../../api/api";
 import { Post } from "../../type/types";
 
 type Props = {
@@ -38,15 +39,11 @@ function CommentForm({ post }: Props) {
     token: string | undefined
   ) => {
     try {
-      await axios.post(
-        "http://localhost:8000/api/v1/posts/comments",
-        commentData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post(`${BASE_URL}/api/v1/posts/comments`, commentData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
       console.error("Error creating post:", error);
     }
