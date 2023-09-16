@@ -13,7 +13,6 @@ function SignUp() {
     userName: "",
     firstName: "",
     lastName: "",
-    avatar: "",
   });
   const navigate = useNavigate();
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
@@ -107,7 +106,18 @@ function SignUp() {
           }
         });
     }
+
+    // clear form
+    setSignUpInformation({
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userName: "",
+      firstName: "",
+      lastName: "",
+    });
   };
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md">
