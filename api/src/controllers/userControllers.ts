@@ -14,6 +14,7 @@ import {
   updateRestrictionService,
   updateRoleService,
   updateUserByIdService,
+  uploadMediaService,
 } from "../services/users";
 import User, { UserDocument } from "../models/User";
 
@@ -283,6 +284,3 @@ export const googleAuthenticate = async (
     next(error);
   }
 };
-function uploadMediaService(userId: string, arg1: string, avatarData: any) {
-  throw new Error("Function not implemented.");
-}
