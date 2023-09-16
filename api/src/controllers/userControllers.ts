@@ -14,24 +14,27 @@ import {
   updateRestrictionService,
   updateRoleService,
   updateUserByIdService,
+  uploadMediaService,
 } from "../services/users";
 import User, { UserDocument } from "../models/User";
 
-export const isAuthenticated = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    // if (req.isAuthenticated()) {
-    //   return next();
-    // }
+interface MulterFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: Buffer;
+}
 
-    res.status(401).json({ message: "Unauthorized" });
-  } catch (error) {
-    next(error);
+declare module "express-serve-static-core" {
+  interface Request {
+    file: MulterFile;
   }
-};
+}
 
 //post: Create a new user
 export const createUserController = async (
@@ -42,10 +45,10 @@ export const createUserController = async (
   const { email, password, firstName, lastName, userName, avatar } = req.body;
 
   // can add validation logic to check fields are not empty
-  if (password!== "" ) {
+  if (password !== "") {
     try {
       //hash password
-      console.log(password, "inside");
+
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -170,6 +173,42 @@ export const updateUserInfoController = async (
   }
 };
 
+// post: user upload avatar
+export const uploadAvatarController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const avatarData = req.file?.path;
+
+    const user = await uploadMediaService(userId, "avatar", avatarData);
+
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// post: user upload banner
+export const uploadBannerController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const bannerData = req.file?.path;
+
+    const user = await uploadMediaService(userId, "banner", bannerData);
+
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // put: update the role
 export const updateRoleController = async (
   req: Request,
@@ -226,7 +265,8 @@ export const googleAuthenticate = async (
   next: NextFunction
 ) => {
   try {
-    const userData = req.user as UserDocument;
+    const userData = req.body.user as UserDocument;
+
     const token = jwt.sign(
       {
         email: userData.email,

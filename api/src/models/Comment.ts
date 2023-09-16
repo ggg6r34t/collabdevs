@@ -1,16 +1,28 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export type CommentDocument = Document & {
-  text: string;
-  post: mongoose.Types.ObjectId;
-  user: mongoose.Types.ObjectId;
+  postId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
+  userName: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const commentSchema = new Schema<CommentDocument>(
   {
-    text: { type: String, required: true },
-    post: { type: Schema.Types.ObjectId, ref: "Post", required: true },
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    postId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+      required: true,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    userName: { type: String, required: true },
+    content: { type: String, required: true },
   },
   { timestamps: true }
 );

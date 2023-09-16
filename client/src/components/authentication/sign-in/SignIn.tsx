@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { userActions } from "../../../redux/slices/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
+import { User } from "../../../type/types";
 
 function SignIn() {
   const [invalidCredential, setInvalidCredential] = useState("");
@@ -34,9 +35,17 @@ function SignIn() {
 
       .then((response) => {
         if (response.status === 200) {
-          dispatch(userActions.setUserData(response.data.userData)); // store userinformation to the redux
-
+          // store the userData and userToken securely (e.g., in local storage or cookie)
+          const user = response.data.userData;
           const userToken = response.data.token; // from data object. get and assign the token
+
+          // save userData to redux
+          const userWithData: User = {
+            ...user,
+            token: userToken,
+          };
+
+          dispatch(userActions.setUserData(userWithData)); // store userinformation to the redux
 
           localStorage.setItem("userToken", userToken); // save it (token) to the localStorage
 
@@ -47,6 +56,12 @@ function SignIn() {
         console.log(error);
         setInvalidCredential("Wrong Credential - try again");
       });
+
+    // clear form
+    setLogInCredentials({
+      email: "",
+      password: "",
+    });
   };
 
   return (
@@ -77,9 +92,9 @@ function SignIn() {
           {invalidCredential !== "" ? (
             <div className="error">
               {invalidCredential} <br />
-              <a href="api/v1/users/register">
+              <Link to="api/v1/users/register">
                 Don't have an account yet? Sign Up
-              </a>
+              </Link>
             </div>
           ) : null}
           <div className="mb-4">
@@ -105,15 +120,15 @@ function SignIn() {
           </button>
         </form>
         <div className="w-65 flex flex-col mt-4">
-          <a href="/" className="font-medium">
+          <Link to="/" className="font-medium">
             Forgot password?
-          </a>
+          </Link>
           <div>
             Don't have an account?
             <span>
-              <a href="/signup" className="font-medium ml-1">
+              <Link to="/signup" className="font-medium ml-1">
                 Sign up
-              </a>
+              </Link>
             </span>
           </div>
         </div>

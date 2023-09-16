@@ -1,11 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebook,
-  faGithub,
-  faGoogle,
-} from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
 import { useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [signUpInformation, setSignUpInformation] = useState({
@@ -17,7 +13,7 @@ function SignUp() {
     lastName: "",
     avatar: "",
   });
-
+  const navigate = useNavigate();
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
     setSignUpInformation({ ...signUpInformation, email: event.target.value });
   }
@@ -59,30 +55,31 @@ function SignUp() {
     event.preventDefault();
 
     function onSuccess() {
-      // confirmAlert({
-      //   title: `Congratulation! ${userInformation.userName}`,
-      //   message: "You successfully created an account. Click OK to login",
-      //   buttons: [
-      //     {
-      //       label: "OK",
-      //       onClick: () => navigate("/users/signin"),
-      //     },
-      //   ],
-      // });
+      confirmAlert({
+        title: `Congratulation! ${signUpInformation.userName}`,
+        message: "You successfully created an account. Click OK to login.",
+        buttons: [
+          {
+            label: "OK",
+            onClick: () => navigate("/signin"),
+          },
+        ],
+      });
     }
+
     if (
       signUpInformation.password?.toString().toLowerCase() !==
       signUpInformation.confirmPassword?.toString().toLowerCase()
     ) {
-      // confirmAlert({
-      //   title: "Careful!",
-      //   message: "Password and Confirm Password does not match.",
-      //   buttons: [
-      //     {
-      //       label: "OK",
-      //     },
-      //   ],
-      // });
+      confirmAlert({
+        title: "Careful!",
+        message: "Password and Confirm Password does not match.",
+        buttons: [
+          {
+            label: "OK",
+          },
+        ],
+      });
     } else {
       const endpoint = `http://localhost:8000/api/v1/users/register`;
       axios
@@ -96,15 +93,15 @@ function SignUp() {
         .catch((error) => {
           console.log(error);
           if (error.response.status === 409) {
-            //   confirmAlert({
-            //     title: "Error!",
-            //     message: "User name or email already registered.",
-            //     buttons: [
-            //       {
-            //         label: "OK",
-            //       },
-            //     ],
-            //   });
+            confirmAlert({
+              title: "Error!",
+              message: "User name or email already registered.",
+              buttons: [
+                {
+                  label: "OK",
+                },
+              ],
+            });
           }
         });
     }
@@ -186,29 +183,29 @@ function SignUp() {
         <div className="w-65 flex flex-col mt-4">
           <p className="text-xs mb-2">
             By clicking{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               “Sign up”
-            </a>
+            </Link>
             , you agree to our{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               terms of service
-            </a>{" "}
+            </Link>{" "}
             and acknowledge that you have read and understand our{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               privacy policy
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a href="/" className="font-medium underline">
+            <Link to="/" className="font-medium underline">
               code of conduct
-            </a>
+            </Link>
             .
           </p>
           <div>
             Already have an account?
             <span>
-              <a href="/signin" className="font-medium ml-1">
+              <Link to="/signin" className="font-medium ml-1">
                 Sign in
-              </a>
+              </Link>
             </span>
           </div>
         </div>

@@ -1,29 +1,38 @@
-import React from "react";
-import Reply from "./Reply";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const replies = [
-  {
-    _id: "",
-    timestamp: "24",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-    author: "Mustafa",
-  },
-  {
-    _id: "2",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet.`,
-    author: "Habeeb",
-  },
-];
+import ReplyItem from "./ReplyItem";
+import ReplyForm from "../forms/ReplyForm";
+import { AppDispatch, RootState } from "../../redux/store";
+import { fetchReplyData } from "../../redux/thunk/replies";
+import { Comment, Post } from "../../type/types";
 
-function ReplySection() {
+type Props = {
+  comment: Comment;
+  post: Post;
+};
+
+function ReplySection({ comment, post }: Props) {
+  const { replies, error } = useSelector((state: RootState) => state.replies);
+
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    fetchDispatch(fetchReplyData(comment._id));
+  }, [fetchDispatch, comment._id]);
+
+  if (error) {
+    return <div>Error fetching comments: {error.message}</div>;
+  }
+
   return (
     <div>
       <ul className="mt-4">
         {replies.map((reply, index) => (
-          <Reply key={index} reply={reply} />
+          <ReplyItem key={index} reply={reply} />
         ))}
       </ul>
+      <ReplyForm comment={comment} post={post} />
     </div>
   );
 }

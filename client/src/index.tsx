@@ -10,6 +10,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import { store } from "../src/redux/store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

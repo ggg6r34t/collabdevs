@@ -1,9 +1,18 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
+
+import { Post } from "../../type/types";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 function PostForm() {
+  const userInformation = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
   const [title, setTitle] = useState("");
   const [postContent, setPostContent] = useState("");
 
@@ -15,8 +24,36 @@ function PostForm() {
     setTitle(event.target.value);
   };
 
-  const handleContentChange = (value: React.SetStateAction<string>) => {
-    setPostContent(value);
+  const handleContentChange = (value: string) => {
+    // remove <p> tags from the HTML content using DOMPurify
+    const cleanedHTML = DOMPurify.sanitize(value, {
+      ALLOWED_TAGS: [], // remove all HTML tags
+    });
+    setPostContent(cleanedHTML);
+  };
+
+  const postData = {
+    title: title,
+    content: postContent,
+  };
+
+  // function to create a new post
+  const createPost = async (
+    postData: Partial<Post>,
+    token: string | undefined
+  ) => {
+    try {
+      await axios.post("http://localhost:8000/api/v1/posts/", postData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // const response =
+      //  add it to the state or redirect to the post page
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   return (
@@ -35,14 +72,23 @@ function PostForm() {
           placeholder="Your post goes here..."
           value={postContent}
           onChange={handleContentChange}
+          modules={{
+            toolbar: [
+              [{ header: [1, 2, 3, 4, false] }],
+              ["bold", "italic", "underline", "strike"],
+              [{ list: "ordered" }, { list: "bullet" }],
+              ["blockquote", "code-block"],
+              [{ align: [] }],
+              ["link", "image", "video"],
+              ["clean"],
+            ],
+          }}
         />
         <div className="w-[724px] h-[45px] flex items-center justify-end p-1 mt-4 ">
           <button
             className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none "
             onClick={() => {
-              console.log("Title:", title);
-              console.log("Content:", postContent);
-              navigate("/");
+              createPost(postData, userInformation?.token);
             }}
           >
             Create Post

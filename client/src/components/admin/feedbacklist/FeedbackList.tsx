@@ -1,4 +1,4 @@
-import { Feedback } from "../../type/types";
+import { Feedback } from "../../../type/types";
 
 type Props = {
   feedbackList: Feedback[];

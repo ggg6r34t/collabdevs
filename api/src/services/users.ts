@@ -1,18 +1,19 @@
-import { InternalServerError, NotFoundError } from "../helpers/apiError";
+import {
+  AlreadyExist,
+  InternalServerError,
+  NotFoundError,
+} from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
 
 export const createUserService = async (
   newUser: UserDocument
 ): Promise<UserDocument> => {
-  try {
-    return await newUser.save();
-  } catch (error) {
-    console.error("Error creating account:", error);
-    throw new InternalServerError(
-      "An error occured while creating the account."
-    );
-  }
+  const alreadyExist = await User.findOne({ email: newUser.email });
+  if (alreadyExist) {
+    throw new AlreadyExist(`User with ${newUser.email} Already Exist`);
+  } else return await newUser.save();
 };
+
 export const findUserByEmailService = async (
   email: string
 ): Promise<UserDocument> => {
@@ -41,7 +42,7 @@ export const updateLastLoginService = async (
 export const getUserByIdService = async (
   userId: string
 ): Promise<UserDocument> => {
-  const userById = await User.findById(userId);
+  const userById = await User.findById(userId).select("-password");
   if (!userById) {
     throw new NotFoundError(`No user found having ${userId}`);
   }
@@ -53,6 +54,7 @@ export const getUserListService = async (): Promise<UserDocument[]> => {
   const userList = await User.find();
   return userList;
 };
+
 // update user information
 export const updateUserByIdService = async (
   userId: string,
@@ -65,6 +67,36 @@ export const updateUserByIdService = async (
     throw new NotFoundError(`No user found having ${userId}`);
   }
   return userById;
+};
+
+// save media upload (user)
+export const uploadMediaService = async (
+  userId: string,
+  mediaType: string,
+  mediaData: string | undefined
+): Promise<UserDocument> => {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new NotFoundError(`User with ID ${userId} not found`);
+    }
+
+    if (mediaData !== undefined) {
+      // check if mediaType is a valid property before assigning
+      if (mediaType === "avatar" || mediaType === "banner") {
+        user[mediaType] = mediaData;
+      } else {
+        throw new Error(`Invalid mediaType: ${mediaType}`);
+      }
+    }
+
+    await user.save();
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
 };
 
 // update user role (admin/user)

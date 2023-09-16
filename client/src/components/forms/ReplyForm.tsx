@@ -1,12 +1,52 @@
-import React, { useState } from "react";
+import axios from "axios";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 
-function ReplyForm() {
+import { RootState } from "../../redux/store";
+import { Comment, Post } from "../../type/types";
+
+type Props = {
+  comment: Comment;
+  post: Post;
+};
+
+function ReplyForm({ comment, post }: Props) {
+  const userInformation = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
   const [replyContent, setReplyContent] = useState("");
 
-  const handleContentChange = (value: React.SetStateAction<string>) => {
-    setReplyContent(value);
+  const handleContentChange = (value: string) => {
+    // remove <p> tags from the HTML content using DOMPurify
+    const cleanedHTML = DOMPurify.sanitize(value, {
+      ALLOWED_TAGS: [], // remove all HTML tags
+    });
+    setReplyContent(cleanedHTML);
+  };
+
+  const replyData = {
+    content: replyContent,
+    postId: post._id,
+    commentId: comment._id,
+  };
+
+  // function to create a new post
+  const createReply = async (
+    replyData: Partial<Post>,
+    token: string | undefined
+  ) => {
+    try {
+      await axios.post("http://localhost:8000/api/v1/replies/", replyData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   return (
@@ -22,7 +62,7 @@ function ReplyForm() {
         <button
           className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none"
           onClick={() => {
-            console.log("Content:", replyContent);
+            createReply(replyData, userInformation?.token);
           }}
         >
           Add Reply

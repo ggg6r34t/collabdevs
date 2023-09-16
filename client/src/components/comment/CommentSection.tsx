@@ -1,49 +1,39 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import Comment from "./Comment";
+import CommentItem from "./CommentItem";
+import CommentForm from "../forms/CommentForm";
+import { AppDispatch, RootState } from "../../redux/store";
+import { fetchCommentData } from "../../redux/thunk/comments";
+import { Post } from "../../type/types";
 
-const comments = [
-  {
-    _id: "1",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-      turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-      porttitor congue. In mattis tincidunt tincidunt. Aliquam
-      accumsan non nisi sit amet rutrum. `,
-    author: "Habeeb",
-  },
-  {
-    _id: "2",
-    timestamp: "8",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-      turpis. Vivamus eget ornare sapien. `,
-    author: "Zaka",
-  },
+type Props = {
+  post: Post;
+};
 
-  {
-    _id: "3",
-    timestamp: "24",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-    author: "Mustafa",
-  },
-  {
-    _id: "4",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet.`,
-    author: "Habeeb",
-  },
-];
+function CommentSection({ post }: Props) {
+  const { comments, hideComment, error } = useSelector(
+    (state: RootState) => state.comments
+  );
 
-function CommentSection() {
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    fetchDispatch(fetchCommentData(post._id));
+  }, [fetchDispatch, post._id]);
+
+  if (error) {
+    return <div>Error fetching comments: {error.message}</div>;
+  }
+
   return (
     <div>
       <ul className="mt-4">
-        {comments.map((comment, index) => (
-          <Comment key={index} comment={comment} />
+        {comments.map((comment) => (
+          <CommentItem key={comment._id} comment={comment} post={post} />
         ))}
       </ul>
+      {hideComment && <CommentForm post={post} />}
     </div>
   );
 }

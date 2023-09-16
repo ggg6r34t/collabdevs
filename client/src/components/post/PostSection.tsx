@@ -1,125 +1,31 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
 
-// import { RootState } from "../../redux/store";
-import Post from "./Post";
-import { useNavigate } from "react-router-dom";
-
-const posts = [
-  {
-    _id: "1",
-    postTitle:
-      "Building a Real-time Chat Application with Full-Stack Development",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-  turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-  porttitor congue. In mattis tincidunt tincidunt. Aliquam
-  accumsan non nisi sit amet rutrum. Pellentesque porttitor
-  nulla ut nunc dapibus, suscipit aliquet arcu iaculis. Fusce id
-  mollis enim. Proin nec nibh dui. In iaculis tempor risus, eu
-  faucibus massa cursus a. Integer in sollicitudin est. Nunc
-  malesuada sit amet nunc ac elementum. Cras efficitur turpis
-  nisi, ut tincidunt elit posuere vel.`,
-    author: "Habeeb",
-  },
-  {
-    _id: "2",
-    postTitle: "Scaling Your Full-Stack Web App: Best Practices and Strategies",
-    timestamp: "8",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-  turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-  porttitor congue. In mattis tincidunt tincidunt. Aliquam
-  accumsan non nisi sit amet rutrum. Pellentesque porttitor
-  nulla ut nunc dapibus, suscipit aliquet arcu iaculis. Fusce id
-  mollis enim. Proin nec nibh dui. In iaculis tempor risus, eu
-  faucibus massa cursus a. Integer in sollicitudin est. Nunc
-  malesuada sit amet nunc ac elementum. Cras efficitur turpis
-  nisi, ut tincidunt elit posuere vel.`,
-    author: "Zaka",
-  },
-
-  {
-    _id: "3",
-    postTitle: "Secure Coding Practices for Full-Stack Developers",
-    timestamp: "24",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-  turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-  porttitor congue. In mattis tincidunt tincidunt. Aliquam
-  accumsan non nisi sit amet rutrum. Pellentesque porttitor
-  nulla ut nunc dapibus, suscipit aliquet arcu iaculis. Fusce id
-  mollis enim. Proin nec nibh dui. In iaculis tempor risus, eu
-  faucibus massa cursus a. Integer in sollicitudin est. Nunc
-  malesuada sit amet nunc ac elementum. Cras efficitur turpis
-  nisi, ut tincidunt elit posuere vel.`,
-    author: "Mustafa",
-  },
-  {
-    _id: "4",
-    postTitle:
-      "Building a Real-time Chat Application with Full-Stack Development",
-    timestamp: "1",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-  turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-  porttitor congue. In mattis tincidunt tincidunt. Aliquam
-  accumsan non nisi sit amet rutrum. Pellentesque porttitor
-  nulla ut nunc dapibus, suscipit aliquet arcu iaculis. Fusce id
-  mollis enim. Proin nec nibh dui. In iaculis tempor risus, eu
-  faucibus massa cursus a. Integer in sollicitudin est. Nunc
-  malesuada sit amet nunc ac elementum. Cras efficitur turpis
-  nisi, ut tincidunt elit posuere vel.`,
-    author: "Habeeb",
-  },
-  {
-    _id: "5",
-    postTitle: "Scaling Your Full-Stack Web App: Best Practices and Strategies",
-    timestamp: "8",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-  turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-  porttitor congue. In mattis tincidunt tincidunt. Aliquam
-  accumsan non nisi sit amet rutrum. Pellentesque porttitor
-  nulla ut nunc dapibus, suscipit aliquet arcu iaculis. Fusce id
-  mollis enim. Proin nec nibh dui. In iaculis tempor risus, eu
-  faucibus massa cursus a. Integer in sollicitudin est. Nunc
-  malesuada sit amet nunc ac elementum. Cras efficitur turpis
-  nisi, ut tincidunt elit posuere vel.`,
-    author: "Zaka",
-  },
-
-  {
-    _id: "6",
-    postTitle: "Secure Coding Practices for Full-Stack Developers",
-    timestamp: "24",
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  Vestibulum nec condimentum dui. Maecenas sit amet iaculis
-  turpis. Vivamus eget ornare sapien. Duis vel sem nec nibh
-  porttitor congue. In mattis tincidunt tincidunt. Aliquam
-  accumsan non nisi sit amet rutrum. Pellentesque porttitor
-  nulla ut nunc dapibus, suscipit aliquet arcu iaculis. Fusce id
-  mollis enim. Proin nec nibh dui. In iaculis tempor risus, eu
-  faucibus massa cursus a. Integer in sollicitudin est. Nunc
-  malesuada sit amet nunc ac elementum. Cras efficitur turpis
-  nisi, ut tincidunt elit posuere vel.`,
-    author: "Mustafa",
-  },
-];
+import { AppDispatch, RootState } from "../../redux/store";
+import { fetchPostData } from "../../redux/thunk/posts";
+import Post from "./PostItem";
 
 function PostSection() {
-  // const posts = useSelector((state: RootState) => state.posts.posts);
+  const posts = useSelector((state: RootState) => state.posts.posts);
+
+  const fetchDispatch = useDispatch<AppDispatch>();
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchDispatch(fetchPostData());
+  }, [fetchDispatch]);
+
   function handleQuillClick() {
     navigate("/create-post");
-    console.log("ReactQuill clicked!");
   }
+
   return (
     <div className=" bg-white p-4 mb-4  flex flex-row items-start justify-center">
       <div className=" bg-white p-4 mb-4  flex flex-col items-center justify-center">

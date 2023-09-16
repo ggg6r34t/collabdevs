@@ -1,17 +1,19 @@
-import { Post } from "../../type/types";
+import { formatDistanceToNow } from "date-fns";
+import { Reply } from "../../type/types";
 
 type Props = {
-  reply: Partial<Post>;
+  reply: Reply;
 };
 
-function Reply({ reply }: Props) {
+function ReplyItem({ reply }: Props) {
   return (
     <div className="w-[466px] ml-12 my-4">
       <li>
         <div className="flex flex-row p-2">
           <div className="flex-shrink-0 w-7 h-7 bg-gray-300 rounded-full mr-4"></div>
           <p className="text-gray-600">
-            {reply.author} • {reply.timestamp} hour ago
+            {reply.userName} • {formatDistanceToNow(new Date(reply.createdAt))}{" "}
+            ago
           </p>
         </div>
         <p className="p-2">{reply.content}</p>
@@ -20,4 +22,4 @@ function Reply({ reply }: Props) {
   );
 }
 
-export default Reply;
+export default ReplyItem;
