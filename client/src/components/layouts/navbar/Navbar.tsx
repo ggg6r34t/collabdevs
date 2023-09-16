@@ -7,25 +7,50 @@ import { Link, useNavigate } from "react-router-dom";
 import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparent_bg.png";
 import { RootState } from "../../../redux/store";
 import { userActions } from "../../../redux/slices/user";
+import Notifications from "./Notifications";
 
 function Navbar() {
+  const currentUser = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
   const userInformation = useSelector(
     (state: RootState) => state.user.userInformation
   );
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLogin);
+
+  const savedPosts = useSelector(
+    (state: RootState) => state.savedPosts.savedPosts
+  );
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications] = useState([
+    "New message received",
+    "You have a new follower",
+    "Event reminder: Meeting at 2 PM",
+    "Weather update: Sunny today",
+    "Congratulations! You earned a badge",
+    "New article published",
+  ]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const currentUser = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
-  const isLoggedIn = useSelector((state: RootState) => state.user.isLogin);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    setShowNotifications(false);
   };
 
   const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const notificationCount = savedPosts.length;
+
+  console.log(notificationCount, "notificationCount");
+
+  const handleNotificationClick = () => {
+    setShowNotifications(!showNotifications);
     setIsDropdownOpen(false);
   };
 
@@ -65,10 +90,27 @@ function Navbar() {
         {isLoggedIn ? (
           <>
             <div className="flex items-center space-x-2.5 relative">
-              <FontAwesomeIcon
-                icon={faBell}
-                className="w-6 h-6 text-white hover:text-blue-200 transition duration-300 cursor-pointer"
-              />
+              <button
+                className="relative focus:outline-none"
+                onClick={handleNotificationClick}
+              >
+                <FontAwesomeIcon
+                  icon={faBell}
+                  className="w-6 h-6 text-white hover:text-blue-200 transition duration-300 cursor-pointer"
+                />
+                {notifications.length > 0 && (
+                  <span className="bg-red-500 text-white absolute bottom-4 left-3 rounded-full min-w-[17px] h-[17px] text-center text-xs font-semibold">
+                    {notifications.length}
+                  </span>
+                )}
+
+                {showNotifications && (
+                  <div className="min-w-full absolute top-8 -right-0.5 bg-white p-2 rounded-md shadow-md">
+                    <Notifications notifications={notifications} />
+                  </div>
+                )}
+              </button>
+
               <div onClick={toggleDropdown} className="cursor-pointer">
                 <img
                   src="https://e7.pngegg.com/pngimages/973/940/png-clipart-laptop-computer-icons-user-programmer-laptop-electronics-computer-thumbnail.png"
