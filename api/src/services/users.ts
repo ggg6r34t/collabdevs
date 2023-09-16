@@ -54,6 +54,7 @@ export const getUserListService = async (): Promise<UserDocument[]> => {
   const userList = await User.find();
   return userList;
 };
+
 // update user information
 export const updateUserByIdService = async (
   userId: string,
@@ -69,7 +70,7 @@ export const updateUserByIdService = async (
 };
 
 // save media upload (user)
-export const saveMediaService = async (
+export const uploadMediaService = async (
   userId: string,
   mediaType: string,
   mediaData: string
