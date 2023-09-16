@@ -3,6 +3,8 @@ import { useState } from "react";
 import { confirmAlert } from "react-confirm-alert";
 import { Link, useNavigate } from "react-router-dom";
 
+import { BASE_URL } from "../../../api/api";
+
 function SignUp() {
   const [signUpInformation, setSignUpInformation] = useState({
     email: "",
@@ -11,7 +13,6 @@ function SignUp() {
     userName: "",
     firstName: "",
     lastName: "",
-    avatar: "",
   });
   const navigate = useNavigate();
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
@@ -81,7 +82,7 @@ function SignUp() {
         ],
       });
     } else {
-      const endpoint = `http://localhost:8000/api/v1/users/register`;
+      const endpoint = `${BASE_URL}/api/v1/users/register`;
       axios
         .post(endpoint, signUpInformation)
 
@@ -105,7 +106,18 @@ function SignUp() {
           }
         });
     }
+
+    // clear form
+    setSignUpInformation({
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userName: "",
+      firstName: "",
+      lastName: "",
+    });
   };
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md">

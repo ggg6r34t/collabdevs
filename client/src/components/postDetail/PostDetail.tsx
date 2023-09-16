@@ -16,6 +16,7 @@ import ShareButtons from "../share/ShareButtons";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchPostDetails } from "../../redux/thunk/posts";
 import { postDetailActions } from "../../redux/slices/postDetail";
+import { BASE_URL } from "../../api/api";
 
 function PostDetail() {
   const postDetail = useSelector(
@@ -54,7 +55,7 @@ function PostDetail() {
   const handleUpvote = async (postId: string) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/posts/${postId}/upvote`
+        `${BASE_URL}/api/v1/posts/${postId}/upvote`
       );
       const newVoteScore = response.data.voteScore;
 
@@ -70,7 +71,7 @@ function PostDetail() {
   const handleDownvote = async (postId: string) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/posts/${postId}/downvote`
+        `${BASE_URL}/api/v1/posts/${postId}/downvote`
       );
       const newVoteScore = response.data.voteScore;
 
@@ -87,13 +88,10 @@ function PostDetail() {
   // function to save a post
   const handleSavePost = async (userId: string | undefined, postId: string) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/savedposts/save",
-        {
-          userId,
-          postId,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/v1/savedposts/save`, {
+        userId,
+        postId,
+      });
 
       console.log(postId, "postId");
       console.log(userId, "userId");
@@ -115,7 +113,7 @@ function PostDetail() {
   ) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/v1/savedposts/${userId}/${postId}`
+        `${BASE_URL}/api/v1/savedposts/${userId}/${postId}`
       );
 
       if (response.status === 204) {

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -7,7 +8,7 @@ import DOMPurify from "dompurify";
 
 import { Post } from "../../type/types";
 import { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
+import { BASE_URL } from "../../api/api";
 
 function PostForm() {
   const userInformation = useSelector(
@@ -43,7 +44,7 @@ function PostForm() {
     token: string | undefined
   ) => {
     try {
-      await axios.post("http://localhost:8000/api/v1/posts/", postData, {
+      await axios.post(`${BASE_URL}/api/v1/posts/`, postData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

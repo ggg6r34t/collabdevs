@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+
 import { RootState } from "../../redux/store";
+import { BASE_URL } from "../../api/api";
 
 function FeedbackForm() {
   const userInformation = useSelector(
@@ -66,7 +68,7 @@ function FeedbackForm() {
         userId,
       };
 
-      await axios.post("http://localhost:8000/api/v1/feedback/", feedbackData, {
+      await axios.post(`${BASE_URL}/api/v1/feedback/`, feedbackData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

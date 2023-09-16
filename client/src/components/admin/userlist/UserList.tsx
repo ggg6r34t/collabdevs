@@ -8,8 +8,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+
 import { AppDispatch, RootState } from "../../../redux/store";
 import { getUserList } from "../../../redux/thunk/users";
+import { BASE_URL } from "../../../api/api";
 
 function UserList() {
   const [editedUserId, setEditedUserId] = useState<string | null>(null);
@@ -31,7 +33,7 @@ function UserList() {
   const handleBan = (_id: string, isBanned: boolean, email: string) => {
     if (_id !== currentUser?._id) {
       const token = localStorage.getItem("userToken");
-      const url = `http://localhost:8000/api/v1/users/${_id}/update-restriction`;
+      const url = `${BASE_URL}/api/v1/users/${_id}/update-restriction`;
 
       axios
         .put(
@@ -61,7 +63,7 @@ function UserList() {
 
   const handleChangeRole = (_id: string, role: string, email: string) => {
     const token = localStorage.getItem("userToken");
-    const url = `http://localhost:8000/api/v1/users/${_id}/update-role`;
+    const url = `${BASE_URL}/api/v1/users/${_id}/update-role`;
 
     axios
       .put(
@@ -90,7 +92,7 @@ function UserList() {
 
   const handleDelete = (userId: string) => {
     const token = localStorage.getItem("userToken");
-    const url = `http://localhost:8000/api/v1/users/${userId}`;
+    const url = `${BASE_URL}/api/v1/users/${userId}`;
 
     axios
       .delete(url, {

@@ -7,6 +7,7 @@ import DOMPurify from "dompurify";
 
 import { RootState } from "../../redux/store";
 import { Comment, Post } from "../../type/types";
+import { BASE_URL } from "../../api/api";
 
 type Props = {
   comment: Comment;
@@ -39,7 +40,7 @@ function ReplyForm({ comment, post }: Props) {
     token: string | undefined
   ) => {
     try {
-      await axios.post("http://localhost:8000/api/v1/replies/", replyData, {
+      await axios.post(`${BASE_URL}/api/v1/replies/`, replyData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

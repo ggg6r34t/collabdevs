@@ -7,6 +7,7 @@ import { faFacebook, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { userActions } from "../../../redux/slices/user";
 import { Link, useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
+import { BASE_URL } from "../../../api/api";
 import { User } from "../../../type/types";
 
 function SignIn() {
@@ -29,7 +30,7 @@ function SignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const endpoint = `http://localhost:8000/api/v1/users/login`;
+    const endpoint = `${BASE_URL}/api/v1/users/login`;
     axios
       .post(endpoint, logInCredentials)
 
