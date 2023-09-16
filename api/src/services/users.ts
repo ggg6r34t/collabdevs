@@ -73,7 +73,7 @@ export const updateUserByIdService = async (
 export const uploadMediaService = async (
   userId: string,
   mediaType: string,
-  mediaData: string
+  mediaData: string | undefined
 ): Promise<UserDocument> => {
   try {
     const user = await User.findById(userId);
@@ -82,11 +82,13 @@ export const uploadMediaService = async (
       throw new NotFoundError(`User with ID ${userId} not found`);
     }
 
-    // check if mediaType is a valid property before assigning
-    if (mediaType === "avatar" || mediaType === "banner") {
-      user[mediaType] = mediaData;
-    } else {
-      throw new Error(`Invalid mediaType: ${mediaType}`);
+    if (mediaData !== undefined) {
+      // check if mediaType is a valid property before assigning
+      if (mediaType === "avatar" || mediaType === "banner") {
+        user[mediaType] = mediaData;
+      } else {
+        throw new Error(`Invalid mediaType: ${mediaType}`);
+      }
     }
 
     await user.save();
