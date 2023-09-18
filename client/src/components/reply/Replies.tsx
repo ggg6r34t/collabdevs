@@ -12,7 +12,7 @@ type Props = {
   post: Post;
 };
 
-function ReplySection({ comment, post }: Props) {
+function Replies({ comment, post }: Props) {
   const { replies, error } = useSelector((state: RootState) => state.replies);
 
   const fetchDispatch = useDispatch<AppDispatch>();
@@ -37,4 +37,4 @@ function ReplySection({ comment, post }: Props) {
   );
 }
 
-export default ReplySection;
+export default Replies;
