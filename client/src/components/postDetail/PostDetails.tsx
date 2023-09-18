@@ -11,14 +11,14 @@ import {
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
 
-import CommentSection from "../comment/CommentSection";
+import CommentSection from "../comment/Comments";
 import ShareButtons from "../share/ShareButtons";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchPostDetails } from "../../redux/thunk/posts";
 import { postDetailActions } from "../../redux/slices/postDetail";
 import { BASE_URL } from "../../api/api";
 
-function PostDetail() {
+function PostDetails() {
   const postDetail = useSelector(
     (state: RootState) => state.postDetails.postDetail
   );
@@ -241,4 +241,4 @@ function PostDetail() {
   );
 }
 
-export default PostDetail;
+export default PostDetails;

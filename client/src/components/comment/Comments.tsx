@@ -11,7 +11,7 @@ type Props = {
   post: Post;
 };
 
-function CommentSection({ post }: Props) {
+function Comments({ post }: Props) {
   const { comments, hideComment, error } = useSelector(
     (state: RootState) => state.comments
   );
@@ -38,4 +38,4 @@ function CommentSection({ post }: Props) {
   );
 }
 
-export default CommentSection;
+export default Comments;

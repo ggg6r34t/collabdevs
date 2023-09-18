@@ -11,7 +11,7 @@ import {
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
 
-import CommentSection from "../comment/CommentSection";
+import CommentSection from "../comment/Comments";
 import ShareButtons from "../share/ShareButtons";
 import { postActions } from "../../redux/slices/post";
 import { RootState } from "../../redux/store";

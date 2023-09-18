@@ -3,7 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 
-import ReplySection from "../reply/ReplySection";
+import ReplySection from "../reply/Replies";
 import { RootState } from "../../redux/store";
 import { replyActions } from "../../redux/slices/reply";
 import { Comment, Post } from "../../type/types";

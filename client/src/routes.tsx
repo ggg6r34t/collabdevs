@@ -1,11 +1,11 @@
-import Post from "./components/post/PostSection";
-import PostDetail from "./components/postDetail/PostDetail";
+import Post from "./components/post/Posts";
+import PostDetail from "./components/postDetail/PostDetails";
 import PostForm from "./components/forms/PostForm";
 import Profile from "./components/user/profile/Profile";
 import SignIn from "./components/authentication/sign-in/SignIn";
 import SignUp from "./components/authentication/sign-up/SignUp";
 import UserList from "./components/admin/userlist/UserList";
-import SavedPosts from "./components/savedPost/SavedPost";
+import SavedPosts from "./components/savedPost/SavedPosts";
 import FeedbackList from "./components/admin/feedbacklist/FeedbackList";
 import FeedbackForm from "./components/forms/FeedbackForm";
 
