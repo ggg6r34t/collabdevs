@@ -1,4 +1,4 @@
-import banner from "../../../assets/images/logos/collabdev_color_transparent_bg_2.png";
+import banner from "../../assets/images/logos/collabdev_color_transparent_bg_2.png";
 
 function Banner() {
   return (

@@ -5,7 +5,7 @@ import "./App.css";
 import routes from "./routes";
 import Navbar from "./components/layouts/navbar/Navbar";
 import Footer from "./components/layouts/footer/Footer";
-import Banner from "./components/layouts/banner/Banner";
+import Banner from "./components/homePage/Banner";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
