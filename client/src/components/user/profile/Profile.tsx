@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 
 function Profile() {
+  const currentUser = useSelector(
+    (state: RootState) => state.user.userInformation
+  );
   const [userMedia, setUserMedia] = useState({ avatar: null, banner: null });
 
   const handleMediaChange = (
@@ -23,10 +26,6 @@ function Profile() {
       reader.readAsDataURL(file);
     }
   };
-
-  const currentUser = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
 
   if (currentUser) {
     const lastLoginFormatted = new Date(currentUser?.updatedAt).toLocaleString(
