@@ -20,7 +20,11 @@
 .snow .ql-container {
   width: 708px;
   height: 183px;
-  border-color: #050404a8 !important;
+  border-color: #e5e7eb !important;
+}
+
+.snow .ql-container:hover {
+  border-color: #3b82f680 !important;
 }
 
 .snow .ql-editor {
@@ -29,8 +33,12 @@
 
 .snow .ql-toolbar {
   background-color: #f6f7f8;
-  border-color: #050404a8 !important;
+  border-color: #e5e7eb !important;
   border-bottom: unset !important;
+}
+
+.snow .ql-toolbar:hover {
+  border-color: #3b82f680 !important;
 }
 
 /* NAVBAR */

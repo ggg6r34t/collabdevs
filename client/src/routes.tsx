@@ -1,4 +1,6 @@
-import Post from "./components/post/Posts";
+import Home from "./pages/Home";
+import CommunityPage from "./pages/Community";
+import SupportPage from "./pages/SupportPage";
 import PostDetail from "./components/postDetail/PostDetails";
 import PostForm from "./components/forms/PostForm";
 import Profile from "./components/user/profile/Profile";
@@ -12,8 +14,18 @@ import FeedbackForm from "./components/forms/FeedbackForm";
 const routes = [
   {
     path: "/",
-    component: Post,
-    key: "post",
+    component: Home,
+    key: "home",
+  },
+  {
+    path: "/community",
+    component: CommunityPage,
+    key: "community",
+  },
+  {
+    path: "/support",
+    component: SupportPage,
+    key: "support",
   },
   {
     path: "/create-post",
@@ -60,16 +72,6 @@ const routes = [
     component: FeedbackForm,
     key: "give-feedback",
   },
-  // {
-  //     path: "/community",
-  //     component: Community,
-  //     key: "community",
-  //   },
-  //   {
-  //     path: "/support",
-  //     component: Support,
-  //     key: "support",
-  //   },
   //   {
   //     path: "/terms-privacy",
   //     component: TermsPrivacy,

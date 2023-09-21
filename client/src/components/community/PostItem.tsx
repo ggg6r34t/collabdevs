@@ -172,80 +172,75 @@ function PostItem({ post }: Props) {
   };
 
   return (
-    <div className="w-640 h-full shadow mt-4">
-      <div className="border border-gray-400 rounded shadow">
-        <div className="flex flex-row items-center justify-center">
-          <div className="flex flex-col items-center p-2">
-            <button
-              className={`text-gray-600 border-2 rounded-full border-gray-400 ${
-                upvoted ? "border-blue-500" : ""
-              }`}
-              onClick={handleUpvoteClick}
-            >
-              <FontAwesomeIcon
-                icon={faAngleUp}
-                className="w-[2rem] h-[1.3rem]"
-              />
-            </button>
-            <p className="text-[20px] text-center">{post.voteScore}</p>
-            <button
-              className={`text-gray-600 border-2 rounded-full border-gray-400 ${
-                downvoted ? "border-red-500" : ""
-              }`}
-              onClick={handleDownvoteClick}
-            >
-              <FontAwesomeIcon
-                icon={faAngleDown}
-                className="w-[2rem] h-[1.3rem]"
-              />
-            </button>
+    <div>
+      <div className="flex flex-row items-center justify-center">
+        <div className="flex flex-col items-center p-2">
+          <button
+            className={`text-gray-600 border-2 rounded-full border-gray-400 ${
+              upvoted ? "border-blue-500" : ""
+            }`}
+            onClick={handleUpvoteClick}
+          >
+            <FontAwesomeIcon icon={faAngleUp} className="w-[2rem] h-[1.3rem]" />
+          </button>
+          <p className="text-[20px] text-center">{post.voteScore}</p>
+          <button
+            className={`text-gray-600 border-2 rounded-full border-gray-400 ${
+              downvoted ? "border-red-500" : ""
+            }`}
+            onClick={handleDownvoteClick}
+          >
+            <FontAwesomeIcon
+              icon={faAngleDown}
+              className="w-[2rem] h-[1.3rem]"
+            />
+          </button>
+        </div>
+        <div className="flex flex-col">
+          <div className="p-2">
+            <Link to={`/posts/${post._id}`}>
+              <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
+            </Link>
+            <p className="text-gray-600">
+              Posted by {post.userName} •{" "}
+              {formatDistanceToNow(new Date(post.createdAt))} ago
+            </p>
           </div>
-          <div className="flex flex-col">
-            <div className="p-2">
-              <Link to={`/posts/${post._id}`}>
-                <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
-              </Link>
-              <p className="text-gray-600">
-                Posted by {post.userName} •{" "}
-                {formatDistanceToNow(new Date(post.createdAt))} ago
-              </p>
-            </div>
-            <div className="p-2">
-              <p className="truncate-line line-clamp-3" key={post._id}>
-                {post.content}
-              </p>
-            </div>
-            <div className="flex justify-between p-2 pt-4 pb-4">
-              <button className="text-gray-600" onClick={toggleCommentSection}>
-                <FontAwesomeIcon icon={faComment} className="w-40 h-40 mr-2" />
-                Comment
-              </button>
+          <div className="p-2">
+            <p className="truncate-line line-clamp-3" key={post._id}>
+              {post.content}
+            </p>
+          </div>
+          <div className="flex justify-between p-2 pt-4 pb-4">
+            <button className="text-gray-600" onClick={toggleCommentSection}>
+              <FontAwesomeIcon icon={faComment} className="w-40 h-40 mr-2" />
+              Comment
+            </button>
 
-              <button className="text-gray-600 ml-4" onClick={handleShareClick}>
-                <FontAwesomeIcon
-                  icon={faShareFromSquare}
-                  className="w-40 h-40 mr-2"
-                />
-                Share
-              </button>
-              <button
-                className={`text-${
-                  !isSaved ? "[#010536]" : "gray"
-                }-600 ml-auto mr-4`}
-                onClick={() =>
-                  isSaved
-                    ? handleSavePost(userInformation?._id, post._id)
-                    : handleRemoveSavedPost(userInformation?._id, post._id)
-                }
-              >
-                <FontAwesomeIcon icon={faBookmark} className="w-40 h-40" />
-              </button>
-            </div>
+            <button className="text-gray-600 ml-4" onClick={handleShareClick}>
+              <FontAwesomeIcon
+                icon={faShareFromSquare}
+                className="w-40 h-40 mr-2"
+              />
+              Share
+            </button>
+            <button
+              className={`text-${
+                !isSaved ? "[#010536]" : "gray"
+              }-600 ml-auto mr-4`}
+              onClick={() =>
+                isSaved
+                  ? handleSavePost(userInformation?._id, post._id)
+                  : handleRemoveSavedPost(userInformation?._id, post._id)
+              }
+            >
+              <FontAwesomeIcon icon={faBookmark} className="w-40 h-40" />
+            </button>
           </div>
         </div>
-        {showShareModal && <ShareButtons post={post} />}
-        {showComments && <CommentSection post={post} />}
       </div>
+      {showShareModal && <ShareButtons post={post} />}
+      {showComments && <CommentSection post={post} />}
     </div>
   );
 }
