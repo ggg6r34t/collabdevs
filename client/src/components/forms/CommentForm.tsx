@@ -52,13 +52,13 @@ function CommentForm({ post }: Props) {
   return (
     <div className="flex flex-col">
       <ReactQuill
-        className="comment w-[544px] ml-12 mt-6 focus:outline-none focus:border-blue-50"
+        className="comment w-[605px] ml-12 mt-6 focus:outline-none focus:border-blue-50"
         scrollingContainer="null"
         placeholder="Your comment goes here..."
         value={commentContent}
         onChange={handleContentChange}
       />
-      <div className="w-[544px] h-[45px] flex items-center justify-end m-2 ml-12 mb-6">
+      <div className="w-[605px] h-[45px] flex items-center justify-end m-2 ml-12 mb-6">
         <button
           className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none"
           onClick={() => {

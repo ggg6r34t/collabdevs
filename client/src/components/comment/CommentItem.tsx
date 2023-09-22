@@ -27,7 +27,7 @@ function CommentItem({ comment, post }: Props) {
   };
 
   return (
-    <div className="w-[566px] ml-12 my-6">
+    <div className="w-[605px] ml-12 my-6">
       <li className="p-2 mb-2">
         <div className="flex flex-row p-2">
           <div className="flex-shrink-0 w-7 h-7 bg-gray-300 rounded-full mr-4"></div>
