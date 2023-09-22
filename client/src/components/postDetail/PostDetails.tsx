@@ -159,8 +159,8 @@ function PostDetails() {
   }
 
   return (
-    <div className="h-full bg-white p-4 py-14 flex justify-center">
-      <div className="w-[700px] shadow mt-4">
+    <div className="h-full bg-white dark:bg-slate-900 p-4 py-14 flex justify-center">
+      <div className="w-[700px] dark:bg-slate-800 shadow rounded-lg mt-4">
         <div className="flex flex-row items-center justify-center">
           <div className="flex flex-col items-center p-2">
             <button className="text-gray-600">

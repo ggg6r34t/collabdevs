@@ -28,7 +28,7 @@ function SavedPostItem({ savedPost, onRemove }: Props) {
 
   return (
     <div className="w-full max-w-xl mx-auto my-4">
-      <div className="bg-white rounded-lg shadow-md">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md">
         <div className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">

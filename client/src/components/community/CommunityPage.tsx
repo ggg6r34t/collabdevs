@@ -32,7 +32,7 @@ function CommunityPage() {
       <div className="grid grid-cols-3 gap-4">
         {/* search, filter, and trending topics */}
         <div className="mr-2 col-span-1">
-          <div className="bg-white p-4 rounded-lg shadow">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
             {/* search input */}
             <SearchForm />
             {/* sorting options */}
@@ -41,7 +41,7 @@ function CommunityPage() {
               <select
                 value={selectedSort}
                 onChange={(e) => setSelectedSort(e.target.value)}
-                className="w-full px-2 py-1 border rounded-md"
+                className="w-full dark:bg-slate-800 dark:text-white px-2 py-1 border rounded-md"
               >
                 <option value="latest">Latest</option>
                 <option value="popular">Popular</option>
@@ -62,7 +62,7 @@ function CommunityPage() {
 
           {/* user profiles */}
           <div className=" mt-4 col-span-1">
-            <div className="bg-white p-4 rounded-lg shadow">
+            <div className="bg-white dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">
                 Recommended Connections
               </h2>

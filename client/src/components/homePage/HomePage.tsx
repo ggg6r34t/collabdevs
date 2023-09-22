@@ -44,7 +44,7 @@ function HomePage() {
       <div className="grid grid-cols-3 gap-4">
         {/* trending topics */}
         <div className="mr-2 col-span-1">
-          <div className="bg-white p-4 rounded-lg shadow">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Trending Topics</h2>
             <ul>
               {trendingTopics.map((topic, index) => (
@@ -57,7 +57,7 @@ function HomePage() {
 
           {/* recommended connections */}
           <div className="mt-4 col-span-1">
-            <div className="bg-white p-4 rounded-lg shadow">
+            <div className="bg-white dark:bg-slate-800  p-4 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">
                 Recommended Connections
               </h2>

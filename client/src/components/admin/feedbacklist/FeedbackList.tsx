@@ -6,7 +6,7 @@ type Props = {
 
 function FeedbackList({ feedbackList }: Props) {
   return (
-    <div className="max-w-xl mx-auto my-8 p-4 bg-white rounded-lg shadow-md">
+    <div className="max-w-xl mx-auto my-8 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4">Feedback List</h2>
       {feedbackList.length === 0 ? (
         <p className="text-gray-600">No feedback available.</p>

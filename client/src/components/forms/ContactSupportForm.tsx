@@ -33,7 +33,7 @@ function ContactSupportForm() {
               <input
                 type="text"
                 id="name"
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -47,7 +47,7 @@ function ContactSupportForm() {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -64,7 +64,7 @@ function ContactSupportForm() {
               <input
                 type="text"
                 id="subject"
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
@@ -80,7 +80,7 @@ function ContactSupportForm() {
               </label>
               <textarea
                 id="message"
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={4}
@@ -97,7 +97,7 @@ function ContactSupportForm() {
               </label>
               <select
                 id="feedbackType"
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
                 value={feedbackType}
                 onChange={(e) => setFeedbackType(e.target.value)}
                 required
