@@ -52,7 +52,7 @@ function SearchForm() {
         value={searchQuery}
         onChange={onChangeHandler}
         onKeyDown={handleKeyDown}
-        className="w-full px-2 py-1 border rounded-md"
+        className="w-full dark:bg-slate-800 dark:text-white px-2 py-1 border rounded-md"
       />
 
       {errorMessage && <div className="text-red-500 mt-1">{errorMessage}</div>}

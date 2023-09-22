@@ -35,7 +35,7 @@ function App() {
     ));
 
   return (
-    <div>
+    <div className="transition duration-200 dark:bg-slate-900 dark:text-white">
       {showImage ? (
         <Banner />
       ) : (

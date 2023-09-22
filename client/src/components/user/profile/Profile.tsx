@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import ToggleThemeMode from "../../switchTheme/ToggleThemeMode";
 
 function Profile() {
   const currentUser = useSelector(
@@ -41,7 +42,7 @@ function Profile() {
     );
 
     return (
-      <div className="max-w-4xl mx-auto my-6 p-6 bg-white shadow-lg rounded-lg">
+      <div className="max-w-4xl mx-auto my-6 p-6 bg-white shadow-lg rounded-lg dark:bg-slate-800">
         {/* user banner */}
         <div
           className="h-60 bg-gradient-to-r bg-center from-blue-500 to-purple-500 rounded-t-lg relative overflow-hidden"
@@ -87,13 +88,17 @@ function Profile() {
           <h2 className="text-lg font-semibold">
             {currentUser.firstName} {currentUser?.lastName}
           </h2>
-          <p className="text-gray-600">{currentUser.email}</p>
-          <p className="text-gray-600">Location: City, Country</p>
-          <p className="text-gray-600">Last Login: {lastLoginFormatted}</p>
+          <p className="text-gray-600 dark:text-white">{currentUser.email}</p>
+          <p className="text-gray-600 dark:text-white">
+            Location: City, Country
+          </p>
+          <p className="text-gray-600 dark:text-white">
+            Last Login: {lastLoginFormatted}
+          </p>
           {/* about me */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold">About Me</h3>
-            <p className="text-gray-700">
+            <p className="text-gray-700 dark:text-white">
               👋 Hey there! I'm a passionate software engineer on a mission to
               craft elegant code and build innovative solutions. 💻 🌍 I thrive
               in the world of web development, with expertise in front-end
@@ -115,7 +120,7 @@ function Profile() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* change banner */}
               <div>
-                <label className="text-gray-600 block ml-2 mb-2">
+                <label className="text-gray-600 dark:text-white block ml-2 mb-2">
                   Change Banner
                 </label>
                 <div className="flex items-center space-x-2">
@@ -139,13 +144,13 @@ function Profile() {
               <div>
                 <label
                   htmlFor="email-notifications"
-                  className="text-gray-600 block ml-2 mb-2"
+                  className="text-gray-600 dark:text-white block ml-2 mb-2"
                 >
                   Email Notifications
                 </label>
                 <select
                   id="email-notifications"
-                  className="border rounded-md p-2"
+                  className="dark:bg-slate-800 dark:text-white border rounded-md p-2"
                 >
                   <option value="all">All Notifications</option>
                   <option value="important">Important Only</option>
@@ -157,7 +162,7 @@ function Profile() {
               <div>
                 <label
                   htmlFor="privacy-settings"
-                  className="text-gray-600 block ml-2 mb-2"
+                  className="text-gray-600 dark:text-white block ml-2 mb-2"
                 >
                   Privacy Settings
                 </label>
@@ -187,7 +192,7 @@ function Profile() {
               <div>
                 <label
                   htmlFor="change-password"
-                  className="text-gray-600 block ml-2 mb-2"
+                  className="text-gray-600 dark:text-white block ml-2 mb-2"
                 >
                   Security Settings
                 </label>
@@ -200,28 +205,16 @@ function Profile() {
               </div>
 
               {/* theme preferences */}
-              <div>
-                <label
-                  htmlFor="theme-preferences"
-                  className="text-gray-600 block ml-2 mb-2"
-                >
-                  Theme Preferences
-                </label>
-                <select
-                  id="theme-preferences"
-                  className="border rounded-md p-2"
-                >
-                  <option value="light">Light Theme</option>
-                  <option value="dark">Dark Theme</option>
-                </select>
-              </div>
+              <ToggleThemeMode />
             </div>
           </div>
         </div>
       </div>
     );
   } else {
-    return <div> No data!!! redirecting to home... </div>;
+    return (
+      <div className="dark:text-white"> No data!!! redirecting to home... </div>
+    );
   }
 }
 export default Profile;

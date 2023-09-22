@@ -126,7 +126,7 @@ function UserList() {
           {userList.map((user) => (
             <li
               key={user._id}
-              className="bg-white p-4 rounded-lg shadow-md flex items-center"
+              className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md flex items-center"
             >
               <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
               <div>

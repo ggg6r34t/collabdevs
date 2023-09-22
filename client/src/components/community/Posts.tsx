@@ -30,7 +30,7 @@ function Posts() {
   return (
     <div className="col-span-2">
       {location.pathname === "/" ? null : (
-        <div className="w-full bg-white h-4 p-2 mb-4 rounded-lg shadow flex flex-row items-center justify-center">
+        <div className="w-full bg-white dark:bg-slate-800 h-4 p-2 mb-4 rounded-lg shadow flex flex-row items-center justify-center">
           <div className="flex-shrink-0 w-10 h-10 bg-gray-300 rounded-full mr-4">
             <img
               src="https://e7.pngegg.com/pngimages/973/940/png-clipart-laptop-computer-icons-user-programmer-laptop-electronics-computer-thumbnail.png"
@@ -58,7 +58,10 @@ function Posts() {
       {/* filtered and sorted posts */}
       <div>
         {posts.map((post) => (
-          <div key={post._id} className="bg-white p-4 rounded-lg shadow mb-4">
+          <div
+            key={post._id}
+            className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
+          >
             <Post post={post} />
           </div>
         ))}

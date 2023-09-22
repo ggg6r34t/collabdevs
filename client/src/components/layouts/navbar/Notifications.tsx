@@ -4,7 +4,7 @@ type Props = {
 
 function Notifications({ notifications }: Props) {
   return (
-    <div className="bg-white p-2 rounded w-65">
+    <div className="bg-white dark:bg-slate-800 p-2 rounded w-65">
       <ul>
         {notifications.map((notification, index) => (
           <li

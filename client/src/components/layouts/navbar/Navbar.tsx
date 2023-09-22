@@ -105,7 +105,7 @@ function Navbar() {
                 )}
 
                 {showNotifications && (
-                  <div className="min-w-full absolute top-8 -right-0.5 bg-white p-2 rounded-md shadow-md">
+                  <div className="min-w-full absolute top-8 -right-0.5 bg-white dark:bg-slate-800 p-2 rounded-md shadow-md">
                     <Notifications notifications={notifications} />
                   </div>
                 )}
