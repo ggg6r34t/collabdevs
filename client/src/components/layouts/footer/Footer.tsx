@@ -7,13 +7,14 @@ import { RootState } from "../../../redux/store";
 
 function Footer() {
   const darkMode = useSelector((state: RootState) => state.themes.mode);
+  const localStorageDarkMode = localStorage.getItem("darkMode") === "true";
 
   return (
     <footer className="bg-white dark:bg-slate-900 dark:text-white p-4">
       <div className="container mx-auto flex items-center justify-between">
         <Link to="/" className="no-uderline">
           <div className="flex items-center ml-44">
-            {darkMode ? (
+            {localStorageDarkMode || darkMode ? (
               <img
                 src={CompanyWhiteLogo}
                 alt="Logo"

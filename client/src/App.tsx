@@ -34,12 +34,16 @@ function App() {
       <Route path={route.path} element={<route.component />} key={route.path} />
     ));
 
+  // className="transition duration-200 dark:bg-slate-900 dark:text-white"
+
   return (
-    <div className="transition duration-200 dark:bg-slate-900 dark:text-white">
+    <div
+      className={localStorage.getItem("darkMode") === "true" ? "dark" : "light"}
+    >
       {showImage ? (
         <Banner />
       ) : (
-        <>
+        <div className="transition duration-200 dark:bg-slate-900 dark:text-white">
           <Navbar />
           <Routes>
             {getRoutes(routes)}
@@ -47,7 +51,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
           <Footer />
-        </>
+        </div>
       )}
     </div>
   );

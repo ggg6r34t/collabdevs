@@ -67,7 +67,7 @@ function SignIn() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md">
+      <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md dark:bg-slate-800">
         <AuthWithGoogle />
 
         <button className="w-65 h-9.5 flex flex-row items-center justify-center bg-[#181717] text-white py-2 border rounded-[12px] hover:bg-blue-200 mb-2">
@@ -85,8 +85,8 @@ function SignIn() {
           Sign in with Facebook
         </button>
         <div className="w-65 h-9.5 flex flex-row items-center justify-center mb-3">
-          <hr className="w-1/3 border border-black mr-4" /> Or{" "}
-          <hr className="w-1/3 border border-black ml-4" />
+          <hr className="w-1/3 border dark:border-white border-black mr-4" /> Or{" "}
+          <hr className="w-1/3 border dark:border-white border-black ml-4" />
         </div>
         <form action="post" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-semibold mr-auto mb-4">Sign In</h2>
@@ -103,7 +103,7 @@ function SignIn() {
             <input
               onChange={getEmail}
               type="email"
-              className="w-65 h-9.5 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Email"
             />
           </div>
@@ -112,7 +112,7 @@ function SignIn() {
             <input
               onChange={getPassword}
               type="password"
-              className="w-65 h-9.5 px-3 py-2 border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Password"
             />
           </div>

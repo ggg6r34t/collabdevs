@@ -120,7 +120,7 @@ function SignUp() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md">
+      <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md dark:bg-slate-800">
         <form action="post" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-semibold mr-auto mb-4">Sign Up</h2>
           <div className="mb-4">
@@ -129,7 +129,7 @@ function SignUp() {
               onChange={getFirstName}
               type="firstName"
               required
-              className="w-65 h-9.5 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
               placeholder="First Name"
             />
           </div>
@@ -139,7 +139,7 @@ function SignUp() {
               onChange={getLastName}
               type="lastName"
               required
-              className="w-65 h-9.5 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
               placeholder="Last Name"
             />
           </div>
@@ -149,7 +149,7 @@ function SignUp() {
               onChange={getUserName}
               type="userName"
               required
-              className="w-65 h-9.5 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
               placeholder="Dispaly Name"
             />
           </div>
@@ -159,7 +159,7 @@ function SignUp() {
               type="email"
               onChange={getEmail}
               required
-              className="w-65 h-9.5 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
               placeholder="Email"
             />
           </div>
@@ -170,7 +170,7 @@ function SignUp() {
               onChange={getPassword}
               type="password"
               required
-              className="w-65 h-9.5 px-3 py-2 border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Password"
             />
           </div>
@@ -180,7 +180,7 @@ function SignUp() {
               onChange={getConfirmPassword}
               type="password"
               required
-              className="w-65 h-9.5 px-3 py-2 border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Confirm Password"
             />
           </div>
