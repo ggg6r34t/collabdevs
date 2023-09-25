@@ -5,6 +5,7 @@ import session from "express-session";
 import { createClient } from "redis";
 import RedisStore from "connect-redis";
 import cookieParser from "cookie-parser";
+import { v4 as uuidv4 } from "uuid";
 
 import "./config/passport";
 import User from "./models/User";
@@ -16,16 +17,26 @@ import { googleStrategy, jwtStrategy } from "./config/passport";
 import replyRoutes from "./routes/replyRoutes";
 import savedPostRoutes from "./routes/savedPostRoutes";
 
+const SESSION_SECRET = process.env.SESSION_SECRET!;
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+const REDIS_HOST = process.env.REDIS_HOST;
 const PORT = 15397;
 
 const app: Express = express();
 
 const redisClient = createClient({
-  password: process.env.PASSWORD,
+  password: REDIS_PASSWORD,
   socket: {
-    host: process.env.REDIS_HOST,
+    host: REDIS_HOST,
     port: PORT,
   },
+});
+
+redisClient.on("error", function (err) {
+  console.log("Could not establish a connection with redis. " + err);
+});
+redisClient.on("connect", function (err) {
+  console.log("Connected to redis successfully");
 });
 
 app.use(express.json());
@@ -36,13 +47,17 @@ app.use(cors());
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
-    secret: process.env.SESSION_SECRET!, // the non-null assertion operator (!) confirms the environment variable has a value.
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false, // false while using localhost (not secured)
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: false, // set to true in production (HTTPS)
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+    genid: (req) => {
+      const uuid = uuidv4();
+      return uuid;
     },
   })
 );
