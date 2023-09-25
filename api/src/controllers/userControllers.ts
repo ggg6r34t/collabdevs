@@ -74,6 +74,7 @@ export const createUserController = async (
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
+
 //post: login user
 export const logInUserController = async (
   req: Request,
@@ -88,8 +89,8 @@ export const logInUserController = async (
     if (!userData) {
       return res.status(403).json({ message: "Invalid credentials" });
     }
-    //check for password before generating the token
 
+    //check for password before generating the token
     const hashedPassword = userData.password;
     const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
 
