@@ -13,7 +13,12 @@ import postRoutes from "./routes/postRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
 import userRoutes from "./routes/userRoutes";
-import { googleStrategy, jwtStrategy } from "./config/passport";
+import {
+  githubStrategy,
+  googleStrategy,
+  jwtStrategy,
+  twitterStrategy,
+} from "./config/passport";
 import replyRoutes from "./routes/replyRoutes";
 import savedPostRoutes from "./routes/savedPostRoutes";
 
@@ -65,6 +70,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(jwtStrategy);
+passport.use(twitterStrategy);
+passport.use(githubStrategy);
 passport.use(googleStrategy);
 
 // serialize user into the session

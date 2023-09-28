@@ -7,17 +7,21 @@ import {
   deleteUserByIdController,
   getUserByIdController,
   getUserListController,
-  googleAuthenticate,
+  githubAuthController,
+  twitterAuthController,
+  googleAuthController,
   logInUserController,
   updateRestrictionController,
   updateRoleController,
   updateUserInfoController,
   uploadAvatarController,
   uploadBannerController,
+  logoutUserController,
 } from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
 
 const router = Router();
+const CLIENT_URL = "http://localhost:3000/";
 
 // multer configuration for file name and upload storage location
 const storage = multer.diskStorage({
@@ -49,7 +53,14 @@ const upload = multer({ storage });
 router.post("/register", createUserController);
 
 //post: login user
-router.post("/login", logInUserController);
+router.post("/login", logInUserController, passport.authenticate("jwt"));
+
+//get: login user
+router.get(
+  "/logout",
+  passport.authenticate("jwt", { session: false }),
+  logoutUserController
+);
 
 //get: get userbyID
 router.get(
@@ -113,11 +124,49 @@ router.delete(
   deleteUserByIdController
 );
 
-//google
-router.post(
-  "/google-login",
-  passport.authenticate("google-id-token", { session: false }),
-  googleAuthenticate
+// twitter user
+router.get(
+  "/auth/twitter",
+  passport.authenticate("twitter", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/twitter/callback",
+  passport.authenticate("twitter", {
+    successRedirect: CLIENT_URL,
+    failureRedirect: "/login",
+  }),
+  twitterAuthController
+);
+
+// github user
+router.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/github/callback",
+  passport.authenticate("github", {
+    successRedirect: CLIENT_URL,
+    failureRedirect: "/login",
+  }),
+  githubAuthController
+);
+
+// google user
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: CLIENT_URL,
+    failureRedirect: "/login",
+  }),
+  googleAuthController
 );
 
 export default router;
