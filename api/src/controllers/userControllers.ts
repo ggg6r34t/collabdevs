@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { RateLimiterMemory } from "rate-limiter-flexible";
+import rateLimit from "express-rate-limit";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -47,9 +48,17 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const EXPIRATION_TIME = "1h";
 
+// rate limiting middleware for sign-in attempts
 const rateLimiter = new RateLimiterMemory({
   points: 5, //  login attempts allowed
   duration: 60,
+});
+
+// rate limiting middleware for password change
+const passwordChangeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // number of requests per windowMs
+  message: { error: "Too many requests. Please try again later." },
 });
 
 //post: Create a new user
@@ -191,62 +200,25 @@ export const updateUserInfoController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { firstName, lastName, newPassword } = req.body;
+  const { firstName, lastName } = req.body;
   if (firstName !== "" && lastName !== "") {
     try {
       const userId = req.params.id;
 
-      // check if newPassword is provided and different from the current password
-      if (newPassword && newPassword !== "") {
-        const currentUser = await getUserByIdService(userId);
+      // update (firstName and lastName) only. Can add more update info here
+      const updatedInformation = {
+        firstName,
+        lastName,
+      };
 
-        if (!currentUser) {
-          return res.status(404).json({ error: "User not found" });
-        }
+      const updatedUser = await updateUserByIdService(
+        userId,
+        updatedInformation
+      );
 
-        const oldPassword = currentUser?.password;
-
-        if (oldPassword !== undefined) {
-          // Compare the current password with the new password
-          const passwordChanged = !(await bcrypt.compare(
-            newPassword,
-            oldPassword
-          ));
-
-          if (passwordChanged) {
-            // Hash the new password before updating it in the database
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-            const updatedInformation = {
-              firstName,
-              lastName,
-              password: hashedPassword, // Update the password with the hashed one
-            };
-            const updatedUser = await updateUserByIdService(
-              userId,
-              updatedInformation
-            );
-
-            return res.status(201).json(updatedUser);
-          } else {
-            return res.status(400).json({
-              error: "New password must be different from the current password",
-            });
-          }
-        }
-      } else {
-        // no newPassword provided? update other user information only
-        const updatedInformation = {
-          firstName,
-          lastName,
-        };
-        const updatedUser = await updateUserByIdService(
-          userId,
-          updatedInformation
-        );
-
-        return res.status(201).json(updatedUser);
-      }
+      return res
+        .status(201)
+        .json({ message: "Profile updated successfully", updatedUser });
     } catch (error) {
       next(error);
     }
@@ -254,6 +226,75 @@ export const updateUserInfoController = async (
     res.status(400).json({ error: "Please fill the required fields" });
   }
 };
+
+// change password for authenticate user
+export const changePasswordController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  passwordChangeLimiter(req, res, async () => {
+    const { newPassword } = req.body;
+    try {
+      const userId = req.params.id;
+      const currentUser = await getUserByIdService(userId);
+
+      if (!currentUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // compare user in database with authenticated user
+      if (currentUser._id !== req.params.id) {
+        return res
+          .status(403)
+          .json({ error: "Unauthorized to change this password" });
+      }
+
+      // validate the new password
+      if (!isValidPassword(newPassword)) {
+        return res.status(400).json({
+          error:
+            "Invalid password. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.",
+        });
+      }
+
+      const oldPassword = currentUser?.password;
+
+      if (oldPassword !== undefined) {
+        const passwordChanged = !(await bcrypt.compare(
+          newPassword,
+          oldPassword
+        ));
+
+        if (passwordChanged) {
+          const saltRounds = 10;
+          const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+          const updatedInformation = {
+            password: hashedPassword,
+          };
+
+          return res.status(200).json({
+            message: "Password changed successfully",
+            updatedInformation,
+          });
+        } else {
+          return res.status(400).json({
+            error: "New password must be different from the current password",
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
+};
+
+// function to validate password format
+// we can also use this for user's creating an account
+function isValidPassword(password: string): boolean {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  return passwordRegex.test(password);
+}
 
 // post: user upload avatar
 export const uploadAvatarController = async (
