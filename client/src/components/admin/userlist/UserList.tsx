@@ -14,17 +14,24 @@ import { getUserList } from "../../../redux/thunk/users";
 import { BASE_URL } from "../../../api/api";
 
 function UserList() {
+
   const [editedUserId, setEditedUserId] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const userList = useSelector((state: RootState) => state.userList.users);
   const isLoading = useSelector((state: RootState) => state.userList.isLoading);
+  
   const currentUser = useSelector(
     (state: RootState) => state.user.userInformation
   );
 
-  useEffect(() => {
-    dispatch(getUserList());
-  }, [dispatch]);
+  const excludeMe = userList.filter(
+    (user) => user._id !== currentUser?._id
+  );
+
+console.log(excludeMe)
+useEffect(() => {
+  dispatch(getUserList());
+}, [dispatch, excludeMe]);
 
   const handleEdit = (userId: string) => {
     setEditedUserId(userId);
@@ -123,7 +130,7 @@ function UserList() {
       <div className="max-w-md mx-auto mt-6">
         <h2 className="text-2xl font-semibold mb-4">User Accounts</h2>
         <ul className="grid grid-cols-1 gap-4">
-          {userList.map((user) => (
+          {excludeMe.map((user) => (
             <li
               key={user._id}
               className="bg-white p-4 rounded-lg shadow-md flex items-center"
