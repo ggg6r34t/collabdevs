@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { RateLimiterMemory } from "rate-limiter-flexible";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -36,6 +37,21 @@ declare module "express-serve-static-core" {
   }
 }
 
+interface Payload {
+  _id: string;
+  firstName: string;
+  email?: string;
+}
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET as string;
+const EXPIRATION_TIME = "1h";
+
+const rateLimiter = new RateLimiterMemory({
+  points: 5, //  login attempts allowed
+  duration: 60,
+});
+
 //post: Create a new user
 export const createUserController = async (
   req: Request,
@@ -72,9 +88,6 @@ export const createUserController = async (
   }
 };
 
-dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET as string;
-
 //post: login user
 export const logInUserController = async (
   req: Request,
@@ -84,36 +97,62 @@ export const logInUserController = async (
   const { email, password } = req.body;
 
   try {
-    const userData = await findUserByEmailService(email.toLowerCase());
+    // check if the IP address (or user identifier) is rate-limited
+    const rateLimiterResponse = await rateLimiter.consume(email);
 
-    if (!userData) {
-      return res.status(403).json({ message: "Invalid credentials" });
+    if (rateLimiterResponse.consumedPoints > 4) {
+      throw new Error("Too many sign-in attempts. Please try again later.");
     }
 
-    //check for password before generating the token
-    const hashedPassword = userData.password;
-    const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+    const foundUserData = await findUserByEmailService(email.toLowerCase());
 
-    await updateLastLoginService(userData._id);
-
-    if (!isPasswordCorrect) {
-      throw new UnauthorizedError();
+    if (!foundUserData) {
+      res.status(403).json({ message: "Invalid credentials" });
+      return;
     }
-    const token = jwt.sign(
-      {
-        email: userData.email,
-        _id: userData._id,
-        firstName: userData.firstName,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
 
-    res.json({ userData, token });
+    // verify user password
+    const hashedPassword = foundUserData.password;
+
+    // verify that password and hashedPassword are valid
+    if (!password || !hashedPassword) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
+
+    const isCorrectPassword = await bcrypt.compare(password, hashedPassword);
+
+    if (!isCorrectPassword) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
+
+    // exclude password from userData object (also password not included in token)
+    // sending only `_id`, `firstName`, `lastName`, `userName`, `email` to the client
+    const userData = { ...foundUserData.toObject() };
+    delete userData.password;
+
+    const token = generateJwtToken(userData);
+
+    res.json({ userData, token, isCorrectPassword });
   } catch (error) {
+    console.error("Error Logging in:", error);
     next(error);
   }
 };
+
+function generateJwtToken(userData: UserDocument): string {
+  const payload: Payload = {
+    _id: userData._id,
+    firstName: userData.firstName,
+  };
+
+  if (userData.email) {
+    payload.email = userData.email;
+  }
+
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: EXPIRATION_TIME,
+  });
+}
 
 //get userByID
 export const getUserByIdController = async (
@@ -152,25 +191,67 @@ export const updateUserInfoController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { firstName, lastName } = req.body;
+  const { firstName, lastName, newPassword } = req.body;
   if (firstName !== "" && lastName !== "") {
     try {
       const userId = req.params.id;
-      const updatedInformation = {
-        firstName,
-        lastName,
-      };
-      const updatedUser = await updateUserByIdService(
-        userId,
-        updatedInformation
-      );
 
-      res.status(201).json(updatedUser);
+      // check if newPassword is provided and different from the current password
+      if (newPassword && newPassword !== "") {
+        const currentUser = await getUserByIdService(userId);
+
+        if (!currentUser) {
+          return res.status(404).json({ error: "User not found" });
+        }
+
+        const oldPassword = currentUser?.password;
+
+        if (oldPassword !== undefined) {
+          // Compare the current password with the new password
+          const passwordChanged = !(await bcrypt.compare(
+            newPassword,
+            oldPassword
+          ));
+
+          if (passwordChanged) {
+            // Hash the new password before updating it in the database
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+            const updatedInformation = {
+              firstName,
+              lastName,
+              password: hashedPassword, // Update the password with the hashed one
+            };
+            const updatedUser = await updateUserByIdService(
+              userId,
+              updatedInformation
+            );
+
+            return res.status(201).json(updatedUser);
+          } else {
+            return res.status(400).json({
+              error: "New password must be different from the current password",
+            });
+          }
+        }
+      } else {
+        // no newPassword provided? update other user information only
+        const updatedInformation = {
+          firstName,
+          lastName,
+        };
+        const updatedUser = await updateUserByIdService(
+          userId,
+          updatedInformation
+        );
+
+        return res.status(201).json(updatedUser);
+      }
     } catch (error) {
       next(error);
     }
   } else {
-    res.send("Please fill the required fields");
+    res.status(400).json({ error: "Please fill the required fields" });
   }
 };
 
@@ -259,31 +340,77 @@ export const deleteUserByIdController = async (
   }
 };
 
-// google
-export const googleAuthenticate = async (
+// twitter
+export const twitterAuthController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userData = req.body.user as UserDocument;
+    const userData = req.user as UserDocument;
+    const token = generateJwtToken(userData);
 
-    const token = jwt.sign(
-      {
-        email: userData.email,
-        _id: userData._id,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
     if (!userData) {
-      res.json({ message: "can't find user with this email" });
+      res
+        .status(404)
+        .json({ message: "User not found with this Twitter account" });
       return;
     } else {
       res.json({ token, userData });
     }
     await updateLastLoginService(userData._id);
   } catch (error) {
-    next(error);
+    console.error("Error in twitterAuthenticate:", error);
+    return next(error);
+  }
+};
+
+// github
+export const githubAuthController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+    const token = generateJwtToken(userData);
+
+    if (!userData) {
+      res
+        .status(404)
+        .json({ message: "User not found with this GitHub account" });
+      return;
+    } else {
+      res.json({ token, userData });
+    }
+    await updateLastLoginService(userData._id);
+  } catch (error) {
+    console.error("Error in githubAuthenticate:", error);
+    return next(error);
+  }
+};
+
+// google
+export const googleAuthController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+    const token = generateJwtToken(userData);
+
+    if (!userData) {
+      res
+        .status(404)
+        .json({ message: "User not found with this Google account" });
+      return;
+    } else {
+      res.json({ token, userData });
+    }
+    await updateLastLoginService(userData._id);
+  } catch (error) {
+    console.error("Error in googleAuthenticate:", error);
+    return next(error);
   }
 };
