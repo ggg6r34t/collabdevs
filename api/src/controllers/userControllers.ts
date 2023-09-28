@@ -38,6 +38,12 @@ declare module "express-serve-static-core" {
   }
 }
 
+declare module "express-session" {
+  interface SessionData {
+    sessionToken: string;
+  }
+}
+
 interface Payload {
   _id: string;
   firstName: string;
@@ -141,11 +147,29 @@ export const logInUserController = async (
 
     const token = generateJwtToken(userData);
 
+    // store user information in the session
+    req.session.sessionToken = token;
+
     res.json({ userData, token, isCorrectPassword });
   } catch (error) {
     console.error("Error Logging in:", error);
     next(error);
   }
+};
+
+//post: logout user
+export const logoutUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return next(err);
+    }
+    res.status(200).json({ message: "Logged out successfully" });
+  });
 };
 
 function generateJwtToken(userData: UserDocument): string {

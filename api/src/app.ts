@@ -37,11 +37,14 @@ const redisClient = createClient({
   },
 });
 
+redisClient.connect();
+
 redisClient.on("error", function (err) {
-  console.log("Could not establish a connection with redis. " + err);
+  console.error("Could not establish a connection with redis. " + err);
 });
-redisClient.on("connect", function (err) {
-  console.log("Connected to redis successfully");
+
+redisClient.on("connect", function () {
+  console.log("Connected to Redis successfully");
 });
 
 app.use(express.json());
