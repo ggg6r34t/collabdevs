@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { RateLimiterMemory } from "rate-limiter-flexible";
+import rateLimit from "express-rate-limit";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -36,6 +38,29 @@ declare module "express-serve-static-core" {
   }
 }
 
+interface Payload {
+  _id: string;
+  firstName: string;
+  email?: string;
+}
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET as string;
+const EXPIRATION_TIME = "1h";
+
+// rate limiting middleware for sign-in attempts
+const rateLimiter = new RateLimiterMemory({
+  points: 5, //  login attempts allowed
+  duration: 60,
+});
+
+// rate limiting middleware for password change
+const passwordChangeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // number of requests per windowMs
+  message: { error: "Too many requests. Please try again later." },
+});
+
 //post: Create a new user
 export const createUserController = async (
   req: Request,
@@ -72,9 +97,6 @@ export const createUserController = async (
   }
 };
 
-dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET as string;
-
 //post: login user
 export const logInUserController = async (
   req: Request,
@@ -84,36 +106,62 @@ export const logInUserController = async (
   const { email, password } = req.body;
 
   try {
-    const userData = await findUserByEmailService(email.toLowerCase());
+    // check if the IP address (or user identifier) is rate-limited
+    const rateLimiterResponse = await rateLimiter.consume(email);
 
-    if (!userData) {
-      return res.status(403).json({ message: "Invalid credentials" });
+    if (rateLimiterResponse.consumedPoints > 4) {
+      throw new Error("Too many sign-in attempts. Please try again later.");
     }
 
-    //check for password before generating the token
-    const hashedPassword = userData.password;
-    const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+    const foundUserData = await findUserByEmailService(email.toLowerCase());
 
-    await updateLastLoginService(userData._id);
-
-    if (!isPasswordCorrect) {
-      throw new UnauthorizedError();
+    if (!foundUserData) {
+      res.status(403).json({ message: "Invalid credentials" });
+      return;
     }
-    const token = jwt.sign(
-      {
-        email: userData.email,
-        _id: userData._id,
-        firstName: userData.firstName,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
 
-    res.json({ userData, token });
+    // verify user password
+    const hashedPassword = foundUserData.password;
+
+    // verify that password and hashedPassword are valid
+    if (!password || !hashedPassword) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
+
+    const isCorrectPassword = await bcrypt.compare(password, hashedPassword);
+
+    if (!isCorrectPassword) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
+
+    // exclude password from userData object (also password not included in token)
+    // sending only `_id`, `firstName`, `lastName`, `userName`, `email` to the client
+    const userData = { ...foundUserData.toObject() };
+    delete userData.password;
+
+    const token = generateJwtToken(userData);
+
+    res.json({ userData, token, isCorrectPassword });
   } catch (error) {
+    console.error("Error Logging in:", error);
     next(error);
   }
 };
+
+function generateJwtToken(userData: UserDocument): string {
+  const payload: Payload = {
+    _id: userData._id,
+    firstName: userData.firstName,
+  };
+
+  if (userData.email) {
+    payload.email = userData.email;
+  }
+
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: EXPIRATION_TIME,
+  });
+}
 
 //get userByID
 export const getUserByIdController = async (
@@ -156,23 +204,97 @@ export const updateUserInfoController = async (
   if (firstName !== "" && lastName !== "") {
     try {
       const userId = req.params.id;
+
+      // update (firstName and lastName) only. Can add more update info here
       const updatedInformation = {
         firstName,
         lastName,
       };
+
       const updatedUser = await updateUserByIdService(
         userId,
         updatedInformation
       );
 
-      res.status(201).json(updatedUser);
+      return res
+        .status(201)
+        .json({ message: "Profile updated successfully", updatedUser });
     } catch (error) {
       next(error);
     }
   } else {
-    res.send("Please fill the required fields");
+    res.status(400).json({ error: "Please fill the required fields" });
   }
 };
+
+// change password for authenticate user
+export const changePasswordController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  passwordChangeLimiter(req, res, async () => {
+    const { newPassword } = req.body;
+    try {
+      const userId = req.params.id;
+      const currentUser = await getUserByIdService(userId);
+
+      if (!currentUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // compare user in database with authenticated user
+      if (currentUser._id !== req.params.id) {
+        return res
+          .status(403)
+          .json({ error: "Unauthorized to change this password" });
+      }
+
+      // validate the new password
+      if (!isValidPassword(newPassword)) {
+        return res.status(400).json({
+          error:
+            "Invalid password. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.",
+        });
+      }
+
+      const oldPassword = currentUser?.password;
+
+      if (oldPassword !== undefined) {
+        const passwordChanged = !(await bcrypt.compare(
+          newPassword,
+          oldPassword
+        ));
+
+        if (passwordChanged) {
+          const saltRounds = 10;
+          const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+          const updatedInformation = {
+            password: hashedPassword,
+          };
+
+          return res.status(200).json({
+            message: "Password changed successfully",
+            updatedInformation,
+          });
+        } else {
+          return res.status(400).json({
+            error: "New password must be different from the current password",
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
+};
+
+// function to validate password format
+// we can also use this for user's creating an account
+function isValidPassword(password: string): boolean {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  return passwordRegex.test(password);
+}
 
 // post: user upload avatar
 export const uploadAvatarController = async (
@@ -259,31 +381,77 @@ export const deleteUserByIdController = async (
   }
 };
 
-// google
-export const googleAuthenticate = async (
+// twitter
+export const twitterAuthController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userData = req.body.user as UserDocument;
+    const userData = req.user as UserDocument;
+    const token = generateJwtToken(userData);
 
-    const token = jwt.sign(
-      {
-        email: userData.email,
-        _id: userData._id,
-      },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
     if (!userData) {
-      res.json({ message: "can't find user with this email" });
+      res
+        .status(404)
+        .json({ message: "User not found with this Twitter account" });
       return;
     } else {
       res.json({ token, userData });
     }
     await updateLastLoginService(userData._id);
   } catch (error) {
-    next(error);
+    console.error("Error in twitterAuthenticate:", error);
+    return next(error);
+  }
+};
+
+// github
+export const githubAuthController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+    const token = generateJwtToken(userData);
+
+    if (!userData) {
+      res
+        .status(404)
+        .json({ message: "User not found with this GitHub account" });
+      return;
+    } else {
+      res.json({ token, userData });
+    }
+    await updateLastLoginService(userData._id);
+  } catch (error) {
+    console.error("Error in githubAuthenticate:", error);
+    return next(error);
+  }
+};
+
+// google
+export const googleAuthController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userData = req.user as UserDocument;
+    const token = generateJwtToken(userData);
+
+    if (!userData) {
+      res
+        .status(404)
+        .json({ message: "User not found with this Google account" });
+      return;
+    } else {
+      res.json({ token, userData });
+    }
+    await updateLastLoginService(userData._id);
+  } catch (error) {
+    console.error("Error in googleAuthenticate:", error);
+    return next(error);
   }
 };

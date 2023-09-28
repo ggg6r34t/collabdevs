@@ -1,12 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export type UserDocument = Document & {
-  //profileId: mongoose.Schema.Types.ObjectId;
+  twitterId: string;
+  githubId: string;
+  googleId: string;
   firstName: string;
   lastName: string;
   userName: string;
   email: string;
-  password: string;
+  password?: string;
   lastLogin: Date;
   role: string;
   isBanned: boolean;
@@ -22,19 +24,18 @@ export enum Role {
 const UserSchema = new Schema<UserDocument>(
   {
     // type from database
-    //profileId: { type: String, required: true },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    twitterId: { type: String, default: null },
+    githubId: { type: String, default: null },
+    googleId: { type: String, default: null },
+    firstName: { type: String },
+    lastName: { type: String },
     userName: {
       type: String,
       unique: true,
       // required: true
     },
-    email: { type: String, unique: true, required: true },
-    password: {
-      type: String,
-      //required: true
-    },
+    email: { type: String, unique: true },
+    password: { type: String },
     lastLogin: { type: Date, default: null },
     role: { type: String, enum: Role, default: Role.user, required: true },
     isBanned: { type: Boolean, default: false },

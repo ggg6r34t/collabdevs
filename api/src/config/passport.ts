@@ -1,7 +1,7 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import { Strategy as TwitterStrategy } from "passport-twitter";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import GoogleTokenStrategy from "passport-google-id-token";
 import dotenv from "dotenv";
 
 import {
@@ -12,6 +12,15 @@ import { UnauthorizedError } from "../helpers/apiError";
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
+
+const TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY as string;
+const TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET as string;
+
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID as string;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
 
 export const jwtStrategy = new JwtStrategy(
   {
@@ -36,16 +45,48 @@ export const jwtStrategy = new JwtStrategy(
   }
 );
 
-export const githubStrategy = new GitHubStrategy(
+export const twitterStrategy = new TwitterStrategy(
   {
-    clientID: "process.env.GITHUB_CLIENT_ID",
-    clientSecret: "process.env.GITHUB_CLIENT_SECRET",
-    callbackURL: "/auth/github/callback", // this URL should match your route
+    consumerKey: TWITTER_CONSUMER_KEY, // API Key
+    consumerSecret: TWITTER_CONSUMER_SECRET, //API Key Secret
+    callbackURL: "/api/v1/users/auth/twitter/callback",
   },
   async (_: any, __: any, profile: any, done: any) => {
     try {
-      // create a payload object with relevant data
+      // check if the necessary fields exist in the profile
+      // if (!profile || !profile.id || !profile.displayName || !profile.email) {
+      //   return done(new Error("Incomplete Twitter profile data"), false);
+      // }
+
       const userPayload = {
+        twitterId: profile.id,
+        firstName: profile.username, // username as firstname
+        lastName: "", // unavailable data
+        userName: profile.displayName,
+        email: profile.email,
+        avatar: profile._json.profile_image_url_https,
+      };
+
+      const user = await findOrCreateUserService("twitter", userPayload);
+      return done(null, user);
+    } catch (error) {
+      console.error("Twitter Strategy Error", error);
+      done(error, false);
+    }
+  }
+);
+
+export const githubStrategy = new GitHubStrategy(
+  {
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: "/api/v1/users/auth/github/callback",
+  },
+
+  async (_: any, __: any, profile: any, done: any) => {
+    try {
+      const userPayload = {
+        githubId: profile?.id,
         firstName: profile?.given_name,
         lastName: profile?.family_name,
         username: profile?.displayName,
@@ -53,8 +94,7 @@ export const githubStrategy = new GitHubStrategy(
         avatar: profile?.avatar,
       };
 
-      // use the findOrCreateUserService function
-      const user = await findOrCreateUserService(userPayload);
+      const user = await findOrCreateUserService("github", userPayload);
 
       return done(null, user);
     } catch (error) {
@@ -64,31 +104,46 @@ export const githubStrategy = new GitHubStrategy(
   }
 );
 
-const clientId = process.env.GOOGLE_CLIENT_ID as string;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
-export const googleStrategy = new GoogleTokenStrategy(
+export const googleStrategy = new GoogleStrategy(
   {
-    clientID: clientId,
-    // clientSecret: clientSecret,
-    //callbackURL: "http://localhost:8000/api/v1/users/google-login", // this URL should match your route
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "/api/v1/users/auth/google/callback",
   },
-  async (parsedToken: any, googleId: string, done: any) => {
+  async (accessToken, refreshToken, profile, done) => {
     try {
+      const email =
+        profile.emails && profile.emails.length > 0
+          ? profile.emails[0].value
+          : undefined;
+
+      const avatar =
+        profile.photos && profile.photos.length > 0
+          ? profile.photos[0]?.value
+          : undefined;
+
+      if (!email && !avatar) {
+        return done(
+          new Error("No email or avatar found in the Google profile") as Error,
+          false
+        );
+      }
+
       const userPayload = {
-        firstName: parsedToken?.payload?.given_name,
-        lastName: parsedToken?.payload?.family_name,
-        userName: parsedToken?.payload?.displayName,
-        email: parsedToken?.payload?.email,
-        avatar: parsedToken?.payload?.avatar,
+        googleId: profile.id,
+        firstName: profile.name?.givenName,
+        lastName: profile.name?.familyName,
+        userName: profile.displayName,
+        email,
+        avatar,
       };
 
-      // if the user doesn't exist, create a new user
-      const foundUser = await findOrCreateUserService(userPayload);
+      const user = await findOrCreateUserService("google", userPayload);
 
-      return done(null, foundUser);
+      return done(null, user);
     } catch (error) {
       console.error("Google Strategy Error", error);
-      done(error, false);
+      return done(error as Error, false);
     }
   }
 );

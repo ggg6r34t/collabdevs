@@ -17,12 +17,19 @@ export const createUserService = async (
 export const findUserByEmailService = async (
   email: string
 ): Promise<UserDocument> => {
-  const foundUser = await User.findOne({ email: email, isBanned: false });
+  try {
+    const foundUser = await User.findOne({
+      email: email,
+      isBanned: false,
+    });
 
-  if (!foundUser) {
-    throw new NotFoundError(`User with ${email} not found`);
+    if (!foundUser) {
+      throw new NotFoundError(`User with ${email} not found`);
+    }
+    return foundUser;
+  } catch (error) {
+    throw error;
   }
-  return foundUser;
 };
 
 export const updateLastLoginService = async (
@@ -148,30 +155,34 @@ export const deleteUserByIdService = async (
   return userById;
 };
 
-//TODO ::  google
 export const findOrCreateUserService = async (
+  provider: "twitter" | "github" | "google",
   payload: Partial<UserDocument>
 ): Promise<UserDocument> => {
-  const user = await User.findOne({ email: payload.email });
+  try {
+    // match the corresponding field for the authentication provider
+    const query = { [`${provider}Id`]: payload[`${provider}Id`] };
+    const user = await User.findOne(query);
 
-  if (user) {
-    return user;
-  } else {
-    const newUser = new User({
-      email: payload.email,
-      userName: payload.userName,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      avatar: payload.avatar,
-    });
+    if (user) {
+      return user; // user already exists
+    } else {
+      const newUser = new User({
+        [`${provider}Id`]: payload[`${provider}Id`],
+        email: payload.email,
+        userName: payload.userName,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        avatar: payload.avatar,
+      });
 
-    try {
-      return await newUser.save();
-    } catch (error) {
-      console.error("Error creating account:", error);
-      throw new InternalServerError(
-        "An error occured while creating the account."
-      );
+      const savedUser = await newUser.save();
+      return savedUser; // new user created
     }
+  } catch (error) {
+    console.error("Error creating account:", error);
+    throw new InternalServerError(
+      "An error occurred while creating the account."
+    );
   }
 };
