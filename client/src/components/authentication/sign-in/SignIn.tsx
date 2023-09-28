@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { userActions } from "../../../redux/slices/user";
 import { Link, useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
+import AuthWithGitHub from "../socialAuthentication/AuthWithGitHub";
+import AuthWithX from "../socialAuthentication/AuthWithX";
 import { BASE_URL } from "../../../api/api";
 import { User } from "../../../type/types";
 
@@ -69,21 +69,8 @@ function SignIn() {
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md dark:bg-slate-800">
         <AuthWithGoogle />
-
-        <button className="w-65 h-9.5 flex flex-row items-center justify-center bg-[#181717] text-white py-2 border rounded-[12px] hover:bg-blue-200 mb-2">
-          <FontAwesomeIcon
-            icon={faGithub}
-            className="w-6 h-6 mr-2 rounded-full"
-          />
-          Sign in with GitHub
-        </button>
-        <button className="w-65 h-9.5 flex flex-row items-center justify-center bg-[#1877F2] text-white py-2 border rounded-[12px] hover:bg-blue-200 mb-3">
-          <FontAwesomeIcon
-            icon={faFacebook}
-            className="w-6 h-6 mr-2 rounded-full"
-          />
-          Sign in with Facebook
-        </button>
+        <AuthWithGitHub />
+        <AuthWithX />
         <div className="w-65 h-9.5 flex flex-row items-center justify-center mb-3">
           <hr className="w-1/3 border dark:border-white border-black mr-4" /> Or{" "}
           <hr className="w-1/3 border dark:border-white border-black ml-4" />
