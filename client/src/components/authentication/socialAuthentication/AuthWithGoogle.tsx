@@ -1,19 +1,19 @@
-import axios from "axios";
+// import axios from "axios";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
-import { userActions } from "../../../redux/slices/user";
+// import { userActions } from "../../../redux/slices/user";
 import { BASE_URL } from "../../../api/api";
-import { User } from "../../../type/types";
+// import { User } from "../../../type/types";
 
 const AuthWithGoogle = () => {
   const [error, setError] = useState("");
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
   const handleGoogleAuth = async () => {
     setError("");
