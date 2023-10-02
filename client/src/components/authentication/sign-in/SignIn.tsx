@@ -58,11 +58,6 @@ function SignIn() {
             token: userToken,
           };
 
-          const setCookieHeader = response.headers["set-cookie"];
-
-          // You can now parse and use the "Set-Cookie" header as needed
-          console.log(setCookieHeader);
-
           dispatch(userActions.setUserData(userWithData)); // store userinformation to the redux
 
           // set user login state
