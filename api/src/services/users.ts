@@ -5,24 +5,28 @@ import {
 } from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
 
+// Create a new user with validation
 export const createUserService = async (
   newUser: UserDocument
 ): Promise<UserDocument> => {
-  const alreadyExist = await User.findOne({ email: newUser.email });
-  if (alreadyExist) {
-    throw new AlreadyExist(`User with ${newUser.email} Already Exist`);
-  } else return await newUser.save();
+  try {
+    const existingUser = await User.findOne({ email: newUser.email });
+    if (existingUser) {
+      throw new AlreadyExist(`User with ${newUser.email} already exists`);
+    }
+
+    return await newUser.save();
+  } catch (error) {
+    throw error;
+  }
 };
 
+// Find a user by email
 export const findUserByEmailService = async (
   email: string
 ): Promise<UserDocument> => {
   try {
-    const foundUser = await User.findOne({
-      email: email,
-      isBanned: false,
-    });
-
+    const foundUser = await User.findOne({ email, isBanned: false });
     if (!foundUser) {
       throw new NotFoundError(`User with ${email} not found`);
     }
@@ -32,51 +36,124 @@ export const findUserByEmailService = async (
   }
 };
 
+// update the last login timestamp
 export const updateLastLoginService = async (
   id: string
 ): Promise<UserDocument> => {
-  const foundUser = await User.findByIdAndUpdate(id, {
-    lastLogin: Date.now(),
-  });
-
-  if (!foundUser) {
-    throw new NotFoundError(`User with ${id} not found`);
+  try {
+    const foundUser = await User.findByIdAndUpdate(id, {
+      lastLogin: Date.now(),
+    });
+    if (!foundUser) {
+      throw new NotFoundError(`User with ${id} not found`);
+    }
+    return foundUser;
+  } catch (error) {
+    throw error;
   }
-  return foundUser;
 };
 
-// get userByID service
+// get a user by ID (excluding password)
 export const getUserByIdService = async (
   userId: string
 ): Promise<UserDocument> => {
-  const userById = await User.findById(userId).select("-password");
-  if (!userById) {
-    throw new NotFoundError(`No user found having ${userId}`);
+  try {
+    const userById = await User.findById(userId).select("-password");
+    if (!userById) {
+      throw new NotFoundError(`No user found with ID ${userId}`);
+    }
+    return userById;
+  } catch (error) {
+    throw error;
   }
-  return userById;
 };
 
-// user list service
+// get a list of all users
 export const getUserListService = async (): Promise<UserDocument[]> => {
-  const userList = await User.find();
-  return userList;
+  try {
+    const userList = await User.find();
+    return userList;
+  } catch (error) {
+    throw error;
+  }
 };
 
-// update user information
+// update user information by ID
 export const updateUserByIdService = async (
   userId: string,
   updateUserInformation: Partial<UserDocument>
 ): Promise<UserDocument> => {
-  const userById = await User.findByIdAndUpdate(userId, updateUserInformation, {
-    new: true,
-  });
-  if (!userById) {
-    throw new NotFoundError(`No user found having ${userId}`);
+  try {
+    const userById = await User.findByIdAndUpdate(
+      userId,
+      updateUserInformation,
+      {
+        new: true,
+      }
+    );
+    if (!userById) {
+      throw new NotFoundError(`No user found with ID ${userId}`);
+    }
+    return userById;
+  } catch (error) {
+    throw error;
   }
-  return userById;
 };
 
-// save media upload (user)
+// find a user by reset token
+export const findUserByResetTokenService = async (
+  resetToken: string
+): Promise<UserDocument> => {
+  try {
+    const userByToken = await User.findOne({ resetToken });
+    if (!userByToken) {
+      throw new NotFoundError(`No user found with reset token: ${resetToken}`);
+    }
+    return userByToken;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// update user password by ID
+export const updatePasswordService = async (
+  userId: string,
+  newPassword: string
+): Promise<UserDocument> => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      password: newPassword,
+    });
+    if (!updatedUser) {
+      throw new NotFoundError(`No user found with ID: ${userId}`);
+    }
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// save reset token and expiration
+export const saveResetTokenService = async (
+  userId: string,
+  resetToken: string,
+  resetTokenExpiration: Date
+): Promise<UserDocument> => {
+  try {
+    const userById = await User.findByIdAndUpdate(userId, {
+      resetToken,
+      resetTokenExpiration,
+    });
+    if (!userById) {
+      throw new NotFoundError(`No user found with ID ${userId}`);
+    }
+    return userById;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// save media upload (user avatar/banner)
 export const uploadMediaService = async (
   userId: string,
   mediaType: string,
@@ -84,13 +161,11 @@ export const uploadMediaService = async (
 ): Promise<UserDocument> => {
   try {
     const user = await User.findById(userId);
-
     if (!user) {
       throw new NotFoundError(`User with ID ${userId} not found`);
     }
 
     if (mediaData !== undefined) {
-      // check if mediaType is a valid property before assigning
       if (mediaType === "avatar" || mediaType === "banner") {
         user[mediaType] = mediaData;
       } else {
@@ -99,7 +174,6 @@ export const uploadMediaService = async (
     }
 
     await user.save();
-
     return user;
   } catch (error) {
     throw error;
@@ -107,60 +181,72 @@ export const uploadMediaService = async (
 };
 
 // update user role (admin/user)
-export const updateRoleService = async (userId: string) => {
-  const foundUser = await User.findOne({ _id: userId });
-  if (foundUser) {
+export const updateRoleService = async (
+  userId: string
+): Promise<UserDocument> => {
+  try {
+    const foundUser = await User.findOne({ _id: userId });
+    if (!foundUser) {
+      throw new NotFoundError(`User not found with ID ${userId}`);
+    }
+
     if (foundUser.role === "admin") {
       foundUser.role = "user";
     } else {
-      // avoid making a "banned user" admin by mistake
       if (foundUser.isBanned === true) {
         foundUser.role = "user";
       } else {
         foundUser.role = "admin";
       }
     }
-    const updatedUser = updateUserByIdService(userId, foundUser);
+
+    const updatedUser = await updateUserByIdService(userId, foundUser);
     return updatedUser;
-  } else {
-    throw new NotFoundError(`User not found with ${userId}`);
+  } catch (error) {
+    throw error;
   }
 };
 
-// update restrictions (Banning)
-export const updateRestrictionService = async (userId: string) => {
-  const foundUser = await User.findOne({ _id: userId });
-  if (foundUser) {
-    if (foundUser.isBanned === false) {
-      foundUser.isBanned = true;
-    } else {
-      foundUser.isBanned = false;
+// update user restriction (ban/unban)
+export const updateRestrictionService = async (
+  userId: string
+): Promise<UserDocument> => {
+  try {
+    const foundUser = await User.findOne({ _id: userId });
+    if (!foundUser) {
+      throw new NotFoundError(`User not found with ID ${userId}`);
     }
 
-    const updatedUser = updateUserByIdService(userId, foundUser);
+    foundUser.isBanned = !foundUser.isBanned;
+
+    const updatedUser = await updateUserByIdService(userId, foundUser);
     return updatedUser;
-  } else {
-    throw new NotFoundError(`User not found with ${userId}`);
+  } catch (error) {
+    throw error;
   }
 };
 
-// delete user
+// delete a user by ID
 export const deleteUserByIdService = async (
   userId: string
 ): Promise<UserDocument> => {
-  const userById = await User.findByIdAndDelete(userId);
-  if (!userById) {
-    throw new NotFoundError(`No user found having ${userId}`);
+  try {
+    const userById = await User.findByIdAndDelete(userId);
+    if (!userById) {
+      throw new NotFoundError(`No user found with ID ${userId}`);
+    }
+    return userById;
+  } catch (error) {
+    throw error;
   }
-  return userById;
 };
 
+// find or create user based on authentication provider
 export const findOrCreateUserService = async (
   provider: "twitter" | "github" | "google",
   payload: Partial<UserDocument>
 ): Promise<UserDocument> => {
   try {
-    // match the corresponding field for the authentication provider
     const query = { [`${provider}Id`]: payload[`${provider}Id`] };
     const user = await User.findOne(query);
 

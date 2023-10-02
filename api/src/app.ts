@@ -6,12 +6,14 @@ import { createClient } from "redis";
 import RedisStore from "connect-redis";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
+import dotenv from "dotenv";
 
 import "./config/passport";
 import User from "./models/User";
 import postRoutes from "./routes/postRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
+import { restoreSession } from "./middlewares/restoreSession";
 import userRoutes from "./routes/userRoutes";
 import {
   githubStrategy,
@@ -29,7 +31,7 @@ const PORT = 15397;
 
 const app: Express = express();
 
-const redisClient = createClient({
+export const redisClient = createClient({
   password: REDIS_PASSWORD,
   socket: {
     host: REDIS_HOST,
@@ -50,8 +52,21 @@ redisClient.on("connect", function () {
 app.use(express.json());
 app.use(cookieParser());
 
+if (process.env.NODE_ENV === "development") {
+  dotenv.config({ path: ".env.development" });
+} else if (process.env.NODE_ENV === "production") {
+  dotenv.config({ path: ".env.production" });
+}
+
+const corsOptions = {
+  origin: [process.env.DEV_ORIGIN!, process.env.PROD_ORIGIN!], // client's domain
+  methods: "GET,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  exposedHeaders: ["Authorization", "X-Custom-Header"],
+};
+
 // middleware setup
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -59,8 +74,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true,
-      secure: false, // set to true in production (HTTPS)
+      httpOnly: process.env.NODE_ENV === "production", // set to true in a production environment with HTTPS
+      secure: process.env.NODE_ENV === "production", // set to true in a production environment with HTTPS
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
     genid: (req) => {
@@ -96,6 +111,9 @@ passport.deserializeUser(async (id: string, done) => {
     done(error, false);
   }
 });
+
+// restoreSession user session
+app.use(restoreSession);
 
 // routes
 app.use("/api/v1/users", userRoutes);

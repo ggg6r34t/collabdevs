@@ -17,6 +17,9 @@ import {
   uploadAvatarController,
   uploadBannerController,
   logoutUserController,
+  changePasswordController,
+  requestPasswordResetController,
+  resetPasswordController,
 } from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
 
@@ -53,11 +56,11 @@ const upload = multer({ storage });
 router.post("/register", createUserController);
 
 //post: login user
-router.post("/login", logInUserController, passport.authenticate("jwt"));
+router.post("/signin", logInUserController, passport.authenticate("jwt"));
 
 //get: login user
-router.get(
-  "/logout",
+router.post(
+  "/signout",
   passport.authenticate("jwt", { session: false }),
   logoutUserController
 );
@@ -82,6 +85,24 @@ router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   updateUserInfoController
+);
+
+router.post(
+  "/change-password",
+  passport.authenticate("jwt", { session: false }),
+  changePasswordController
+);
+
+router.post(
+  "/reset-password",
+  passport.authenticate("jwt", { session: false }),
+  requestPasswordResetController
+);
+
+router.post(
+  "/reset-password-confirm",
+  passport.authenticate("jwt", { session: false }),
+  resetPasswordController
 );
 
 // post: user upload avatar
