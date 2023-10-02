@@ -1,20 +1,22 @@
-import axios from "axios";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { userActions } from "../../../redux/slices/user";
 import { Link, useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
 import AuthWithGitHub from "../socialAuthentication/AuthWithGitHub";
 import AuthWithX from "../socialAuthentication/AuthWithX";
-import { BASE_URL } from "../../../api/api";
 import { User } from "../../../type/types";
+import { RootState } from "../../../redux/store";
+import axios from "../../../api/axiosConfig";
 
 function SignIn() {
+  const rememberMe = useSelector((state: RootState) => state.user.rememberMe);
   const [invalidCredential, setInvalidCredential] = useState("");
   const [logInCredentials, setLogInCredentials] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
   const navigate = useNavigate();
@@ -27,10 +29,20 @@ function SignIn() {
   function getPassword(event: React.ChangeEvent<HTMLInputElement>) {
     setLogInCredentials({ ...logInCredentials, password: event.target.value });
   }
+
+  function handleRememberMe(event: React.ChangeEvent<HTMLInputElement>) {
+    setLogInCredentials({
+      ...logInCredentials,
+      rememberMe: event.target.checked,
+    });
+
+    dispatch(userActions.userRememberMe(event.target.checked));
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const endpoint = `${BASE_URL}/api/v1/users/login`;
+    const endpoint = "/api/v1/users/signin";
     axios
       .post(endpoint, logInCredentials)
 
@@ -48,6 +60,9 @@ function SignIn() {
 
           dispatch(userActions.setUserData(userWithData)); // store userinformation to the redux
 
+          // set user login state
+          dispatch(userActions.userSignIn(true));
+
           localStorage.setItem("userToken", userToken); // save it (token) to the localStorage
 
           navigate("/");
@@ -62,6 +77,7 @@ function SignIn() {
     setLogInCredentials({
       email: "",
       password: "",
+      rememberMe: logInCredentials.rememberMe,
     });
   };
 
@@ -102,6 +118,21 @@ function SignIn() {
               className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Password"
             />
+          </div>
+          <div className="mb-4">
+            <div className="flex items-center">
+              <input
+                onChange={handleRememberMe}
+                type="checkbox"
+                role="switch"
+                id="rememberMe"
+                checked={rememberMe ? rememberMe : logInCredentials.rememberMe}
+                className="mr-2 h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-primary checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-primary checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:checked:bg-primary dark:checked:after:bg-primary dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
+              />
+              <label className="inline-block pl-[0.15rem] hover:cursor-pointer ml-2">
+                Remember Me
+              </label>
+            </div>
           </div>
           <button className="w-65 h-9.5 bg-white text-[#010536] hover:text-white py-2 border border-gray-400 rounded-[12px] hover:bg-[#010536]">
             Sign In

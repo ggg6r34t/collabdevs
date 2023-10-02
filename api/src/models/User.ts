@@ -14,6 +14,9 @@ export type UserDocument = Document & {
   isBanned: boolean;
   avatar: string;
   banner: string;
+  resetToken: string | null;
+  resetTokenExpiration: Date | null;
+  rememberMe: boolean;
 
   // more fields as needed
 };
@@ -49,6 +52,9 @@ const UserSchema = new Schema<UserDocument>(
       default:
         "https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
     },
+    resetToken: { type: String, default: null },
+    resetTokenExpiration: { type: Date, default: null },
+    rememberMe: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

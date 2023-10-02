@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparent_bg.png";
 import { RootState } from "../../../redux/store";
-import { userActions } from "../../../redux/slices/user";
 import Notifications from "./Notifications";
+import { useSignOut } from "../../../hooks/useSignOut";
 
 function Navbar() {
   const currentUser = useSelector(
@@ -33,8 +33,7 @@ function Navbar() {
     "New article published",
   ]);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { signOut } = useSignOut();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -174,13 +173,12 @@ function Navbar() {
                       </>
                     ) : null}
                     <li>
-                      <Link
-                        to="/" // can create logout component containing only logout function
+                      <div
                         onClick={signOut}
-                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-100 cursor-pointer"
                       >
                         Sign out
-                      </Link>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -212,13 +210,6 @@ function Navbar() {
       </div>
     </div>
   );
-  function signOut(): void {
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("userId");
-
-    dispatch(userActions.removeUserData());
-    navigate("/signin");
-  }
 }
 
 export default Navbar;
