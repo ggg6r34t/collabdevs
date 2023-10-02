@@ -1,14 +1,13 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { userActions } from "../../../redux/slices/user";
-import { Link, useNavigate } from "react-router-dom";
 import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
 import AuthWithGitHub from "../socialAuthentication/AuthWithGitHub";
 import AuthWithX from "../socialAuthentication/AuthWithX";
-import { User } from "../../../type/types";
 import { RootState } from "../../../redux/store";
-import axios from "../../../api/axiosConfig";
+import { useSignIn } from "../../../hooks/useSignIn";
 
 function SignIn() {
   const rememberMe = useSelector((state: RootState) => state.user.rememberMe);
@@ -19,8 +18,9 @@ function SignIn() {
     rememberMe: false,
   });
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { signIn } = useSignIn(); // signIn function from the hook
 
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
     setLogInCredentials({ ...logInCredentials, email: event.target.value });
@@ -39,46 +39,22 @@ function SignIn() {
     dispatch(userActions.userRememberMe(event.target.checked));
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const endpoint = "/api/v1/users/signin";
-    axios
-      .post(endpoint, logInCredentials)
+    try {
+      await signIn(logInCredentials); // calling the signIn function from the hook
 
-      .then((response) => {
-        if (response.status === 200) {
-          // store the userData and userToken securely (e.g., in local storage or cookie)
-          const user = response.data.userData;
-          const userToken = response.data.token; // from data object. get and assign the token
-
-          // save userData to redux
-          const userWithData: User = {
-            ...user,
-            token: userToken,
-          };
-
-          dispatch(userActions.setUserData(userWithData)); // store userinformation to the redux
-
-          // set user login state
-          dispatch(userActions.userSignIn(true));
-
-          localStorage.setItem("userToken", userToken); // save it (token) to the localStorage
-
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setInvalidCredential("Wrong Credential - try again");
+      // clear form data
+      setLogInCredentials({
+        email: "",
+        password: "",
+        rememberMe: logInCredentials.rememberMe,
       });
-
-    // clear form
-    setLogInCredentials({
-      email: "",
-      password: "",
-      rememberMe: logInCredentials.rememberMe,
-    });
+    } catch (error) {
+      console.error(error);
+      setInvalidCredential("Wrong Credential - try again");
+    }
   };
 
   return (
