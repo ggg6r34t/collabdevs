@@ -7,6 +7,7 @@ type SingleUser = {
   UserGoogle: UserGoogle;
   isLogin: boolean;
   isLoading: boolean;
+  rememberMe: boolean;
 };
 
 const storedUserState = localStorage.getItem("userState");
@@ -24,6 +25,7 @@ const initialState: SingleUser = storedUserState
       },
       isLogin: false,
       isLoading: true,
+      rememberMe: false,
     };
 
 const userSlice = createSlice({
@@ -32,21 +34,35 @@ const userSlice = createSlice({
   reducers: {
     setUserData: (state, action: PayloadAction<User>) => {
       state.userInformation = action.payload;
-      state.isLogin = true;
       state.isLoading = true;
-    },
-    userLogin: (state, action: PayloadAction<boolean>) => {
-      state.isLogin = action.payload;
+
       localStorage.setItem("userState", JSON.stringify(state));
+    },
+    userSignIn: (state, action: PayloadAction<boolean>) => {
+      state.isLogin = action.payload;
       state.isLoading = false;
+
+      localStorage.setItem("userState", JSON.stringify(state));
       localStorage.setItem("SingleUser", JSON.stringify(state));
     },
     removeUserData: (state) => {
       state.userInformation = initialState.userInformation;
-      localStorage.removeItem("userToken");
-      localStorage.removeItem("SingleUser");
       state.isLogin = false;
       state.isLoading = false;
+
+      localStorage.removeItem("userToken");
+      localStorage.removeItem("SingleUser");
+    },
+    userRememberMe: (state, action: PayloadAction<boolean>) => {
+      state.rememberMe = action.payload;
+
+      localStorage.setItem("userState", JSON.stringify(state));
+    },
+    userSignOut: (state) => {
+      state.userInformation = null;
+      state.isLogin = false;
+
+      localStorage.removeItem("userState");
     },
   },
 });
