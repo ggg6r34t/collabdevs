@@ -6,6 +6,7 @@ import { createClient } from "redis";
 import RedisStore from "connect-redis";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
+import dotenv from "dotenv";
 
 import "./config/passport";
 import User from "./models/User";
@@ -51,8 +52,14 @@ redisClient.on("connect", function () {
 app.use(express.json());
 app.use(cookieParser());
 
+if (process.env.NODE_ENV === "development") {
+  dotenv.config({ path: ".env.development" });
+} else if (process.env.NODE_ENV === "production") {
+  dotenv.config({ path: ".env.production" });
+}
+
 const corsOptions = {
-  origin: "https://bucolic-brioche-12d61d.netlify.app", // our domain
+  origin: [process.env.DEV_ORIGIN!, process.env.PROD_ORIGIN!], // our frontend URL
   methods: "GET,PUT,POST,DELETE",
   credentials: true,
   exposedHeaders: ["Authorization", "X-Custom-Header"],
