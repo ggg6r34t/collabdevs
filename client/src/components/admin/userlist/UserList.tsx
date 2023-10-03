@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
@@ -6,13 +7,12 @@ import {
   faUserCog,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../redux/store";
-import { useUserSession } from "../../../hooks/useUserSession";
 import { getUserList } from "../../../redux/thunk/users";
-import { BASE_URL } from "../../../api/api";
+import useBanUser from "../../../hooks/useBanUser";
+import useChangeUserRole from "../../../hooks/useChangeUserRole";
+import useDeleteUser from "../../../hooks/useDeleteUser";
 
 function UserList() {
   const [editedUserId, setEditedUserId] = useState<string | null>(null);
@@ -25,8 +25,9 @@ function UserList() {
 
   // useUserSession hook to retrieve user session data
   // userId also exists in the deconstruction
-  const { getUserSession } = useUserSession();
-  const { token } = getUserSession();
+  const { banUser } = useBanUser();
+  const { changeUserRole } = useChangeUserRole();
+  const { deleteUser } = useDeleteUser();
 
   useEffect(() => {
     dispatch(getUserList());
@@ -36,85 +37,19 @@ function UserList() {
     setEditedUserId(userId);
   };
 
+  // handleBan with the banUser hook
   const handleBan = (_id: string, isBanned: boolean, email: string) => {
-    if (_id !== currentUser?._id) {
-      const url = `${BASE_URL}/api/v1/users/${_id}/update-restriction`;
-
-      axios
-        .put(
-          url,
-          {},
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          if (response.status === 201) {
-            const status = isBanned ? "Unbanned" : "Banned";
-            alert(`Successfully updated the status for ${email} to ${status}`);
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 401) {
-            console.log(error);
-            return;
-          }
-        });
-    }
+    banUser(_id, isBanned, email);
   };
 
+  // handleChangeRole with the changeUserRole hook
   const handleChangeRole = (_id: string, role: string, email: string) => {
-    const url = `${BASE_URL}/api/v1/users/${_id}/update-role`;
-
-    axios
-      .put(
-        url,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status === 201) {
-          role = role === "admin" ? "user" : "admin";
-          alert(`Successfully updated the role for ${email} to ${role}`);
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          console.log(error);
-          return;
-        }
-      });
+    changeUserRole(_id, role, email);
   };
 
+  // handleDelete with the deleteUser hook
   const handleDelete = (userId: string) => {
-    const url = `${BASE_URL}/api/v1/users/${userId}`;
-
-    axios
-      .delete(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 403) {
-          alert(`Successfully Deleted`);
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          console.log(error);
-          return;
-        }
-      });
+    deleteUser(userId);
   };
 
   if (isLoading) {
