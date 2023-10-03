@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { BASE_URL } from "../api/api";
@@ -9,8 +8,7 @@ const useBanUser = () => {
   const currentUser = useSelector(
     (state: RootState) => state.user.userInformation
   );
-
-  const [token] = useState(localStorage.getItem("token")); // You might want to store your token in state or context
+  const userToken = useSelector((state: RootState) => state.user.token);
 
   const banUser = (_id: string, isBanned: boolean, email: string) => {
     if (_id !== currentUser?._id) {
@@ -23,7 +21,7 @@ const useBanUser = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         )

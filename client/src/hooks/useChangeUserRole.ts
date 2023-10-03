@@ -1,10 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { BASE_URL } from "../api/api";
+import { RootState } from "../redux/store";
 
 const useChangeUserRole = () => {
-  const [token] = useState(localStorage.getItem("token")); // You might want to store your token in state or context
+  const userToken = useSelector((state: RootState) => state.user.token);
 
   const changeUserRole = (_id: string, role: string, email: string) => {
     const url = `${BASE_URL}/api/v1/users/${_id}/update-role`;
@@ -16,7 +17,7 @@ const useChangeUserRole = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       )

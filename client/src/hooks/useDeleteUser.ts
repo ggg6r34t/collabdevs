@@ -1,10 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
 
 import { BASE_URL } from "../api/api";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 const useDeleteUser = () => {
-  const [token] = useState(localStorage.getItem("token")); // You might want to store your token in state or context
+  const userToken = useSelector((state: RootState) => state.user.token);
 
   const deleteUser = (userId: string) => {
     const url = `${BASE_URL}/api/v1/users/${userId}`;
@@ -13,7 +14,7 @@ const useDeleteUser = () => {
       .delete(url, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userToken}`,
         },
       })
       .then((response) => {
