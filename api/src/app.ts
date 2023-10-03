@@ -59,8 +59,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const corsOptions = {
-  origin: [process.env.DEV_ORIGIN!, process.env.PROD_ORIGIN!], // client's domain
-  methods: "GET,PUT,PATCH,POST,DELETE",
+  origin: [process.env.DEV_ORIGIN!, process.env.PROD_ORIGIN!], // our frontend URL
+  methods: "GET,PUT,POST,DELETE",
   credentials: true,
   exposedHeaders: ["Authorization", "X-Custom-Header"],
 };
