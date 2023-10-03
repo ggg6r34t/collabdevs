@@ -52,7 +52,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: "https://bucolic-brioche-12d61d.netlify.app/", // our domain
+  origin: "https://bucolic-brioche-12d61d.netlify.app", // our domain
   methods: "GET,PUT,POST,DELETE",
   credentials: true,
   exposedHeaders: ["Authorization", "X-Custom-Header"],
