@@ -9,7 +9,7 @@ const AuthWithX = () => {
 
   const handleXAuth = () => {
     setError("");
-    window.open(`${BASE_URL}/api/v1/users/auth/twitter`, "_self");
+    window.open(`${BASE_URL}/api/v1/auth/twitter`, "_self");
   };
 
   const handleXLoginError = () => {

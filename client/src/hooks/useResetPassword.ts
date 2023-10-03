@@ -5,7 +5,7 @@ export const useResetPassword = () => {
   const resetPassword = async (resetToken: string, newPassword: string) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/v1/users/reset-password-confirm`,
+        `${BASE_URL}/api/v1/auth/reset-password-confirm`,
         { resetToken, newPassword }
       );
 

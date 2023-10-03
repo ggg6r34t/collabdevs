@@ -7,25 +7,15 @@ import {
   deleteUserByIdController,
   getUserByIdController,
   getUserListController,
-  githubAuthController,
-  twitterAuthController,
-  googleAuthController,
-  logInUserController,
   updateRestrictionController,
   updateRoleController,
   updateUserInfoController,
   uploadAvatarController,
   uploadBannerController,
-  logoutUserController,
-  changePasswordController,
-  requestPasswordResetController,
-  resetPasswordController,
 } from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
-import verifyToken from "../middlewares/verifyToken";
 
 const router = Router();
-const CLIENT_URL = "http://localhost:3000/";
 
 // multer configuration for file name and upload storage location
 const storage = multer.diskStorage({
@@ -56,16 +46,6 @@ const upload = multer({ storage });
 //get: register user
 router.post("/register", createUserController);
 
-//post: login user
-router.post("/signin", logInUserController, passport.authenticate("jwt"));
-
-//get: login user
-router.post(
-  "/signout",
-  passport.authenticate("jwt", { session: false }),
-  logoutUserController
-);
-
 //get: get userbyID
 router.get(
   "/:id",
@@ -81,32 +61,14 @@ router.get(
   getUserListController
 );
 
-//put: update a user info
+//put: update user info
 router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   updateUserInfoController
 );
 
-router.post(
-  "/change-password",
-  passport.authenticate("jwt", { session: false }),
-  changePasswordController
-);
-
-router.post(
-  "/reset-password",
-  passport.authenticate("jwt", { session: false }),
-  requestPasswordResetController
-);
-
-router.post(
-  "/reset-password-confirm",
-  passport.authenticate("jwt", { session: false }),
-  resetPasswordController
-);
-
-// post: user upload avatar
+// post: user uploads avatar
 router.post(
   "/:id/upload-avatar",
   upload.single("avatar"),
@@ -114,7 +76,7 @@ router.post(
   uploadAvatarController
 );
 
-// post: user upload banner
+// post: user uploads banner
 router.post(
   "/:id/upload-banner",
   upload.single("banner"),
@@ -122,7 +84,7 @@ router.post(
   uploadBannerController
 );
 
-//put: updae role (admin/user)
+//put: update user role (admin/user)
 router.put(
   "/:userId/update-role",
   passport.authenticate("jwt", { session: false }),
@@ -130,7 +92,7 @@ router.put(
   updateRoleController
 );
 
-//put: update restrictions (ban/unban user)
+//put: update user restrictions (ban/unban user)
 router.put(
   "/:userId/update-restriction",
   passport.authenticate("jwt", { session: false }),
@@ -145,52 +107,5 @@ router.delete(
   adminCheck,
   deleteUserByIdController
 );
-
-// twitter user
-router.get(
-  "/auth/twitter",
-  passport.authenticate("twitter", { scope: ["profile", "email"] })
-);
-
-router.get(
-  "/auth/twitter/callback",
-  passport.authenticate("twitter", {
-    successRedirect: CLIENT_URL,
-    failureRedirect: "/login",
-  }),
-  twitterAuthController
-);
-
-// github user
-router.get(
-  "/auth/github",
-  passport.authenticate("github", { scope: ["profile", "email"] })
-);
-
-router.get(
-  "/auth/github/callback",
-  passport.authenticate("github", {
-    successRedirect: CLIENT_URL,
-    failureRedirect: "/login",
-  }),
-  githubAuthController
-);
-
-// google user
-router.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: CLIENT_URL,
-    failureRedirect: "/login",
-  }),
-  googleAuthController
-);
-
-router.get("/verify", verifyToken);
 
 export default router;

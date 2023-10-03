@@ -12,15 +12,21 @@ export const useSignIn = () => {
 
   const signIn = async (logInCredentials: LoginCredentials) => {
     try {
-      const endpoint = "/api/v1/users/signin";
+      const endpoint = "/api/v1/auth/signin";
       const response = await axios.post(endpoint, logInCredentials);
 
       if (response.status === 200) {
         // store the userData and userToken securely in local storage
-        const userData: User = response.data.userData; // from data object. get and assign the token
+        const user = response.data.userData;
+        const userToken = response.data.token; // from data object. get and assign the token
 
         // save userData to redux
-        setUserSession(userData);
+        const userWithData: User = {
+          ...user,
+          token: userToken,
+        };
+
+        setUserSession(userWithData);
 
         navigate("/");
       }

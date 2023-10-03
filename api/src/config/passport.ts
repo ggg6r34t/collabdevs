@@ -49,7 +49,7 @@ export const twitterStrategy = new TwitterStrategy(
   {
     consumerKey: TWITTER_CONSUMER_KEY, // API Key
     consumerSecret: TWITTER_CONSUMER_SECRET, //API Key Secret
-    callbackURL: "/api/v1/users/auth/twitter/callback",
+    callbackURL: "/api/v1/auth/twitter/callback",
   },
   async (_: any, __: any, profile: any, done: any) => {
     try {
@@ -80,7 +80,7 @@ export const githubStrategy = new GitHubStrategy(
   {
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "/api/v1/users/auth/github/callback",
+    callbackURL: "/api/v1/auth/github/callback",
   },
 
   async (_: any, __: any, profile: any, done: any) => {
@@ -108,7 +108,7 @@ export const googleStrategy = new GoogleStrategy(
   {
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/v1/users/auth/google/callback",
+    callbackURL: "/api/v1/auth/google/callback",
   },
   async (accessToken, refreshToken, profile, done) => {
     try {

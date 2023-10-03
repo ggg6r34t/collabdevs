@@ -17,7 +17,7 @@ const AuthWithGoogle = () => {
 
   const handleGoogleAuth = async () => {
     setError("");
-    window.open(`${BASE_URL}/api/v1/users/auth/google`, "_self");
+    window.open(`${BASE_URL}/api/v1/auth/google`, "_self");
   };
 
   const handleGoogleLoginError = () => {
@@ -25,7 +25,7 @@ const AuthWithGoogle = () => {
   };
 
   //   try {
-  //     const res = await axios.get(`${BASE_URL}/api/v1/users/auth/google`, {
+  //     const res = await axios.get(`${BASE_URL}/api/v1/auth/google`, {
   //       withCredentials: true,
   //     });
 
