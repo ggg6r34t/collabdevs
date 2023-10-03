@@ -1,3 +1,9 @@
+export type LoginCredentials = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
+
 export type Post = {
   _id: string;
   title: string;
@@ -25,6 +31,7 @@ export type User = {
   banner: string;
   createdAt: string;
   updatedAt: string;
+  rememberMe: boolean;
 };
 
 export type Comment = Post & {

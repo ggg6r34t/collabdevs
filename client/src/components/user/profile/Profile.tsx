@@ -88,7 +88,21 @@ function Profile() {
           <h2 className="text-lg font-semibold">
             {currentUser.firstName} {currentUser?.lastName}
           </h2>
-          <p className="text-gray-600 dark:text-white">{currentUser.email}</p>
+
+          {currentUser.email ? (
+            <p className="text-gray-600 dark:text-white">
+              Email: {currentUser.email}
+            </p>
+          ) : (
+            <div>
+              <p className="text-gray-600 dark:text-white">
+                Email: Not provided
+              </p>
+              <button onClick={() => console.log("Clicked")}>
+                Provide Email
+              </button>
+            </div>
+          )}
           <p className="text-gray-600 dark:text-white">
             Location: City, Country
           </p>

@@ -10,6 +10,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "../../../redux/store";
+import { useUserSession } from "../../../hooks/useUserSession";
 import { getUserList } from "../../../redux/thunk/users";
 import { BASE_URL } from "../../../api/api";
 
@@ -22,6 +23,11 @@ function UserList() {
     (state: RootState) => state.user.userInformation
   );
 
+  // useUserSession hook to retrieve user session data
+  // userId also exists in the deconstruction
+  const { getUserSession } = useUserSession();
+  const { token } = getUserSession();
+
   useEffect(() => {
     dispatch(getUserList());
   }, [dispatch]);
@@ -32,7 +38,6 @@ function UserList() {
 
   const handleBan = (_id: string, isBanned: boolean, email: string) => {
     if (_id !== currentUser?._id) {
-      const token = localStorage.getItem("userToken");
       const url = `${BASE_URL}/api/v1/users/${_id}/update-restriction`;
 
       axios
@@ -62,7 +67,6 @@ function UserList() {
   };
 
   const handleChangeRole = (_id: string, role: string, email: string) => {
-    const token = localStorage.getItem("userToken");
     const url = `${BASE_URL}/api/v1/users/${_id}/update-role`;
 
     axios
@@ -91,7 +95,6 @@ function UserList() {
   };
 
   const handleDelete = (userId: string) => {
-    const token = localStorage.getItem("userToken");
     const url = `${BASE_URL}/api/v1/users/${userId}`;
 
     axios
@@ -131,7 +134,9 @@ function UserList() {
               <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
               <div>
                 <h3 className="text-lg font-semibold">
-                  First Name: {user.firstName}
+                  First Name:{" "}
+                  {user.firstName.charAt(0).toUpperCase() +
+                    user.firstName.slice(1)}
                 </h3>
                 <p className="text-gray-600">Email: {user.email}</p>
                 <p className="text-gray-600">
