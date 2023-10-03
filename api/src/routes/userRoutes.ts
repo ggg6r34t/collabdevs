@@ -22,6 +22,7 @@ import {
   resetPasswordController,
 } from "../controllers/userControllers";
 import adminCheck from "../middlewares/adminCheck";
+import verifyToken from "../middlewares/verifyToken";
 
 const router = Router();
 const CLIENT_URL = "http://localhost:3000/";
@@ -189,5 +190,7 @@ router.get(
   }),
   googleAuthController
 );
+
+router.get("/verify", verifyToken);
 
 export default router;
