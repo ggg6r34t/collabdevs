@@ -12,7 +12,7 @@ export const useSignIn = () => {
 
   const signIn = async (logInCredentials: LoginCredentials) => {
     try {
-      const endpoint = "/api/v1/users/signin";
+      const endpoint = "/api/v1/auth/signin";
       const response = await axios.post(endpoint, logInCredentials);
 
       if (response.status === 200) {

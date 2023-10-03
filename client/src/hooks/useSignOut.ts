@@ -22,7 +22,7 @@ export const useSignOut = () => {
 
       if (token) {
         const response = await axios.post(
-          `${BASE_URL}/api/v1/users/signout`,
+          `${BASE_URL}/api/v1/auth/signout`,
 
           {
             headers: {

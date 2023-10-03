@@ -1,12 +1,11 @@
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { BASE_URL } from "../api/api";
 import { RootState } from "../redux/store";
 import { useClearUserSession } from "./useClearUserSession";
+import { useSignOut } from "./useSignOut";
 
 export const useAutoSignOut = () => {
   const userInformation = useSelector(
@@ -14,6 +13,8 @@ export const useAutoSignOut = () => {
   );
 
   const navigate = useNavigate();
+
+  const { signOut } = useSignOut();
 
   // useClearUserSession hook to get the clearUserSession function
   const { clearUserSession } = useClearUserSession();
@@ -70,24 +71,7 @@ export const useAutoSignOut = () => {
         }
 
         // token is expired, proceed with sign-out
-        const response = await axios.post(
-          `${BASE_URL}/api/v1/users/autoSignout`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          // clear user session (token, cookies, etc.)
-          clearUserSession();
-
-          navigate("/signin");
-        } else {
-          console.error("Sign out failed");
-        }
+        signOut();
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {

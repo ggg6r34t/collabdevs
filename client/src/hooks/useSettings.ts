@@ -18,7 +18,7 @@ export function useSettings() {
     try {
       const { token } = getUserSession();
       const response = await axios.post(
-        `${BASE_URL}/api/v1/users/change-password`,
+        `${BASE_URL}/api/v1/auth/change-password`,
         { currentPassword, newPassword },
         {
           headers: {
