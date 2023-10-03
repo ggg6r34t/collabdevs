@@ -17,16 +17,10 @@ export const useSignIn = () => {
 
       if (response.status === 200) {
         // store the userData and userToken securely in local storage
-        const user = response.data.userData;
-        const userToken = response.data.token; // from data object. get and assign the token
+        const userData = response.data.userData; // from data object. get and assign the token
 
         // save userData to redux
-        const userWithData: User = {
-          ...user,
-          token: userToken,
-        };
-
-        setUserSession(userWithData);
+        setUserSession(userData);
 
         navigate("/");
       }
