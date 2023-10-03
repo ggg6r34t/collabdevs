@@ -1,12 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { RateLimiterMemory } from "rate-limiter-flexible";
-import rateLimit from "express-rate-limit";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 
-import { UnauthorizedError } from "../helpers/apiError";
+import { NotFoundError, UnauthorizedError } from "../helpers/apiError";
 import {
   createUserService,
   deleteUserByIdService,
@@ -58,19 +56,6 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const EXPIRATION_TIME = "1h";
 
-// rate limiting middleware for sign-in attempts
-const rateLimiter = new RateLimiterMemory({
-  points: 5, //  login attempts allowed
-  duration: 60,
-});
-
-// rate limiting middleware for password change
-const passwordChangeLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // number of requests per windowMs
-  message: { error: "Too many requests. Please try again later." },
-});
-
 // generate a reset token with an expiration time of 1 hour
 const generateResetToken = () => {
   const resetToken = uuidv4();
@@ -87,31 +72,74 @@ export const createUserController = async (
 ) => {
   const { email, password, firstName, lastName, userName, avatar } = req.body;
 
-  // can add validation logic to check fields are not empty
-  if (password !== "") {
+  try {
+    // check if the email already exists
+    let existingUser: UserDocument | null;
     try {
-      //hash password
-
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      const userInformation = new User({
-        email: email.toLowerCase(),
-        password: hashedPassword,
-        firstName,
-        lastName,
-        userName,
-        avatar,
-      });
-
-      const newUser = await createUserService(userInformation);
-
-      res.status(201).json(newUser);
+      existingUser = await findUserByEmailService(email.toLowerCase());
     } catch (error) {
-      next(error);
+      // check if NotFoundError equals null then proceed with user creation
+      if (error instanceof NotFoundError) {
+        existingUser = null;
+      } else {
+        throw error;
+      }
     }
-  } else {
-    res.status(500).send("Password required");
+
+    if (existingUser) {
+      if (
+        existingUser.googleId ||
+        existingUser.twitterId ||
+        existingUser.githubId
+      ) {
+        // user signed in with at least one of Google, Twitter, or GitHub using this email, allow email/password signup
+        if (!existingUser.password) {
+          // check if password doesn't already exist in db
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(password, salt);
+          existingUser.password = hashedPassword;
+        } else {
+          // else if user already registered with this email, reject signup
+          res.status(409).json({ message: "Email already registered" });
+        }
+        // update other user information
+        existingUser.firstName = firstName;
+        existingUser.lastName = lastName;
+        existingUser.userName = userName;
+        existingUser.avatar = avatar;
+
+        await existingUser.save();
+
+        res.status(200).json(existingUser);
+      } else {
+        // another user already registered with this email, reject signup
+        res.status(409).json({ message: "Email already registered" });
+      }
+    } else {
+      // email doesn't exist, create a new user as usual
+      // can add validation logic to check fields are not empty
+      if (password !== "") {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const userInformation = new User({
+          email: email.toLowerCase(),
+          password: hashedPassword,
+          firstName,
+          lastName,
+          userName,
+          avatar,
+        });
+
+        const newUser = await createUserService(userInformation);
+
+        res.status(201).json(newUser);
+      } else {
+        res.status(500).send("Password required");
+      }
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -124,13 +152,6 @@ export const logInUserController = async (
   const { email, password, rememberMe } = req.body;
 
   try {
-    // check if the IP address (or user identifier) is rate-limited
-    const rateLimiterResponse = await rateLimiter.consume(email);
-
-    if (rateLimiterResponse.consumedPoints > 4) {
-      throw new Error("Too many sign-in attempts. Please try again later.");
-    }
-
     const foundUserData = await findUserByEmailService(email.toLowerCase());
 
     if (!foundUserData) {
@@ -293,60 +314,55 @@ export const changePasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  passwordChangeLimiter(req, res, async () => {
-    const { newPassword } = req.body;
-    try {
-      const userId = req.params.id;
-      const currentUser = await getUserByIdService(userId);
+  const { newPassword } = req.body;
+  try {
+    const userId = req.params.id;
+    const currentUser = await getUserByIdService(userId);
 
-      if (!currentUser) {
-        return res.status(404).json({ error: "User not found" });
-      }
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-      // compare user in database with authenticated user
-      if (currentUser._id !== req.params.id) {
-        return res
-          .status(403)
-          .json({ error: "Unauthorized to change this password" });
-      }
+    // compare user in database with authenticated user
+    if (currentUser._id !== req.params.id) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to change this password" });
+    }
 
-      // validate the new password
-      if (!isValidPassword(newPassword)) {
+    // validate the new password
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({
+        error:
+          "Invalid password. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.",
+      });
+    }
+
+    const oldPassword = currentUser?.password;
+
+    if (oldPassword !== undefined) {
+      const passwordChanged = !(await bcrypt.compare(newPassword, oldPassword));
+
+      if (passwordChanged) {
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        const updatedInformation = {
+          password: hashedPassword,
+        };
+
+        return res.status(200).json({
+          message: "Password changed successfully",
+          updatedInformation,
+        });
+      } else {
         return res.status(400).json({
-          error:
-            "Invalid password. Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.",
+          error: "New password must be different from the current password",
         });
       }
-
-      const oldPassword = currentUser?.password;
-
-      if (oldPassword !== undefined) {
-        const passwordChanged = !(await bcrypt.compare(
-          newPassword,
-          oldPassword
-        ));
-
-        if (passwordChanged) {
-          const saltRounds = 10;
-          const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-          const updatedInformation = {
-            password: hashedPassword,
-          };
-
-          return res.status(200).json({
-            message: "Password changed successfully",
-            updatedInformation,
-          });
-        } else {
-          return res.status(400).json({
-            error: "New password must be different from the current password",
-          });
-        }
-      }
-    } catch (error) {
-      next(error);
     }
-  });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const requestPasswordResetController = async (
