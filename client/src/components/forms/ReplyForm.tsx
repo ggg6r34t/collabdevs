@@ -15,9 +15,7 @@ type Props = {
 };
 
 function ReplyForm({ comment, post }: Props) {
-  const userInformation = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
+  const userToken = useSelector((state: RootState) => state.user.token);
   const [replyContent, setReplyContent] = useState("");
 
   const handleContentChange = (value: string) => {
@@ -63,7 +61,7 @@ function ReplyForm({ comment, post }: Props) {
         <button
           className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none"
           onClick={() => {
-            createReply(replyData, userInformation?.token);
+            createReply(replyData, userToken!);
           }}
         >
           Add Reply

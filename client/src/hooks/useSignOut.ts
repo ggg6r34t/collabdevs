@@ -7,10 +7,7 @@ import { RootState } from "../redux/store";
 import { useClearUserSession } from "./useClearUserSession";
 
 export const useSignOut = () => {
-  const userInformation = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
-
+  const userToken = useSelector((state: RootState) => state.user.token);
   const navigate = useNavigate();
 
   // useClearUserSession hook to get the clearUserSession function
@@ -18,15 +15,13 @@ export const useSignOut = () => {
 
   const signOut = async () => {
     try {
-      const token = userInformation?.token;
-
-      if (token) {
+      if (userToken) {
         const response = await axios.post(
           `${BASE_URL}/api/v1/auth/signout`,
 
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

@@ -8,9 +8,7 @@ import { useClearUserSession } from "./useClearUserSession";
 import { useSignOut } from "./useSignOut";
 
 export const useAutoSignOut = () => {
-  const userInformation = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
+  const userToken = useSelector((state: RootState) => state.user.token);
 
   const navigate = useNavigate();
 
@@ -36,10 +34,8 @@ export const useAutoSignOut = () => {
 
   const autoSignOut = async () => {
     try {
-      const token = userInformation?.token;
-
-      if (token) {
-        const tokenExpiration = getTokenExpiration(token); // Get the token expiration
+      if (userToken) {
+        const tokenExpiration = getTokenExpiration(userToken); // Get the token expiration
 
         const currentTime = Math.floor(Date.now() / 1000);
 

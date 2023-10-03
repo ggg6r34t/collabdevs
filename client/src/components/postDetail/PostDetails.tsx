@@ -28,6 +28,7 @@ function PostDetails() {
   const userInformation = useSelector(
     (state: RootState) => state.user.userInformation
   );
+  const userToken = useSelector((state: RootState) => state.user.token);
   const showShareModal = useSelector(
     (state: RootState) =>
       state.posts.showShareModal[postDetail?._id || ""] || false
@@ -43,13 +44,11 @@ function PostDetails() {
   const param = useParams();
   const postId = param.postId as string | undefined;
 
-  const token = userInformation?.token;
-
   useEffect(() => {
     if (postId) {
-      fetchDispatch(fetchPostDetails(postId, token));
+      fetchDispatch(fetchPostDetails(postId, userToken!));
     }
-  }, [fetchDispatch, postId, param, token]);
+  }, [fetchDispatch, postId, param, userToken]);
 
   // function to upvote the post
   const handleUpvote = async (postId: string) => {
