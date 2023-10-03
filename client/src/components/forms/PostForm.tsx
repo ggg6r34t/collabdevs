@@ -12,9 +12,7 @@ import { BASE_URL } from "../../api/api";
 import TrendingProjects from "../trending/TrendingProjects";
 
 function PostForm() {
-  const userInformation = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
+  const userToken = useSelector((state: RootState) => state.user.token);
   const [title, setTitle] = useState("");
   const [postContent, setPostContent] = useState("");
 
@@ -90,7 +88,7 @@ function PostForm() {
           <button
             className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400"
             onClick={() => {
-              createPost(postData, userInformation?.token);
+              createPost(postData, userToken!);
             }}
           >
             Create Post

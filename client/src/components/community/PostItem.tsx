@@ -27,6 +27,7 @@ function PostItem({ post }: Props) {
   const userInformation = useSelector(
     (state: RootState) => state.user.userInformation
   );
+  const userToken = useSelector((state: RootState) => state.user.token);
   const showShareModal = useSelector(
     (state: RootState) => state.posts.showShareModal[post._id] || false
   );
@@ -145,7 +146,7 @@ function PostItem({ post }: Props) {
     navigate(`/posts/${post._id}`);
   };
 
-  console.log(userInformation?.token, "postItem");
+  console.log(userToken!, "postItem");
 
   const handleShareClick = () => {
     dispatch(postActions.setShowShareModal({ [post._id]: true }));
@@ -156,7 +157,7 @@ function PostItem({ post }: Props) {
       setDownvoted(false);
     }
 
-    handleUpvote(post._id, userInformation?._id, userInformation?.token);
+    handleUpvote(post._id, userInformation?._id, userToken!);
     setUpvoted(true);
     setDownvoted(false);
   };
@@ -166,7 +167,7 @@ function PostItem({ post }: Props) {
       setDownvoted(false);
     }
 
-    handleDownvote(post._id, userInformation?._id, userInformation?.token);
+    handleDownvote(post._id, userInformation?._id, userToken!);
     setDownvoted(true);
     setUpvoted(false);
   };
