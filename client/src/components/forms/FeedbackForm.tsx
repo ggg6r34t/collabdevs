@@ -83,49 +83,51 @@ function FeedbackForm() {
   };
 
   return (
-    <div className="max-w-xl mx-auto my-8 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Give Feedback</h2>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          className={`w-full dark:bg-slate-800 px-3 py-2 border rounded-md focus:outline-none focus:ring ${
-            formState.isValid ? "focus:border-blue-400" : "border-red-500"
-          }`}
-          rows={4}
-          placeholder="Your feedback..."
-          value={formState.feedback}
-          onChange={(e) => {
-            setFormState({
-              ...formState,
-              feedback: e.target.value,
-              isValid: true,
-            });
-          }}
-          onBlur={() => {
-            if (formState.feedback.trim() === "") {
-              setFormState({ ...formState, isValid: false });
-            }
-          }}
-          required
-        ></textarea>
-        {!formState.isValid && (
-          <p className="text-red-500 text-sm mt-2">
-            Please provide valid feedback.
-          </p>
-        )}
-        {formState.error && (
-          <p className="text-red-500 text-sm mt-2">{formState.error}</p>
-        )}
-        <div className="mt-4">
-          <button
-            className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400"
-            type="submit"
-            disabled={formState.isSubmitting}
-          >
-            {formState.isSubmitting ? "Submitting..." : "Submit Feedback"}
-          </button>
-        </div>
-      </form>
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+    <div className="container max-w-xl min-h-[795px] mx-auto">
+      <div className="my-8 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-4">Give Feedback</h2>
+        <form onSubmit={handleSubmit}>
+          <textarea
+            className={`w-full dark:bg-slate-800 px-3 py-2 border rounded-md focus:outline-none focus:ring ${
+              formState.isValid ? "focus:border-blue-400" : "border-red-500"
+            }`}
+            rows={4}
+            placeholder="Your feedback..."
+            value={formState.feedback}
+            onChange={(e) => {
+              setFormState({
+                ...formState,
+                feedback: e.target.value,
+                isValid: true,
+              });
+            }}
+            onBlur={() => {
+              if (formState.feedback.trim() === "") {
+                setFormState({ ...formState, isValid: false });
+              }
+            }}
+            required
+          ></textarea>
+          {!formState.isValid && (
+            <p className="text-red-500 text-sm mt-2">
+              Please provide valid feedback.
+            </p>
+          )}
+          {formState.error && (
+            <p className="text-red-500 text-sm mt-2">{formState.error}</p>
+          )}
+          <div className="mt-4">
+            <button
+              className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400"
+              type="submit"
+              disabled={formState.isSubmitting}
+            >
+              {formState.isSubmitting ? "Submitting..." : "Submit Feedback"}
+            </button>
+          </div>
+        </form>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      </div>
     </div>
   );
 }

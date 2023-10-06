@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { ChangeEvent } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Posts from "./Posts";
 import SearchForm from "../forms/SearchForm";
+import { RootState } from "../../redux/store";
+import { postActions } from "../../redux/slices/post";
 
 // sample data for posts, trending topics, and user profiles
 const mockTrendingTopics = [
@@ -25,10 +28,18 @@ const mockUserProfiles = [
 ];
 
 function CommunityPage() {
-  const [selectedSort, setSelectedSort] = useState("latest");
+  const selectedSort = useSelector(
+    (state: RootState) => state.posts.selectedSort
+  );
+  const dispatch = useDispatch();
+
+  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const newSort = event.target.value;
+    dispatch(postActions.setSelectedSort(newSort));
+  };
 
   return (
-    <div className="container max-w-[1195px] mx-auto mt-12">
+    <div className="container max-w-[1195px] min-h-[779px] mx-auto mt-12">
       <div className="grid grid-cols-3 gap-4">
         {/* search, filter, and trending topics */}
         <div className="mr-2 col-span-1">
@@ -40,7 +51,7 @@ function CommunityPage() {
               <label className="block text-sm font-semibold">Sort by:</label>
               <select
                 value={selectedSort}
-                onChange={(e) => setSelectedSort(e.target.value)}
+                onChange={handleSortChange}
                 className="w-full dark:bg-slate-800 dark:text-white px-2 py-1 border rounded-md"
               >
                 <option value="latest">Latest</option>

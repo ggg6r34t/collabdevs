@@ -24,8 +24,6 @@ function SavedPostItem({ savedPost, onRemove }: Props) {
     setIsExpanded(!isExpanded);
   };
 
-  console.log(savedPost);
-
   return (
     <div className="w-full max-w-xl mx-auto my-4">
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md">
@@ -33,7 +31,7 @@ function SavedPostItem({ savedPost, onRemove }: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-800 dark:hover:text-gray-600"
                 onClick={toggleExpand}
               >
                 <FontAwesomeIcon
@@ -62,7 +60,9 @@ function SavedPostItem({ savedPost, onRemove }: Props) {
             {formatDistanceToNow(new Date(postId.createdAt))} hour ago
           </p>
           {isExpanded && (
-            <div className="text-gray-800 mt-2">{postId.content}</div>
+            <div className="text-gray-800 dark:text-white mt-2">
+              {postId.content}
+            </div>
           )}
         </div>
       </div>
