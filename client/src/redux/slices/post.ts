@@ -8,10 +8,7 @@ type PostState = {
   error: Error | null;
   isLoading: boolean;
   showShareModal: { [postId: string]: boolean };
-  selectedSort: string;
-  isSearchActive: boolean;
-  searchType: string;
-  searchResults: Post[]; // array type notation of Post or User types
+  currentOpenPostId: string | null;
 };
 
 const initialState: PostState = {
@@ -20,10 +17,7 @@ const initialState: PostState = {
   error: null,
   isLoading: true,
   showShareModal: {},
-  selectedSort: "latest",
-  isSearchActive: false, // initialize the flag as false
-  searchType: "",
-  searchResults: [],
+  currentOpenPostId: null,
 };
 
 const postsSlice = createSlice({
@@ -39,13 +33,22 @@ const postsSlice = createSlice({
     },
     setShowShareModal: (
       state,
-      action: PayloadAction<{ [postId: string]: boolean }>
+      action: PayloadAction<{ postId: string; show: boolean }>
     ) => {
-      state.showShareModal = { ...state.showShareModal, ...action.payload };
+      const { postId, show } = action.payload;
+
+      if (show) {
+        // if 'show' is true, set the currentOpenPostId to postId
+        state.currentOpenPostId = postId;
+      } else if (state.currentOpenPostId === postId) {
+        // if false and the currentOpenPostId matches postId, reset it
+        state.currentOpenPostId = null;
+      }
+
+      // update the showShareModal object for the specific postId
+      state.showShareModal = { ...state.showShareModal, [postId]: show };
     },
-    setSelectedSort: (state, action: PayloadAction<string>) => {
-      state.selectedSort = action.payload;
-    },
+
     searchPost(state, action: PayloadAction<{ query: string; type: string }>) {
       const { query, type } = action.payload;
 

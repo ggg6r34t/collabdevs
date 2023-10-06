@@ -28,8 +28,8 @@ function PostItem({ post }: Props) {
     (state: RootState) => state.user.userInformation
   );
   const userToken = useSelector((state: RootState) => state.user.token);
-  const showShareModal = useSelector(
-    (state: RootState) => state.posts.showShareModal[post._id] || false
+  const currentOpenPostId = useSelector(
+    (state: RootState) => state.posts.currentOpenPostId
   );
   const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -105,9 +105,6 @@ function PostItem({ post }: Props) {
         postId,
       });
 
-      console.log(postId, "postId");
-      console.log(userId, "userId");
-
       if (response.status === 201) {
         setIsSaved(false);
       } else {
@@ -146,10 +143,13 @@ function PostItem({ post }: Props) {
     navigate(`/posts/${post._id}`);
   };
 
-  console.log(userToken!, "postItem");
+  // checks if the modal should be shown for the current post
+  const show = currentOpenPostId === post._id;
 
+  // toggle the showShareModal state for the current post
+  // if 'show' is currently true, clicking will hide the modal and vice versa (!show).
   const handleShareClick = () => {
-    dispatch(postActions.setShowShareModal({ [post._id]: true }));
+    dispatch(postActions.setShowShareModal({ postId: post._id, show: !show }));
   };
 
   const handleUpvoteClick = () => {
@@ -240,7 +240,7 @@ function PostItem({ post }: Props) {
           </div>
         </div>
       </div>
-      {showShareModal && <ShareButtons post={post} />}
+      {show && <ShareButtons post={post} />}
       {showComments && <CommentSection post={post} />}
     </div>
   );
