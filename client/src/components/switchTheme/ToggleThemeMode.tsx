@@ -27,8 +27,6 @@ function ToggleThemeMode() {
     dispatch(themeActions.switchTheme(!darkMode));
   };
 
-  console.log(darkMode, "darkMode");
-
   return (
     <div>
       <label

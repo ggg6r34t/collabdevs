@@ -7,6 +7,7 @@ type PostState = {
   users: User[];
   error: Error | null;
   showShareModal: { [postId: string]: boolean };
+  currentOpenPostId: string | null;
 };
 
 const initialState: PostState = {
@@ -14,6 +15,7 @@ const initialState: PostState = {
   users: [],
   error: null,
   showShareModal: {},
+  currentOpenPostId: null,
 };
 
 const postsSlice = createSlice({
@@ -28,10 +30,22 @@ const postsSlice = createSlice({
     },
     setShowShareModal: (
       state,
-      action: PayloadAction<{ [postId: string]: boolean }>
+      action: PayloadAction<{ postId: string; show: boolean }>
     ) => {
-      state.showShareModal = { ...state.showShareModal, ...action.payload };
+      const { postId, show } = action.payload;
+
+      if (show) {
+        // if 'show' is true, set the currentOpenPostId to postId
+        state.currentOpenPostId = postId;
+      } else if (state.currentOpenPostId === postId) {
+        // if false and the currentOpenPostId matches postId, reset it
+        state.currentOpenPostId = null;
+      }
+
+      // update the showShareModal object for the specific postId
+      state.showShareModal = { ...state.showShareModal, [postId]: show };
     },
+
     searchPost(state, action: PayloadAction<{ query: string; type: string }>) {
       const { query, type } = action.payload;
       if (type === "topic") {
