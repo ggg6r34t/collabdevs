@@ -57,7 +57,7 @@ router.get(
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
-  adminCheck,
+  // adminCheck, // lets think of what to do here so users can search other users
   getUserListController
 );
 
