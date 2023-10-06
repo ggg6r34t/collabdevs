@@ -6,6 +6,7 @@ type PostState = {
   posts: Post[];
   users: User[];
   error: Error | null;
+  isLoading: boolean;
   showShareModal: { [postId: string]: boolean };
   currentOpenPostId: string | null;
 };
@@ -14,6 +15,7 @@ const initialState: PostState = {
   posts: [],
   users: [],
   error: null,
+  isLoading: true,
   showShareModal: {},
   currentOpenPostId: null,
 };
@@ -24,6 +26,7 @@ const postsSlice = createSlice({
   reducers: {
     getPost: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
+      state.isLoading = false;
     },
     createPost: (state, action) => {
       state.posts.unshift(action.payload);
@@ -48,17 +51,30 @@ const postsSlice = createSlice({
 
     searchPost(state, action: PayloadAction<{ query: string; type: string }>) {
       const { query, type } = action.payload;
+
       if (type === "topic") {
-        const post = state.posts.filter((post) =>
+        const postResults = state.posts.filter((post) =>
           post.title.toLowerCase().includes(query.toLowerCase())
         );
-        state.posts = post;
-      } else if (type === "user") {
-        const filteredUsers = state.users.filter((user) =>
-          user.username.toLowerCase().includes(query.toLowerCase())
-        );
-        state.users = filteredUsers;
+        state.searchResults = postResults;
+        state.searchType = "post";
+      } else {
+        state.searchResults = [];
+        state.searchType = "";
       }
+
+      // check if the query is empty or if there are no search results
+      state.isSearchActive =
+        query.trim() !== "" || state.searchResults.length > 0;
+    },
+    setIsSearchActive: (state, action: PayloadAction<boolean>) => {
+      state.isSearchActive = action.payload;
+    },
+    resetSearchResults: (state) => {
+      // reset the search results by fetching the original posts
+      state.searchResults = [];
+      state.searchType = "";
+      state.isSearchActive = false;
     },
     createPostError: (state, action: PayloadAction<Error | null>) => {
       state.error = action.payload;
