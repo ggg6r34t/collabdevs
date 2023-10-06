@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { postActions } from "../../redux/slices/post";
+import { usersActions } from "../../redux/slices/users"; // Import the users slice
 
 function SearchForm() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -9,8 +10,12 @@ function SearchForm() {
   const dispatch = useDispatch();
 
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    setSearchQuery(event.target.value);
+    const newQuery = event.target.value;
+    setSearchQuery(newQuery);
     setErrorMessage("");
+    if (newQuery.trim() === "") {
+      dispatch(postActions.setIsSearchActive(false));
+    }
   }
 
   function handleSearch() {
@@ -31,16 +36,31 @@ function SearchForm() {
       .slice(searchType.length + 1)
       .trim();
 
-    dispatch(
-      postActions.searchPost({ query: queryWithoutKeyword, type: searchType })
-    );
+    if (searchType === "user") {
+      // Dispatch the searchUser action for user search
+      dispatch(
+        usersActions.searchUser({
+          query: queryWithoutKeyword,
+          type: searchType,
+        })
+      );
+    } else {
+      // Dispatch the searchPost action for topic search
+      dispatch(
+        postActions.searchPost({ query: queryWithoutKeyword, type: searchType })
+      );
+    }
+
+    dispatch(postActions.setIsSearchActive(true)); // true when a search is active
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") {
       event.preventDefault();
       handleSearch();
-      setSearchQuery("");
+    } else if (event.key === "Backspace" && searchQuery === "") {
+      dispatch(postActions.setIsSearchActive(false));
+      dispatch(postActions.resetSearchResults());
     }
   }
 

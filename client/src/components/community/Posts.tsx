@@ -10,9 +10,18 @@ import "react-quill/dist/quill.bubble.css";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchPostData } from "../../redux/thunk/posts";
 import Post from "./PostItem";
+import SearchResult from "../searchResult/SearchResult";
+import PostItemSkeleton from "../loaders/PostItemSkeleton";
 
 function Posts() {
   const posts = useSelector((state: RootState) => state.posts.posts);
+  const isLoading = useSelector((state: RootState) => state.posts.isLoading);
+  const isSearchActive = useSelector(
+    (state: RootState) => state.posts.isSearchActive
+  );
+  const selectedSort = useSelector(
+    (state: RootState) => state.posts.selectedSort
+  );
 
   const location = useLocation();
 
@@ -27,9 +36,32 @@ function Posts() {
     navigate("/create-post");
   }
 
+  // sort posts based on selectedSort
+  const sortedPosts = [...posts];
+  if (selectedSort === "latest") {
+    sortedPosts.sort((a, b) => {
+      // types for a and b
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    });
+  } else if (selectedSort === "popular") {
+    sortedPosts.sort((a, b) => {
+      // types for a and b
+      const votesA = a.voteScore || 0;
+      const votesB = b.voteScore || 0;
+      return votesB - votesA;
+    });
+  }
+
+  // skeleton post loader
+  if (isLoading) {
+    return <PostItemSkeleton />;
+  }
+
   return (
     <div className="col-span-2">
-      {location.pathname === "/" ? null : (
+      {location.pathname === "/" || isSearchActive ? null : (
         <div className="w-full bg-white dark:bg-slate-800 h-4 p-2 mb-4 rounded-lg shadow flex flex-row items-center justify-center">
           <div className="flex-shrink-0 w-10 h-10 bg-gray-300 rounded-full mr-4">
             <img
@@ -57,14 +89,20 @@ function Posts() {
 
       {/* filtered and sorted posts */}
       <div>
-        {posts.map((post) => (
-          <div
-            key={post._id}
-            className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
-          >
-            <Post post={post} />
-          </div>
-        ))}
+        {isSearchActive ? (
+          // render search results based on isSearchActive
+          <SearchResult />
+        ) : (
+          // render all posts when isSearchActive is false
+          sortedPosts.map((post) => (
+            <div
+              key={post._id}
+              className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
+            >
+              <Post post={post} />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

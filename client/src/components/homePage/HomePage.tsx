@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
+import { AppDispatch } from "../../redux/store";
+import { getUserList } from "../../redux/thunk/users";
 import Posts from "../community/Posts";
 
 // sample data for trending topics, and recommended connections
@@ -39,8 +43,14 @@ function HomePage() {
     setRecommendedConnections(mockRecommendedConnections);
   }, []);
 
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    fetchDispatch(getUserList());
+  }, [fetchDispatch]);
+
   return (
-    <div className="container max-w-[1195px] mx-auto mt-12">
+    <div className="container max-w-[1195px] min-h-[779px] mx-auto mt-12">
       <div className="grid grid-cols-3 gap-4">
         {/* trending topics */}
         <div className="mr-2 col-span-1">
