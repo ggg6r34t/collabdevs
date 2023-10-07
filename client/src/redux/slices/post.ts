@@ -4,6 +4,9 @@ import { Post, User } from "../../type/types";
 
 type PostState = {
   posts: Post[];
+  postsByUserId: {
+    [userId: string]: Post[];
+  };
   users: User[];
   error: Error | null;
   isLoading: boolean;
@@ -17,6 +20,7 @@ type PostState = {
 
 const initialState: PostState = {
   posts: [],
+  postsByUserId: {},
   users: [],
   error: null,
   isLoading: true,
@@ -35,6 +39,13 @@ const postsSlice = createSlice({
     getPost: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
       state.isLoading = false;
+    },
+    setPostsByUserId: (
+      state,
+      action: PayloadAction<{ userId: string; posts: Post[] }>
+    ) => {
+      const { userId, posts } = action.payload;
+      state.postsByUserId[userId] = posts;
     },
     createPost: (state, action) => {
       state.posts.unshift(action.payload);
