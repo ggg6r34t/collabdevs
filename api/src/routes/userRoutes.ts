@@ -5,6 +5,7 @@ import multer from "multer";
 import {
   createUserController,
   deleteUserByIdController,
+  getPostsByUserIdController,
   getUserByIdController,
   getUserListController,
   updateRestrictionController,
@@ -53,6 +54,13 @@ router.get(
   getUserByIdController
 );
 
+//get: get posts userbyID
+router.get(
+  "/:id/posts",
+  passport.authenticate("jwt", { session: false }),
+  getPostsByUserIdController
+);
+
 //get:  get the list of users
 router.get(
   "/",
@@ -63,7 +71,7 @@ router.get(
 
 //put: update user info
 router.put(
-  "/:id",
+  "/:id/update",
   passport.authenticate("jwt", { session: false }),
   updateUserInfoController
 );
