@@ -184,6 +184,7 @@ export const updateUserInfoController = async (
       "firstName",
       "lastName",
       "userName",
+      "headline",
       "bio",
       "email",
       "socialLinks",

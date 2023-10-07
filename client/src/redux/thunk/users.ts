@@ -47,13 +47,19 @@ export function getUserDetails(singleUserURL: string) {
 // function to get user posts
 export function getPostByUserId(userId: string) {
   const userPostById = `${BASE_URL}/api/v1/users/${userId}/posts`;
+  const token = localStorage.getItem("userToken");
+
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get(userPostById);
+      const response = await axios.get(userPostById, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const postData = response.data;
-
       // dispatch an action to update the Redux state with the fetched posts
-      dispatch(postActions.setPostsByUserId({ userId, posts: postData }));
+      dispatch(postActions.setPostsByUserId(postData));
     } catch (error) {
       console.error("Error fetching user posts:", error);
     }

@@ -19,6 +19,7 @@ function UserList() {
   const dispatch = useDispatch<AppDispatch>();
   const userList = useSelector((state: RootState) => state.userList.users);
   const isLoading = useSelector((state: RootState) => state.userList.isLoading);
+
   const currentUser = useSelector(
     (state: RootState) => state.user.userInformation
   );
