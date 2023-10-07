@@ -9,7 +9,10 @@ import { User } from "../type/types";
 export const useUpdateUserProfile = () => {
   const dispatch = useDispatch();
 
-  const updateUserProfile = async (userId: string, newUserData: User) => {
+  const updateUserProfile = async (
+    userId: string | undefined,
+    newUserData: Partial<User>
+  ) => {
     try {
       const token = localStorage.getItem("userToken");
       const response = await axios.put(
@@ -22,7 +25,7 @@ export const useUpdateUserProfile = () => {
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         const updatedUserData = response.data;
         dispatch(userActions.setUserData(updatedUserData));
       } else {

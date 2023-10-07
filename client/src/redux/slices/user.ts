@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { User, UserGoogle } from "../../type/types";
+import { Post, User, UserGoogle } from "../../type/types";
 
 type SingleUser = {
+  posts: Post[];
   userInformation: User | null;
   UserGoogle: UserGoogle;
   isLogin: boolean;
@@ -15,6 +16,7 @@ const storedUserState = localStorage.getItem("userState");
 const initialState: SingleUser = storedUserState
   ? JSON.parse(storedUserState)
   : {
+      posts: [],
       userInformation: null,
       UserGoogle: {
         _id: "",
@@ -39,6 +41,14 @@ const userSlice = createSlice({
       state.isLoading = true;
 
       localStorage.setItem("userState", JSON.stringify(state));
+    },
+    updateUserProfile: (state, action: PayloadAction<User>) => {
+      state.userInformation = { ...state.userInformation, ...action.payload };
+      localStorage.setItem("userState", JSON.stringify(state));
+    },
+    setUserPosts: (state, action: PayloadAction<Post[]>) => {
+      state.posts = action.payload;
+      state.isLoading = false;
     },
     setToken: (state, action: PayloadAction<string | null>) => {
       state.token = action.payload;
