@@ -4,20 +4,32 @@ import { Post, User } from "../../type/types";
 
 type PostState = {
   posts: Post[];
+  postsByUserId: {
+    [userId: string]: Post[];
+  };
   users: User[];
   error: Error | null;
   isLoading: boolean;
   showShareModal: { [postId: string]: boolean };
   currentOpenPostId: string | null;
+  selectedSort: string;
+  isSearchActive: boolean;
+  searchType: string;
+  searchResults: Post[]; // array type notation of Post or User types
 };
 
 const initialState: PostState = {
   posts: [],
+  postsByUserId: {},
   users: [],
   error: null,
   isLoading: true,
   showShareModal: {},
   currentOpenPostId: null,
+  selectedSort: "latest",
+  isSearchActive: false, // initialize the flag as false
+  searchType: "",
+  searchResults: [],
 };
 
 const postsSlice = createSlice({
@@ -27,6 +39,13 @@ const postsSlice = createSlice({
     getPost: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
       state.isLoading = false;
+    },
+    setPostsByUserId: (
+      state,
+      action: PayloadAction<{ userId: string; posts: Post[] }>
+    ) => {
+      const { userId, posts } = action.payload;
+      state.postsByUserId[userId] = posts;
     },
     createPost: (state, action) => {
       state.posts.unshift(action.payload);
@@ -48,7 +67,9 @@ const postsSlice = createSlice({
       // update the showShareModal object for the specific postId
       state.showShareModal = { ...state.showShareModal, [postId]: show };
     },
-
+    setSelectedSort: (state, action: PayloadAction<string>) => {
+      state.selectedSort = action.payload;
+    },
     searchPost(state, action: PayloadAction<{ query: string; type: string }>) {
       const { query, type } = action.payload;
 

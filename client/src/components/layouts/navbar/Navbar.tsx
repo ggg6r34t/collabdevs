@@ -8,6 +8,7 @@ import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparen
 import { RootState } from "../../../redux/store";
 import Notifications from "./Notifications";
 import { useSignOut } from "../../../hooks/useSignOut";
+import ToggleThemeMode from "../../switchTheme/ToggleThemeMode";
 
 function Navbar() {
   const currentUser = useSelector(
@@ -207,6 +208,7 @@ function Navbar() {
             </Link>
           </div>
         )}
+        <ToggleThemeMode />
       </div>
     </div>
   );

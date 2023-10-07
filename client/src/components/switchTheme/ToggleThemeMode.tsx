@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 
 import { themeActions } from "../../redux/slices/themeMode";
 import { RootState } from "../../redux/store";
@@ -28,22 +30,24 @@ function ToggleThemeMode() {
   };
 
   return (
-    <div>
-      <label
-        htmlFor="theme-preferences"
-        className="text-gray-600 dark:text-white block ml-2 mb-2"
-      >
-        Theme Preferences
+    <div className="ml-4">
+      <label htmlFor="theme-toggle" className="toggle-label">
+        <button
+          id="theme-toggle"
+          className="toggle-button rounded-md p-2"
+          onClick={handleToggleMode}
+          aria-label={`Toggle ${darkMode ? "Dark" : "Light"} Mode`}
+        >
+          <span className="toggle-icon">
+            <FontAwesomeIcon
+              icon={darkMode ? faSun : faMoon}
+              className={`icon ${
+                darkMode ? "text-gray-200" : "text-gray-400"
+              } w-5 h-5`}
+            />
+          </span>
+        </button>
       </label>
-      <select
-        id="theme-preferences"
-        className="dark:bg-slate-800 dark:text-white border rounded-md p-2"
-        value={!darkMode ? "light" : "dark"}
-        onChange={handleToggleMode}
-      >
-        <option value="light">Light Theme</option>
-        <option value="dark">Dark Theme</option>
-      </select>
     </div>
   );
 }

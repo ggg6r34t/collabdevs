@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import ToggleThemeMode from "../../switchTheme/ToggleThemeMode";
 
 function Profile() {
   const currentUser = useSelector(
@@ -217,9 +216,6 @@ function Profile() {
                   Change Password
                 </button>
               </div>
-
-              {/* theme preferences */}
-              <ToggleThemeMode />
             </div>
           </div>
         </div>

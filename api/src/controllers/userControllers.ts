@@ -17,6 +17,7 @@ import {
   uploadMediaService,
 } from "../services/users";
 import User, { UserDocument } from "../models/User";
+import { getPostByUserIdService } from "../services/posts";
 
 interface MulterFile {
   fieldname: string;
@@ -134,6 +135,23 @@ export const getUserByIdController = async (
   }
 };
 
+// get posts by userID
+export const getPostsByUserIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+
+    const userPosts = await getPostByUserIdService(userId);
+
+    res.status(200).json(userPosts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 //get: get all users
 export const getUserListController = async (
   req: Request,
@@ -155,30 +173,41 @@ export const updateUserInfoController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { firstName, lastName } = req.body;
-  if (firstName !== "" && lastName !== "") {
-    try {
-      const userId = req.params.id;
+  try {
+    const userId = req.params.id;
 
-      // update (firstName and lastName) only. Can add more update info here
-      const updatedInformation = {
-        firstName,
-        lastName,
-      };
+    // object to store the updated fields
+    const updatedInformation: { [key: string]: any } = {};
 
-      const updatedUser = await updateUserByIdService(
-        userId,
-        updatedInformation
-      );
+    // fields that can be updated
+    const allowedFields = [
+      "firstName",
+      "lastName",
+      "userName",
+      "bio",
+      "email",
+      "socialLinks",
+    ];
 
-      return res
-        .status(201)
-        .json({ message: "Profile updated successfully", updatedUser });
-    } catch (error) {
-      next(error);
+    // iterate through allowed fields and check if they exist in the request body
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updatedInformation[field] = req.body[field];
+      }
+    });
+
+    // check if any fields were updated
+    if (Object.keys(updatedInformation).length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
     }
-  } else {
-    res.status(400).json({ error: "Please fill the required fields" });
+
+    const updatedUser = await updateUserByIdService(userId, updatedInformation);
+
+    return res
+      .status(201)
+      .json({ message: "Profile updated successfully", updatedUser });
+  } catch (error) {
+    next(error);
   }
 };
 
