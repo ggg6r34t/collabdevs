@@ -7,6 +7,7 @@ export type UserDocument = Document & {
   firstName: string;
   lastName: string;
   userName: string;
+  headline: string;
   bio: string;
   email: string;
   password?: string;
@@ -43,6 +44,7 @@ const UserSchema = new Schema<UserDocument>(
       unique: true,
       // required: true
     },
+    headline: { type: String },
     bio: { type: String },
     email: { type: String, unique: true },
     password: { type: String },
