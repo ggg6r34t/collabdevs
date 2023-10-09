@@ -4,7 +4,7 @@ function PostItemSkeleton() {
       {Array.from(Array(3)).map((_, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-slate-800 p-4 border rounded-lg shadow mb-4"
+          className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
         >
           <div className="animate-pulse flex flex-row items-center justify-center">
             <div className="w-[106px] h-[115px] flex flex-col items-center p-2">
