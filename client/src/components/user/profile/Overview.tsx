@@ -103,8 +103,8 @@ function Overview() {
     return (
       <div className="p-2">
         <div className="max-w-4xl mx-auto my-6 p-6 bg-white rounded-lg dark:bg-slate-800">
-          {/* User bio and information */}
-          <h2 className="text-lg font-semibold">
+          {/* user bio and information */}
+          <h2 className={isEditing ? undefined : "text-lg font-semibold"}>
             {isEditing ? (
               <>
                 <label
@@ -117,6 +117,7 @@ function Overview() {
                   type="text"
                   id="firstName"
                   name="firstName"
+                  placeholder="Enter your first name"
                   value={formData.firstName}
                   onChange={handleChange}
                   className="mt-1 p-2 dark:bg-slate-700 border rounded-md w-full"
@@ -131,6 +132,7 @@ function Overview() {
                   type="text"
                   id="lastName"
                   name="lastName"
+                  placeholder="Enter your last name"
                   value={formData.lastName}
                   onChange={handleChange}
                   className="mt-1 p-2 dark:bg-slate-700 border rounded-md w-full"
@@ -141,13 +143,24 @@ function Overview() {
             )}
           </h2>
 
-          {/* render the user's headline */}
-          <p className="text-gray-600 dark:text-white">
-            Headline: {formData.headline || "No headline provided"}
-          </p>
-
           {isEditing ? (
             <>
+              <label
+                htmlFor="headline"
+                className="block mt-4 font-medium text-gray-700 dark:text-white"
+              >
+                Headline
+              </label>
+              <input
+                type="text"
+                id="headline"
+                name="headline"
+                placeholder="Enter your profile headline"
+                value={formData.headline}
+                onChange={handleChange}
+                className="mt-1 p-2 dark:bg-slate-700 border rounded-md w-full"
+              />
+
               <label
                 htmlFor="email"
                 className="block mt-4 font-medium text-gray-700 dark:text-white"
@@ -158,6 +171,7 @@ function Overview() {
                 type="text"
                 id="email"
                 name="email"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
                 className="mt-1 p-2 dark:bg-slate-700 border rounded-md w-full"
@@ -165,6 +179,9 @@ function Overview() {
             </>
           ) : (
             <div>
+              <p className="text-gray-600 dark:text-white">
+                Headline: {formData.headline || "No headline provided"}
+              </p>
               {currentUser.email ? (
                 <p className="text-gray-600 dark:text-white">
                   Email: {currentUser.email}
@@ -193,13 +210,17 @@ function Overview() {
 
           {/* bio */}
           {isEditing ? (
-            <textarea
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-              rows={4}
-              className="w-[784px] h-[200px] dark:bg-slate-700 mt-6 rounded-md"
-            />
+            <>
+              <h3 className="mt-6 font-semibold">Bio</h3>
+              <textarea
+                name="bio"
+                placeholder="Your bio helps others get to know you better..."
+                value={formData.bio}
+                onChange={handleChange}
+                rows={4}
+                className="w-[784px] h-[200px] dark:bg-slate-700 mt-1 border rounded-md"
+              />
+            </>
           ) : (
             <div className="mt-6">
               <h3 className="text-lg font-semibold">Bio</h3>
@@ -211,7 +232,11 @@ function Overview() {
 
           {/* social links */}
           <div className="mt-8">
-            <h3 className="text-lg font-semibold">Social Links</h3>
+            <h3
+              className={`${isEditing ? undefined : "text-lg "} font-semibold`}
+            >
+              Social Links
+            </h3>
             <div className="space-y-2 mt-2">
               {isEditing ? (
                 <div className="space-y-4">
@@ -270,8 +295,8 @@ function Overview() {
                   </div>
                 </div>
               ) : (
-                <>
-                  {formData.socialLinks.twitter && (
+                <div>
+                  {formData.socialLinks.twitter ? (
                     <a
                       href={formData.socialLinks.twitter}
                       target="_blank"
@@ -283,8 +308,11 @@ function Overview() {
                         className="w-5 h-5"
                       />
                     </a>
+                  ) : (
+                    <div className="text-gray-400">No Twitter Profile</div>
                   )}
-                  {formData.socialLinks.linkedin && (
+
+                  {formData.socialLinks.linkedin ? (
                     <a
                       href={formData.socialLinks.linkedin}
                       target="_blank"
@@ -293,8 +321,11 @@ function Overview() {
                     >
                       <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5" />
                     </a>
+                  ) : (
+                    <div className="text-gray-400">No LinkedIn Profile</div>
                   )}
-                  {formData.socialLinks.github && (
+
+                  {formData.socialLinks.github ? (
                     <a
                       href={formData.socialLinks.github}
                       target="_blank"
@@ -303,8 +334,10 @@ function Overview() {
                     >
                       <FontAwesomeIcon icon={faGithub} className="w-5 h-5" />
                     </a>
+                  ) : (
+                    <div className="text-gray-400">No GitHub Profile</div>
                   )}
-                </>
+                </div>
               )}
             </div>
           </div>
