@@ -1,7 +1,24 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 function Settings() {
   const [userMedia, setUserMedia] = useState({ avatar: null, banner: null });
+  const [feedback, setFeedback] = useState("");
+  const [isReporting, setIsReporting] = useState(false);
+  const [feedbackSent, setFeedbackSent] = useState(false);
+
+  const handleFeedbackChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setFeedback(event.target.value);
+  };
+
+  const handleSubmitFeedback = () => {
+    // logic to send feedback/report to the server here
+    setIsReporting(true);
+
+    // api request here
+    setTimeout(() => {
+      setFeedbackSent(true);
+    }, 2000);
+  };
 
   const handleMediaChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -26,7 +43,6 @@ function Settings() {
     <div className="p-2">
       <div className="max-w-4xl mx-auto my-6 p-6 bg-white rounded-lg dark:bg-slate-800">
         <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4">Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* change banner */}
             <div>
@@ -83,6 +99,7 @@ function Settings() {
                     id="profile-visibility"
                     className="mr-2"
                   />
+                  {/* controls who can view profile, set to be either public or private */}
                   <label htmlFor="profile-visibility">Profile Visibility</label>
                 </div>
                 <div className="flex items-center">
@@ -91,7 +108,40 @@ function Settings() {
                     id="email-visibility"
                     className="mr-2"
                   />
+                  {/*  choose to make email address either visible or hidden */}
                   <label htmlFor="email-visibility">Email Visibility</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="friend-requests"
+                    className="mr-2"
+                  />
+                  {/* allow or restrict friend requests from other users */}
+                  <label htmlFor="friend-requests">Allow Friend Requests</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="message-privacy"
+                    className="mr-2"
+                  />
+                  {/* manage who can send you direct messages or private messages */}
+                  <label htmlFor="message-privacy">Message Privacy</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="search-visibility"
+                    className="mr-2"
+                  />
+                  {/* control whether your profile appears in search results */}
+                  <label htmlFor="search-visibility">Search Visibility</label>
+                </div>
+                <div className="flex items-center">
+                  <input type="checkbox" id="blocking" className="mr-2" />
+                  {/* manage your block list and who can interact with you */}
+                  <label htmlFor="blocking">Blocking</label>
                 </div>
               </div>
             </div>
@@ -110,6 +160,37 @@ function Settings() {
               >
                 Change Password
               </button>
+            </div>
+
+            <div>
+              <label
+                htmlFor="Feedback & Report"
+                className=" text-gray-600 dark:text-white block ml-2 mb-2"
+              >
+                Feedback & Report
+              </label>
+              {feedbackSent ? (
+                <p className="text-green-500">Feedback sent successfully!</p>
+              ) : (
+                <>
+                  <textarea
+                    placeholder="Provide your feedback or report an issue..."
+                    value={feedback}
+                    onChange={handleFeedbackChange}
+                    rows={4}
+                    className="w-full p-2 mb-2 dark:bg-slate-700 border rounded-md"
+                  ></textarea>
+                  <button
+                    onClick={handleSubmitFeedback}
+                    disabled={isReporting}
+                    className={`px-4 py-2 rounded-md transition duration-300 ease-in-out ${
+                      isReporting ? "bg-gray-400" : "bg-[#010536] text-white"
+                    }`}
+                  >
+                    {isReporting ? "Sending..." : "Send Feedback"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
