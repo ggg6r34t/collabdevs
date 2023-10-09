@@ -6,6 +6,7 @@ import Overview from "./Overview";
 import Settings from "./Settings";
 import UserPosts from "./UserPosts";
 import { RootState } from "../../../redux/store";
+import FollowersStats from "./FollowersStats";
 
 function Profile() {
   const currentUser = useSelector(
@@ -54,7 +55,7 @@ function Profile() {
         return (
           <div>
             {/* followers & following content */}
-            {/* ... */}
+            {<FollowersStats />}
           </div>
         );
       case "settings":
