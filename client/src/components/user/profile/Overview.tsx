@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 import { AppDispatch, RootState } from "../../../redux/store";
-import { useUpdateUserProfile } from "../../../hooks/useUpdateUserProfile";
+import { useUpdateUserProfile } from "../../../hooks/userManagement/useUpdateUserProfile";
 import { getPostByUserId } from "../../../redux/thunk/users";
 import { userActions } from "../../../redux/slices/user";
 import { User } from "../../../type/types";

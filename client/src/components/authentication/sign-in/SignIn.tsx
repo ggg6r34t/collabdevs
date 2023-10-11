@@ -58,7 +58,7 @@ function SignIn() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center min-h-[825px]">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md dark:bg-slate-800">
         <AuthWithGoogle />
         <AuthWithGitHub />

@@ -28,7 +28,7 @@ function SavedPosts() {
   }, [fetchDispatch, userId, param]);
 
   return (
-    <div className="container min-h-[795px] mx-auto mt-8">
+    <div className="container min-h-[793px] mx-auto mt-8">
       <h2 className="text-2xl font-bold mb-4">Saved Posts</h2>
       {savedPosts.length === 0 ? (
         <div className="flex items-center justify-center p-8">

@@ -83,7 +83,7 @@ function FeedbackForm() {
   };
 
   return (
-    <div className="container max-w-xl min-h-[795px] mx-auto">
+    <div className="container max-w-xl min-h-[793px] mx-auto">
       <div className="my-8 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Give Feedback</h2>
         <form onSubmit={handleSubmit}>
