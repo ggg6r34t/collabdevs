@@ -72,3 +72,5 @@ export type UserGoogle = {
   userName: string;
   avatar: string;
 };
+
+export type AuthToken = string | null;
