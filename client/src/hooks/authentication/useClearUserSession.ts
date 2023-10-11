@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 
-import { userActions } from "../redux/slices/user";
+import { userActions } from "../../redux/slices/user";
 
 export const useClearUserSession = () => {
   const dispatch = useDispatch();

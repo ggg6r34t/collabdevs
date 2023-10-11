@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { BASE_URL } from "../api/api";
-import { userActions } from "../redux/slices/user";
+import { BASE_URL } from "../../api/api";
+import { userActions } from "../../redux/slices/user";
 import { useSignOut } from "./useSignOut";
 import { useClearUserSession } from "./useClearUserSession";
 

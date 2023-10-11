@@ -10,9 +10,9 @@ import {
 
 import { AppDispatch, RootState } from "../../../redux/store";
 import { getUserList } from "../../../redux/thunk/users";
-import useBanUser from "../../../hooks/useBanUser";
-import useChangeUserRole from "../../../hooks/useChangeUserRole";
-import useDeleteUser from "../../../hooks/useDeleteUser";
+import useBanUser from "../../../hooks/userManagement/useBanUser";
+import useChangeUserRole from "../../../hooks/userManagement/useChangeUserRole";
+import useDeleteUser from "../../../hooks/userManagement/useDeleteUser";
 
 function UserList() {
   const [editedUserId, setEditedUserId] = useState<string | null>(null);

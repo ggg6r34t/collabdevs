@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import CompanyLogo from "../../../assets/images/logos/collabdev_color_transparent_bg.png";
 import { RootState } from "../../../redux/store";
 import Notifications from "./Notifications";
-import { useSignOut } from "../../../hooks/useSignOut";
+import { useSignOut } from "../../../hooks/authentication/useSignOut";
 import ToggleThemeMode from "../../switchTheme/ToggleThemeMode";
 
 function Navbar() {

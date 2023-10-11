@@ -2,8 +2,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { BASE_URL } from "../api/api";
-import { RootState } from "../redux/store";
+import { BASE_URL } from "../../api/api";
+import { RootState } from "../../redux/store";
 import { useClearUserSession } from "./useClearUserSession";
 
 export const useSignOut = () => {

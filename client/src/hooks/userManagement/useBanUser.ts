@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-import { BASE_URL } from "../api/api";
-import { RootState } from "../redux/store";
+import { BASE_URL } from "../../api/api";
+import { RootState } from "../../redux/store";
 
 const useBanUser = () => {
   const currentUser = useSelector(

@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
-import axios from "../api/axiosConfig";
-import { useSetUserSession } from "./useSetUserSession";
-import { LoginCredentials, User } from "../type/types";
+import axios from "../../api/axiosConfig";
+import { useSetUserSession } from "../userManagement/useSetUserSession";
+import { LoginCredentials, User } from "../../type/types";
 
 export const useSignIn = () => {
   const navigate = useNavigate();

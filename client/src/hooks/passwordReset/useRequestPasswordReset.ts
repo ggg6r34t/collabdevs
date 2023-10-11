@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "../api/api";
+import { BASE_URL } from "../../api/api";
 
 export const useRequestPasswordReset = () => {
   const requestPasswordReset = async (email: string) => {

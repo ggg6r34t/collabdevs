@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useDispatch } from "react-redux";
 
-import { BASE_URL } from "../api/api";
-import { userActions } from "../redux/slices/user";
-import { User } from "../type/types";
+import { BASE_URL } from "../../api/api";
+import { userActions } from "../../redux/slices/user";
+import { User } from "../../type/types";
 
 // custom react hook to update the user's profile
 export const useUpdateUserProfile = () => {
