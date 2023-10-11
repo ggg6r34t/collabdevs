@@ -19,9 +19,11 @@ export type Post = {
 
 export type User = {
   _id: string;
-  username: string;
   firstName: string;
   lastName: string;
+  username: string;
+  headline: string;
+  bio: string;
   email: string;
   password: string;
   role: string;
@@ -32,6 +34,11 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   rememberMe: boolean;
+  socialLinks: {
+    twitter: string;
+    github: string;
+    linkedin: string;
+  };
 };
 
 export type Comment = Post & {

@@ -31,7 +31,7 @@ export const useAutoSignIn = () => {
 
       try {
         // only send the request to the server if the token is not expired
-        const response = await axios.get(`${BASE_URL}/api/v1/users/verify`, {
+        const response = await axios.get(`${BASE_URL}/api/v1/auth/verify`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

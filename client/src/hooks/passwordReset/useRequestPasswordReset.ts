@@ -5,7 +5,7 @@ export const useRequestPasswordReset = () => {
   const requestPasswordReset = async (email: string) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/v1/users/reset-password`,
+        `${BASE_URL}/api/v1/auth/reset-password`,
         {
           email,
         }

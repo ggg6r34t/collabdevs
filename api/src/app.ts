@@ -12,6 +12,9 @@ import "./config/passport";
 import User from "./models/User";
 import postRoutes from "./routes/postRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import replyRoutes from "./routes/replyRoutes";
+import savedPostRoutes from "./routes/savedPostRoutes";
+import authRoutes from "./routes/authRoutes";
 import apiErrorHandler from "./middlewares/apiErrorHandler";
 import { restoreSession } from "./middlewares/restoreSession";
 import userRoutes from "./routes/userRoutes";
@@ -21,8 +24,6 @@ import {
   jwtStrategy,
   twitterStrategy,
 } from "./config/passport";
-import replyRoutes from "./routes/replyRoutes";
-import savedPostRoutes from "./routes/savedPostRoutes";
 
 const SESSION_SECRET = process.env.SESSION_SECRET!;
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
@@ -117,6 +118,7 @@ app.use(restoreSession);
 
 // routes
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/posts", postRoutes, commentRoutes);
 app.use("/api/v1/savedposts", savedPostRoutes);
 app.use("/api/v1/replies", replyRoutes);

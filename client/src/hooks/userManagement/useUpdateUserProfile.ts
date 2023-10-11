@@ -1,17 +1,22 @@
 import axios from "axios";
-// import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+
 import { BASE_URL } from "../../api/api";
-// import { userActions } from "../redux/slices/user";
+import { userActions } from "../../redux/slices/user";
 import { User } from "../../type/types";
 
+// custom react hook to update the user's profile
 export const useUpdateUserProfile = () => {
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  const updateUserProfile = async (newUserData: User) => {
+  const updateUserProfile = async (
+    userId: string | undefined,
+    newUserData: Partial<User>
+  ) => {
     try {
       const token = localStorage.getItem("userToken");
       const response = await axios.put(
-        `${BASE_URL}/api/v1/users/profile`,
+        `${BASE_URL}/api/v1/users/${userId}/update`,
         newUserData,
         {
           headers: {
@@ -20,9 +25,9 @@ export const useUpdateUserProfile = () => {
         }
       );
 
-      if (response.status === 200) {
-        // Update successful
-        // You can dispatch an action to update user data in Redux if needed
+      if (response.status === 201) {
+        const updatedUserData = response.data;
+        dispatch(userActions.setUserData(updatedUserData));
       } else {
         console.error("Update profile failed");
       }

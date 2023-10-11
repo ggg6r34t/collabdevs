@@ -30,11 +30,32 @@ export const getAllPostService = async (): Promise<PostDocument[]> => {
 export const getPostByIdService = async (
   postId: string
 ): Promise<PostDocument> => {
-  const post = await Post.findById(postId);
-  if (!post) {
-    throw new NotFoundError(`Post ${postId} not found.`);
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new NotFoundError(`Post ${postId} not found.`);
+    }
+
+    return post;
+  } catch (error) {
+    throw error;
   }
-  return post;
+};
+
+export const getPostByUserIdService = async (
+  userId: string
+): Promise<PostDocument[]> => {
+  try {
+    const userPosts = await Post.find({ userId });
+
+    if (!userPosts) {
+      throw new NotFoundError(`User ${userId} has no posts.`);
+    }
+
+    return userPosts;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const upvotePostService = async (

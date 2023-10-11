@@ -7,6 +7,8 @@ export type UserDocument = Document & {
   firstName: string;
   lastName: string;
   userName: string;
+  headline: string;
+  bio: string;
   email: string;
   password?: string;
   lastLogin: Date;
@@ -17,6 +19,11 @@ export type UserDocument = Document & {
   resetToken: string | null;
   resetTokenExpiration: Date | null;
   rememberMe: boolean;
+  socialLinks: {
+    twitter: string | null;
+    github: string | null;
+    linkedin: string | null;
+  };
 
   // more fields as needed
 };
@@ -37,6 +44,8 @@ const UserSchema = new Schema<UserDocument>(
       unique: true,
       // required: true
     },
+    headline: { type: String },
+    bio: { type: String },
     email: { type: String, unique: true },
     password: { type: String },
     lastLogin: { type: Date, default: null },
@@ -55,6 +64,11 @@ const UserSchema = new Schema<UserDocument>(
     resetToken: { type: String, default: null },
     resetTokenExpiration: { type: Date, default: null },
     rememberMe: { type: Boolean, default: false },
+    socialLinks: {
+      twitter: { type: String, default: null },
+      github: { type: String, default: null },
+      linkedin: { type: String, default: null },
+    },
   },
   { timestamps: true }
 );

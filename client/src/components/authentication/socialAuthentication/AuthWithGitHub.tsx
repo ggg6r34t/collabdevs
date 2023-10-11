@@ -9,7 +9,7 @@ function AuthWithGitHub() {
 
   const handleGitHubAuth = () => {
     setError("");
-    window.open(`${BASE_URL}/api/v1/users/auth/github`, "_self");
+    window.open(`${BASE_URL}/api/v1/auth/github`, "_self");
   };
 
   const handleGitHubLoginError = () => {

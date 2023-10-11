@@ -29,9 +29,8 @@ function PostDetails() {
     (state: RootState) => state.user.userInformation
   );
   const userToken = useSelector((state: RootState) => state.user.token);
-  const showShareModal = useSelector(
-    (state: RootState) =>
-      state.posts.showShareModal[postDetail?._id || ""] || false
+  const currentOpenPostId = useSelector(
+    (state: RootState) => state.postDetails.currentOpenPostId
   );
 
   const [votes, setVotes] = useState(0);
@@ -82,8 +81,6 @@ function PostDetails() {
     }
   };
 
-  console.log(isSaved);
-
   // function to save a post
   const handleSavePost = async (userId: string | undefined, postId: string) => {
     try {
@@ -91,9 +88,6 @@ function PostDetails() {
         userId,
         postId,
       });
-
-      console.log(postId, "postId");
-      console.log(userId, "userId");
 
       if (response.status === 201) {
         setIsSaved(false);
@@ -132,11 +126,16 @@ function PostDetails() {
     setShowComments(!showComments);
   };
 
+  // checks if the modal should be shown for the current post
+  const show = currentOpenPostId === postDetail?._id;
+
   const handleShareClick = () => {
-    if (postDetail) {
-      const postId = postDetail?._id;
-      dispatch(postDetailActions.setShowShareModal({ [postId]: true }));
-    }
+    dispatch(
+      postDetailActions.setShowShareModal({
+        postId: postDetail?._id as string,
+        show: !show,
+      })
+    );
   };
 
   if (!postDetail) {
@@ -220,7 +219,11 @@ function PostDetails() {
             </div>
           </div>
         </div>
-        {showShareModal && <ShareButtons post={postDetail} />}
+        {show && (
+          <div className="relative -right-12">
+            {<ShareButtons post={postDetail} />}
+          </div>
+        )}
         {showComments && <CommentSection post={postDetail} />}
       </div>
     </div>
