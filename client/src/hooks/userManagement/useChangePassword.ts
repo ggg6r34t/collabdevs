@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import { useUserSession } from "./useUserSession";
-import { BASE_URL } from "../api/api";
+import { useUserSession } from "../authentication/useUserSession";
+import { BASE_URL } from "../../api/api";
 
 const useChangePassword = () => {
   const { getUserSession } = useUserSession();

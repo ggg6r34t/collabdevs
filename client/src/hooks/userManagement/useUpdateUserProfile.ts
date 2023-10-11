@@ -1,8 +1,8 @@
 import axios from "axios";
 // import { useDispatch } from "react-redux";
-import { BASE_URL } from "../api/api";
+import { BASE_URL } from "../../api/api";
 // import { userActions } from "../redux/slices/user";
-import { User } from "../type/types";
+import { User } from "../../type/types";
 
 export const useUpdateUserProfile = () => {
   //   const dispatch = useDispatch();

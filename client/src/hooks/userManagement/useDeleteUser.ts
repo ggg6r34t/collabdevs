@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import { BASE_URL } from "../api/api";
-import { RootState } from "../redux/store";
+import { BASE_URL } from "../../api/api";
+import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 
 const useDeleteUser = () => {

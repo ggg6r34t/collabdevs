@@ -7,7 +7,7 @@ import AuthWithGoogle from "../socialAuthentication/AuthWithGoogle";
 import AuthWithGitHub from "../socialAuthentication/AuthWithGitHub";
 import AuthWithX from "../socialAuthentication/AuthWithX";
 import { RootState } from "../../../redux/store";
-import { useSignIn } from "../../../hooks/useSignIn";
+import { useSignIn } from "../../../hooks/authentication/useSignIn";
 
 function SignIn() {
   const rememberMe = useSelector((state: RootState) => state.user.rememberMe);

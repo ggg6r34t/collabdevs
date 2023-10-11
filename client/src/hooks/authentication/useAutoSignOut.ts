@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 import { useClearUserSession } from "./useClearUserSession";
-import { useAuthActions } from "./authentication/useAuthActions";
-import { useAuthStatus } from "./authentication/useAuthStatus";
+import { useAuthActions } from "./useAuthActions";
+import { useAuthStatus } from "../status/useAuthStatus";
 import { useSignOut } from "./useSignOut";
 import { useEffect, useCallback } from "react";
 

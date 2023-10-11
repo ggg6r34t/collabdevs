@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-import { BASE_URL } from "../api/api";
-import { RootState } from "../redux/store";
+import { BASE_URL } from "../../api/api";
+import { RootState } from "../../redux/store";
 
 const useChangeUserRole = () => {
   const userToken = useSelector((state: RootState) => state.user.token);

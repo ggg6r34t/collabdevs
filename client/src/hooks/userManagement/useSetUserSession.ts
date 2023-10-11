@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { userActions } from "../redux/slices/user";
-import { User } from "../type/types";
+import { userActions } from "../../redux/slices/user";
+import { User } from "../../type/types";
 
 export function useSetUserSession() {
   const dispatch = useDispatch();
