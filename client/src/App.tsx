@@ -8,6 +8,8 @@ import Footer from "./components/layouts/footer/Footer";
 import Banner from "./components/homePage/Banner";
 import { useAutoSignOut } from "./hooks/authentication/useAutoSignOut";
 
+const TOKEN_EXPIRATION_CHECK_INTERVAL = 900000; // 15 mins
+
 function App() {
   const [showImage, setShowImage] = useState(true);
   const { pathname } = useLocation();
@@ -18,7 +20,6 @@ function App() {
   }, [pathname]);
 
   useEffect(() => {
-    autoSignOut();
     const hasSeenImage = localStorage.getItem("hasSeenImage");
 
     if (hasSeenImage) {
@@ -28,9 +29,19 @@ function App() {
         setShowImage(false);
 
         localStorage.setItem("hasSeenImage", "true");
-      }, 3000);
+      }, 3000); // 3 secs
     }
-  }, []); // adding the autoSignOut dependency here sends it into a loop. Needs a fix
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      autoSignOut();
+    }, TOKEN_EXPIRATION_CHECK_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [autoSignOut]);
 
   const getRoutes = (allRoutes: any) =>
     allRoutes.map((route: any) => (
