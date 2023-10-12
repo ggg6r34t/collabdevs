@@ -11,6 +11,8 @@ export type Post = {
   url?: string;
   userId: string;
   userName: string;
+  upvoted: boolean;
+  downvoted: boolean;
   voteScore: number;
   comments: Comment[];
   createdAt: string;

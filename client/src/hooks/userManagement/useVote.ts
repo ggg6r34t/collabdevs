@@ -7,8 +7,12 @@ export function useVote(
   userId: string | undefined,
   token: string | undefined
 ) {
-  const [voteScore, setVoteScore] = useState<number | undefined>(undefined);
-  const [error, setError] = useState<string | null>(null);
+  const [voteError, setVoteError] = useState<string | null>(null);
+
+  // function to update the voteScore in both state and localStorage
+  const updateVoteScore = (postId: string, newVoteScore: number) => {
+    localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
+  };
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     try {
@@ -22,20 +26,20 @@ export function useVote(
         }
       );
       const newVoteScore = response.data.voteScore;
-      setVoteScore(newVoteScore);
+      updateVoteScore(postId, newVoteScore);
       localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
     } catch (error) {
-      setError(
+      setVoteError(
         error instanceof Error
           ? error.message
           : "An error occurred while voting."
       );
+      console.error("An error occurred while voting:", error);
     }
   };
 
   return {
-    voteScore,
-    error,
+    voteError,
     handleUpvote: () => handleVote("upvote"),
     handleDownvote: () => handleVote("downvote"),
   };

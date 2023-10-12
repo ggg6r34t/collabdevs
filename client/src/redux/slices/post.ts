@@ -4,6 +4,7 @@ import { Post, User } from "../../type/types";
 
 type PostState = {
   posts: Post[];
+  voteScores: number;
   postsByUserId: Post[];
   users: User[];
   error: Error | null;
@@ -18,6 +19,7 @@ type PostState = {
 
 const initialState: PostState = {
   posts: [],
+  voteScores: 0,
   postsByUserId: [],
   users: [],
   error: null,
@@ -44,6 +46,41 @@ const postsSlice = createSlice({
     },
     createPost: (state, action) => {
       state.posts.unshift(action.payload);
+    },
+    setInitialVoteScores(state, action) {
+      state.voteScores = action.payload;
+    },
+    upvotePost(state, action) {
+      const postId = action.payload;
+      const post = state.posts.find((post) => post._id === postId);
+      if (post) {
+        if (post.upvoted) {
+          post.upvoted = false; // removing upvote
+          post.voteScore -= 1;
+        } else if (post.downvoted) {
+          post.downvoted = false; // remove downvote if it exists
+          post.voteScore -= 1;
+        } else {
+          post.upvoted = true; // upvoting the post
+          post.voteScore += 1;
+        }
+      }
+    },
+    downvotePost(state, action) {
+      const postId = action.payload;
+      const post = state.posts.find((post) => post._id === postId);
+      if (post) {
+        if (post.downvoted) {
+          post.downvoted = false; // removing downvote
+          post.voteScore -= 1;
+        } else if (post.upvoted) {
+          post.voteScore -= 1;
+          post.upvoted = false; // remove upvote if it exists
+        } else {
+          post.downvoted = true; // downvoting the post
+          post.voteScore += 1;
+        }
+      }
     },
     setShowShareModal: (
       state,
