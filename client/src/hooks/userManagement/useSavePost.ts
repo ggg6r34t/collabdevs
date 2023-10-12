@@ -4,7 +4,7 @@ import { BASE_URL } from "../../api/api";
 
 export function useSavePost(userId: string | undefined, postId: string) {
   const [isSaved, setIsSaved] = useState<boolean | undefined>(undefined);
-  const [error, setError] = useState<string | null>(null);
+  const [savePostError, setSavePostError] = useState<string | null>(null);
 
   const handleSavePost = async () => {
     try {
@@ -16,14 +16,17 @@ export function useSavePost(userId: string | undefined, postId: string) {
       if (response.status === 201) {
         setIsSaved(true);
       } else {
-        setError(`Failed to save post. Status code: ${response.status}`);
+        setSavePostError(
+          `Failed to save post. Status code: ${response.status}`
+        );
       }
     } catch (error) {
-      setError(
+      setSavePostError(
         error instanceof Error
           ? error.message
           : "An error occurred while saving the post."
       );
+      console.error("An error occurred while saving the post:", error);
     }
   };
 
@@ -36,18 +39,19 @@ export function useSavePost(userId: string | undefined, postId: string) {
       if (response.status === 204) {
         setIsSaved(false);
       } else {
-        setError(
+        setSavePostError(
           `Failed to remove saved post. Status code: ${response.status}`
         );
       }
     } catch (error) {
-      setError(
+      setSavePostError(
         error instanceof Error
           ? error.message
           : "An error occurred while removing the saved post."
       );
+      console.error("An error occurred while removing the saved post:", error);
     }
   };
 
-  return { isSaved, error, handleSavePost, handleRemoveSavedPost };
+  return { isSaved, savePostError, handleSavePost, handleRemoveSavedPost };
 }

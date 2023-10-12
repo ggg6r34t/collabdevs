@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,17 +12,20 @@ import {
 
 import CommentSection from "../comment/Comments";
 import ShareButtons from "../share/ShareButtons";
+import { useSavePost } from "../../hooks/userManagement/useSavePost";
+import { useVote } from "../../hooks/userManagement/useVote";
 import { postActions } from "../../redux/slices/post";
 import { RootState } from "../../redux/store";
 import { Post } from "../../type/types";
-
-import { BASE_URL } from "../../api/api";
 
 type Props = {
   post: Post;
 };
 
 function PostItem({ post }: Props) {
+  const voteScore = useSelector((state: RootState) => {
+    return state.posts.posts.find((p) => p._id === post._id)?.voteScore || 0;
+  });
   const userInformation = useSelector(
     (state: RootState) => state.user.userInformation
   );
@@ -31,7 +33,6 @@ function PostItem({ post }: Props) {
   const currentOpenPostId = useSelector(
     (state: RootState) => state.posts.currentOpenPostId
   );
-  const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
@@ -42,101 +43,19 @@ function PostItem({ post }: Props) {
   // initialize the votes state with the value from localStorage if it exists
   useEffect(() => {
     localStorage.getItem(`voteScore_${post._id}`);
-  }, [post._id]);
+    dispatch(postActions.setInitialVoteScores(post.voteScore));
+  }, [dispatch, post._id, post.voteScore]);
 
-  // function to update the voteScore in both state and localStorage
-  const updateVoteScore = (postId: string, newVoteScore: number) => {
-    localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-  };
+  const { handleUpvote, handleDownvote } = useVote(
+    post._id,
+    userInformation?._id,
+    userToken!
+  );
 
-  // function to upvote the post
-  const handleUpvote = async (
-    postId: string,
-    userId: string | undefined,
-    token: string | undefined
-  ) => {
-    try {
-      const response = await axios.put(
-        `${BASE_URL}/api/v1/posts/${postId}/upvote`,
-        userId,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const newVoteScore = response.data.voteScore;
-      updateVoteScore(postId, newVoteScore);
-      localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-    } catch (error) {
-      console.error("Error upvoting post:", error);
-    }
-  };
-
-  // function to downvote the post
-  const handleDownvote = async (
-    postId: string,
-    userId: string | undefined,
-    token: string | undefined
-  ) => {
-    try {
-      const response = await axios.put(
-        `${BASE_URL}/api/v1/posts/${postId}/downvote`,
-        userId,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const newVoteScore = response.data.voteScore;
-      updateVoteScore(postId, newVoteScore);
-      localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-    } catch (error) {
-      console.error("Error downvoting post:", error);
-    }
-  };
-
-  // function to save a post
-  const handleSavePost = async (userId: string | undefined, postId: string) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/api/v1/savedposts/save`, {
-        userId,
-        postId,
-      });
-
-      if (response.status === 201) {
-        setIsSaved(false);
-      } else {
-        console.error("Failed to save post. Status code:", response.status);
-      }
-    } catch (error) {
-      console.error("Error saving post:", error);
-    }
-  };
-
-  // function to remove a saved post
-  const handleRemoveSavedPost = async (
-    userId: string | undefined,
-    postId: string
-  ) => {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/api/v1/savedposts/${userId}/${postId}`
-      );
-
-      if (response.status === 204) {
-        setIsSaved(!isSaved);
-      } else {
-        console.error(
-          "Failed to remove saved post. Status code:",
-          response.status
-        );
-      }
-    } catch (error) {
-      console.error("Error removing saved post:", error);
-    }
-  };
+  const { isSaved, handleSavePost, handleRemoveSavedPost } = useSavePost(
+    userInformation?._id,
+    post._id
+  );
 
   const toggleCommentSection = () => {
     setShowComments(!showComments);
@@ -157,7 +76,8 @@ function PostItem({ post }: Props) {
       setDownvoted(false);
     }
 
-    handleUpvote(post._id, userInformation?._id, userToken!);
+    handleUpvote();
+    dispatch(postActions.upvotePost(post._id));
     setUpvoted(true);
     setDownvoted(false);
   };
@@ -167,7 +87,8 @@ function PostItem({ post }: Props) {
       setDownvoted(false);
     }
 
-    handleDownvote(post._id, userInformation?._id, userToken!);
+    handleDownvote();
+    dispatch(postActions.downvotePost(post._id));
     setDownvoted(true);
     setUpvoted(false);
   };
@@ -184,7 +105,7 @@ function PostItem({ post }: Props) {
           >
             <FontAwesomeIcon icon={faAngleUp} className="w-[2rem] h-[1.3rem]" />
           </button>
-          <p className="text-[20px] text-center">{post.voteScore}</p>
+          <p className="text-[20px] text-center">{voteScore}</p>
           <button
             className={`text-gray-600 border-2 rounded-full border-gray-400 ${
               downvoted ? "border-red-500" : ""
@@ -226,13 +147,13 @@ function PostItem({ post }: Props) {
               Share
             </button>
             <button
-              className={`text-${
-                !isSaved ? "[#010536]" : "gray"
-              }-600 ml-auto mr-4`}
+              className={`${
+                !isSaved
+                  ? "text-gray-600"
+                  : "text-[#010536]  dark:text-gray-200"
+              } ml-auto mr-4`}
               onClick={() =>
-                isSaved
-                  ? handleSavePost(userInformation?._id, post._id)
-                  : handleRemoveSavedPost(userInformation?._id, post._id)
+                isSaved ? handleRemoveSavedPost() : handleSavePost()
               }
             >
               <FontAwesomeIcon icon={faBookmark} className="w-40 h-40" />

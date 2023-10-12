@@ -73,17 +73,27 @@ export const upvotePostService = async (
     const userIdObject = new mongoose.Types.ObjectId(userId);
 
     const hasUpvoted = post.upvotes.includes(userIdObject);
+    const hasDownvoted = post.downvotes.includes(userIdObject);
 
     if (hasUpvoted) {
       // remove the upvote
       post.upvotes = post.upvotes.filter((id) => !id.equals(userIdObject));
       post.voteScore -= 1;
-      console.log("Minus one!");
     } else {
+      if (hasDownvoted) {
+        // remove the downvote
+        post.downvotes = post.downvotes.filter(
+          (id) => !id.equals(userIdObject)
+        );
+        if (post.voteScore > 0) {
+          post.voteScore -= 1;
+        }
+      }
+
       // add the upvote
+      post.downvotes = post.downvotes.filter((id) => !id.equals(userIdObject));
       post.upvotes.push(userIdObject);
       post.voteScore += 1;
-      console.log("Plus one!");
     }
 
     // update post
@@ -110,19 +120,26 @@ export const downvotePostService = async (
     // convert userId to ObjectId
     const userIdObject = new mongoose.Types.ObjectId(userId);
 
+    const hasUpvoted = post.upvotes.includes(userIdObject);
     const hasDownvoted = post.downvotes.includes(userIdObject);
 
     if (hasDownvoted) {
       // remove the downvote
       post.downvotes = post.downvotes.filter((id) => !id.equals(userIdObject));
-      // update the voteScore, ensuring it doesn't go below 0
       if (post.voteScore > 0) {
         post.voteScore -= 1;
-        console.log("Minus one");
       }
     } else {
+      if (hasUpvoted) {
+        // remove the upvote
+        post.upvotes = post.upvotes.filter((id) => !id.equals(userIdObject));
+        post.voteScore -= 1;
+      }
+
       // add the downvote
+      post.upvotes = post.upvotes.filter((id) => !id.equals(userIdObject));
       post.downvotes.push(userIdObject);
+      post.voteScore += 1;
     }
 
     // update post

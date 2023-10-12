@@ -6,16 +6,19 @@ import routes from "./routes";
 import Navbar from "./components/layouts/navbar/Navbar";
 import Footer from "./components/layouts/footer/Footer";
 import Banner from "./components/homePage/Banner";
+import { useAutoSignOut } from "./hooks/authentication/useAutoSignOut";
 
 function App() {
   const [showImage, setShowImage] = useState(true);
   const { pathname } = useLocation();
+  const { autoSignOut } = useAutoSignOut();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
+    autoSignOut();
     const hasSeenImage = localStorage.getItem("hasSeenImage");
 
     if (hasSeenImage) {
@@ -27,7 +30,7 @@ function App() {
         localStorage.setItem("hasSeenImage", "true");
       }, 3000);
     }
-  }, []);
+  }, []); // adding the autoSignOut dependency here sends it into a loop. Needs a fix
 
   const getRoutes = (allRoutes: any) =>
     allRoutes.map((route: any) => (

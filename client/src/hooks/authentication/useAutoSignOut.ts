@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useClearUserSession } from "./useClearUserSession";
 import { useAuthActions } from "./useAuthActions";
 import { useAuthStatus } from "../status/useAuthStatus";
-import { useSignOut } from "./useSignOut";
 import { useEffect, useCallback } from "react";
 
 const TOKEN_EXPIRATION_CHECK_INTERVAL = 300000;
@@ -11,18 +10,15 @@ const TOKEN_EXPIRATION_CHECK_INTERVAL = 300000;
 export const useAutoSignOut = () => {
   const navigate = useNavigate();
   const { clearUserSession } = useClearUserSession();
-  const { getTokenExpiration, isTokenExpired, isSessionCookieExpired } =
-    useAuthActions();
+  const { isTokenExpired, isSessionCookieExpired } = useAuthActions();
   const userToken = useAuthStatus();
-  const { signOut } = useSignOut();
 
   const autoSignOut = useCallback(async () => {
     try {
       if (userToken) {
-        const tokenExpiration = getTokenExpiration(userToken); // get the token expiration
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now() / 1000); // convert to seconds
 
-        if (tokenExpiration && isTokenExpired(tokenExpiration, currentTime)) {
+        if (isTokenExpired(userToken, currentTime)) {
           console.error("Token is expired.");
           clearUserSession();
           navigate("/signin");
@@ -35,8 +31,6 @@ export const useAutoSignOut = () => {
           navigate("/signin");
           return;
         }
-
-        signOut();
       }
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
@@ -50,11 +44,9 @@ export const useAutoSignOut = () => {
   }, [
     navigate,
     clearUserSession,
-    getTokenExpiration,
     isTokenExpired,
     isSessionCookieExpired,
     userToken,
-    signOut,
   ]);
 
   useEffect(() => {

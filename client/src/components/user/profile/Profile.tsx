@@ -72,7 +72,7 @@ function Profile() {
 
   if (currentUser) {
     return (
-      <div className="max-w-4xl mx-auto my-6 p-6 bg-white shadow-lg rounded-lg dark:bg-slate-800">
+      <div className="max-w-4xl min-h-[777px] mx-auto my-6 p-6 bg-white shadow-lg rounded-lg dark:bg-slate-800">
         {/* user banner */}
         <div className="h-60 bg-gradient-to-r bg-center from-blue-500 to-purple-500 rounded-t-lg relative overflow-hidden">
           <img

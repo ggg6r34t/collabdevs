@@ -1,38 +1,35 @@
 import Cookies from "js-cookie";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt_decode from "jwt-decode";
 
 import { AuthToken } from "../../type/types";
 
-const secretKey = process.env.JWT_SECRET as string;
+// Function to get the time remaining until token expiration
+function getTokenExpiration(token: AuthToken): number | null {
+  try {
+    const decodedToken: { exp: number } | null = jwt_decode(token!);
+
+    if (decodedToken && typeof decodedToken.exp === "number") {
+      return decodedToken.exp;
+    }
+  } catch (error) {
+    console.error("Error decoding token:", error);
+  }
+  return null;
+}
 
 export function useAuthActions() {
-  function getTokenExpiration(token: AuthToken): number | null {
-    try {
-      const decodedToken = jwt.verify(token!, secretKey) as JwtPayload;
-
-      if (decodedToken && typeof decodedToken.exp === "number") {
-        return decodedToken.exp;
-      }
-    } catch (error) {
-      console.error("Error decoding token:", error);
-    }
-    return null;
-  }
-
-  function isTokenExpired(
-    tokenExpiration: number,
-    currentTime: number
-  ): boolean {
-    return tokenExpiration < currentTime;
+  function isTokenExpired(token: AuthToken, currentTime: number): boolean {
+    const tokenExpiration = getTokenExpiration(token);
+    return tokenExpiration !== null && tokenExpiration < currentTime;
   }
 
   function isSessionCookieExpired(): boolean {
-    const sessionCookie = Cookies.get("session");
+    const sessionCookie = Cookies.get("connect.sid");
     return !sessionCookie;
   }
 
   return {
-    getTokenExpiration,
+    getTokenExpiration, // expose the getTokenExpiration function
     isTokenExpired,
     isSessionCookieExpired,
   };
