@@ -40,11 +40,7 @@ router.post(
 );
 
 // request password reset
-router.post(
-  "/reset-password",
-  passport.authenticate("jwt", { session: false }),
-  requestPasswordResetController
-);
+router.post("/reset-password", requestPasswordResetController);
 
 // confirm password reset
 router.post(
