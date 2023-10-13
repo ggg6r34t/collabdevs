@@ -1,5 +1,8 @@
 import { NotFoundError } from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
+import createTransporter from "../utils/createTransporter";
+
+const SMTP_EMAIL = process.env.SMTP_EMAIL as string;
 
 // save reset token and expiration
 export const saveResetTokenService = async (
@@ -51,6 +54,40 @@ export const updatePasswordService = async (
       throw new NotFoundError(`No user found with ID: ${userId}`);
     }
     return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// send a password reset email
+export const sendResetEmailService = async (
+  email: string,
+  resetToken: string
+): Promise<void> => {
+  try {
+    const transporter = createTransporter(); // creates the Nodemailer transporter
+
+    const mailOptions = {
+      from: `"CollabDevs" <${SMTP_EMAIL}>`,
+      to: email,
+      subject: "Password Reset Request",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color: #0078d4;">Password Reset Request</h2>
+          <p>Dear user,</p>
+          <p>We received a request to reset your password. To proceed with the password reset, click the button below:</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="https://bucolic-12d61d.netlify.app/auth/reset-password-confirm/${resetToken}" style="background-color: #010536; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+          </div>
+          <p>If you didn't make this request, you can safely ignore this email.</p>
+          <p>This link will expire in 24 hours for security reasons.</p>
+          <p>If you encounter any issues, please contact our support team at <a href="mailto:support@collabdevs.com">support@collabdevs.com</a>.</p>
+          <p>With ❤️,<br><br>The Collaborative DevLink Team</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
   } catch (error) {
     throw error;
   }

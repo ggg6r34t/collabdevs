@@ -10,6 +10,10 @@ import UserList from "./components/admin/userlist/UserList";
 import SavedPosts from "./components/savedPost/SavedPosts";
 import FeedbackList from "./components/admin/feedbacklist/FeedbackList";
 import FeedbackForm from "./components/forms/FeedbackForm";
+import PasswordResetRequest from "./components/authentication/PasswordResetRequest";
+import PasswordResetForm from "./components/authentication/PasswordResetForm";
+import EmailConfirmation from "./components/emailConfirmation/EmailConfirmation";
+import ChangePasswordForm from "./components/authentication/ChangePasswordForm";
 
 const routes = [
   {
@@ -71,6 +75,26 @@ const routes = [
     path: "/give-feedback",
     component: FeedbackForm,
     key: "give-feedback",
+  },
+  {
+    path: "/auth/change-password/:userId",
+    component: ChangePasswordForm,
+    key: "change-password",
+  },
+  {
+    path: "/auth/reset-password",
+    component: PasswordResetRequest,
+    key: "reset-password",
+  },
+  {
+    path: "/auth/reset-password-confirm/:resetToken",
+    component: PasswordResetForm,
+    key: "reset-password-confirm",
+  },
+  {
+    path: "/auth/confirm-email",
+    component: EmailConfirmation,
+    key: "confirm-email",
   },
   //   {
   //     path: "/terms-privacy",

@@ -115,7 +115,7 @@ function SignIn() {
           </button>
         </form>
         <div className="w-65 flex flex-col mt-4">
-          <Link to="/" className="font-medium">
+          <Link to="/auth/reset-password" className="font-medium">
             Forgot password?
           </Link>
           <div>

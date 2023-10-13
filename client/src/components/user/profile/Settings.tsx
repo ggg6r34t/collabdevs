@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 function Settings() {
   const [userMedia, setUserMedia] = useState({ avatar: null, banner: null });
@@ -38,6 +39,9 @@ function Settings() {
       reader.readAsDataURL(file);
     }
   };
+
+  const param = useParams();
+  const userId = param.userId as string | undefined;
 
   return (
     <div className="p-2">
@@ -154,12 +158,14 @@ function Settings() {
               >
                 Security Settings
               </label>
-              <button
-                id="change-password"
-                className="bg-[#010536] text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
-              >
-                Change Password
-              </button>
+              <Link to={`/auth/change-password/${userId}`}>
+                <button
+                  id="change-password"
+                  className="bg-[#010536] text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                >
+                  Change Password
+                </button>
+              </Link>
             </div>
 
             <div>
