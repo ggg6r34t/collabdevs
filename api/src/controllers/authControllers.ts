@@ -11,6 +11,7 @@ import {
 } from "../services/users";
 import {
   saveResetTokenService,
+  sendResetEmailService,
   updateLastLoginService,
   updatePasswordService,
 } from "../services/auths";
@@ -148,7 +149,8 @@ export const changePasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { newPassword } = req.body;
+  const { currentPassword, newPassword } = req.body;
+
   try {
     const userId = req.params.id;
     const currentUser = await getUserByIdService(userId);
@@ -157,8 +159,10 @@ export const changePasswordController = async (
       return res.status(404).json({ error: "User not found" });
     }
 
+    const userIdObject = currentUser._id.toString();
+
     // compare user in database with authenticated user
-    if (currentUser._id !== req.params.id) {
+    if (userIdObject !== req.params.id) {
       return res
         .status(403)
         .json({ error: "Unauthorized to change this password" });
@@ -172,27 +176,26 @@ export const changePasswordController = async (
       });
     }
 
-    const oldPassword = currentUser?.password;
+    // check if the provided current password matches the user's current password
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      currentUser?.password!
+    );
 
-    if (oldPassword !== undefined) {
-      const passwordChanged = !(await bcrypt.compare(newPassword, oldPassword));
+    if (isCurrentPasswordValid) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-      if (passwordChanged) {
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-        const updatedInformation = {
-          password: hashedPassword,
-        };
+      // update the password in the database
+      await updatePasswordService(userId, hashedPassword);
 
-        return res.status(200).json({
-          message: "Password changed successfully",
-          updatedInformation,
-        });
-      } else {
-        return res.status(400).json({
-          error: "New password must be different from the current password",
-        });
-      }
+      return res.status(200).json({
+        message: "Password changed successfully",
+      });
+    } else {
+      return res.status(400).json({
+        error: "Current password is incorrect",
+      });
     }
   } catch (error) {
     next(error);
@@ -217,7 +220,7 @@ export const requestPasswordResetController = async (
     await saveResetTokenService(user.id, resetToken, resetTokenExpiration);
 
     // send an email to the user containing the reset token link
-    // await sendResetEmailService(user.email, resetToken);
+    await sendResetEmailService(user.email, resetToken);
 
     return res.status(200).json({ message: "Password reset email sent" });
   } catch (error) {

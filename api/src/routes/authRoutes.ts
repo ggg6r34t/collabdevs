@@ -34,7 +34,7 @@ router.post(
 
 // change user password
 router.post(
-  "/change-password",
+  "/change-password/:id",
   passport.authenticate("jwt", { session: false }),
   changePasswordController
 );
