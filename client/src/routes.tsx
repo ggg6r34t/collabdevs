@@ -92,7 +92,7 @@ const routes = [
     key: "reset-password-confirm",
   },
   {
-    path: "/auth/confirm-email",
+    path: "/auth/confirm-email/:token",
     component: EmailConfirmation,
     key: "confirm-email",
   },
