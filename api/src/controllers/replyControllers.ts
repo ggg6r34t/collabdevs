@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import dotenv from "dotenv";
 
 import Reply from "../models/Reply";
 import {
@@ -16,6 +17,7 @@ type Payload = JwtPayload & {
   _id: string;
 };
 
+dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const getRepliesByPostIdController = async (

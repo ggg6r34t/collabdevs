@@ -2,18 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 import { BASE_URL } from "../../api/api";
-import { useAuthStatus } from "../status/useAuthStatus";
 
-function useEmailConfirmation() {
+function useEmailConfirmation(token: string) {
   const [message, setMessage] = useState("");
-
-  const userToken = useAuthStatus();
 
   useEffect(() => {
     const confirmEmail = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/api/v1/auth/confirm-email/${userToken}`
+          `${BASE_URL}/api/v1/auth/confirm-email/${token}`
         );
 
         if (response.status === 200) {
@@ -28,7 +25,7 @@ function useEmailConfirmation() {
     };
 
     confirmEmail();
-  }, [userToken]);
+  }, [token]);
 
   return message;
 }

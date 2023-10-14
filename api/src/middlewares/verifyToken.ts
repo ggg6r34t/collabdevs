@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import { Response, Request, NextFunction } from "express";
+import dotenv from "dotenv";
+
 import { UserDocument } from "../models/User";
 
+dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 // tested and not working as intended (might remove)

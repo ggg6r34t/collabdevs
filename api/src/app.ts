@@ -25,6 +25,8 @@ import {
   twitterStrategy,
 } from "./config/passport";
 
+dotenv.config();
+
 const SESSION_SECRET = process.env.SESSION_SECRET!;
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 const REDIS_HOST = process.env.REDIS_HOST;

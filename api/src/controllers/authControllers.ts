@@ -6,16 +6,17 @@ import { v4 as uuidv4 } from "uuid";
 
 import {
   findUserByEmailService,
-  findUserByResetTokenService,
+  findUserByTokenService,
   getUserByIdService,
 } from "../services/users";
 import {
   saveResetTokenService,
   sendResetEmailService,
+  updateEmailConfirmationService,
   updateLastLoginService,
   updatePasswordService,
 } from "../services/auths";
-import { UnauthorizedError } from "../helpers/apiError";
+import { BadRequestError, UnauthorizedError } from "../helpers/apiError";
 import { UserDocument } from "../models/User";
 
 declare module "express-session" {
@@ -143,6 +144,54 @@ function generateJwtToken(
   });
 }
 
+// email confirmation controller
+export const emailConfirmationController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { token } = req.params;
+
+  try {
+    // find the user associated with the provided confirmation token
+    const user = await findUserByTokenService(
+      token,
+      "emailConfirmationToken",
+      `No user found with email confirmation token: ${token}`
+    );
+
+    if (!user) {
+      throw new BadRequestError("Invalid confirmation token");
+    }
+
+    // check if the token has expired
+    const currentTimestamp = new Date();
+    if (
+      user.confirmEmailTokenExpiration &&
+      user.confirmEmailTokenExpiration < currentTimestamp
+    ) {
+      // token is expired
+      // return an error response
+      res.status(400).json({ message: "Email confirmation token has expired" });
+    } else {
+      // token is still valid
+      // update the user's email confirmation status in the database
+      user.emailConfirmed = true;
+      user.emailConfirmationToken = null; // clear the confirmation token
+
+      await updateEmailConfirmationService(
+        user._id,
+        user.emailConfirmed,
+        user.emailConfirmationToken
+      );
+
+      res.json({ message: "Email confirmation successful" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // change password for authenticate user
 export const changePasswordController = async (
   req: Request,
@@ -235,7 +284,13 @@ export const resetPasswordController = async (
 ) => {
   try {
     const { resetToken, newPassword } = req.body;
-    const user = await findUserByResetTokenService(resetToken);
+
+    // find the user associated with the provided reset token
+    const user = await findUserByTokenService(
+      resetToken,
+      "resetToken",
+      `No user found with reset token: ${resetToken}`
+    );
 
     if (!user || resetTokenHasExpired(user?.resetTokenExpiration)) {
       return res.status(400).json({ error: "Invalid or expired reset token" });

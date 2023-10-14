@@ -11,6 +11,7 @@ import {
   findUserByEmailService,
   getUserByIdService,
   getUserListService,
+  sendConfirmEmailService,
   updateRestrictionService,
   updateRoleService,
   updateUserByIdService,
@@ -38,7 +39,17 @@ declare module "express-serve-static-core" {
 }
 
 dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET as string;
+
+// generate an email confirmation token with a 1-hour expiration
+const generateConfirmEmailToken = () => {
+  const emailConfirmationToken = uuidv4();
+  const confirmEmailTokenExpiration = new Date();
+  confirmEmailTokenExpiration.setHours(
+    confirmEmailTokenExpiration.getHours() + 1
+  ); // 1 hour expiration
+
+  return { emailConfirmationToken, confirmEmailTokenExpiration };
+};
 
 //post: Create a new user
 export const createUserController = async (
@@ -105,11 +116,23 @@ export const createUserController = async (
           lastName,
           userName,
           avatar,
+
+          // unique reset emailConfirmationToken saved to database
+          emailConfirmationToken:
+            generateConfirmEmailToken().emailConfirmationToken,
+          confirmEmailTokenExpiration:
+            generateConfirmEmailToken().confirmEmailTokenExpiration,
         });
 
         const newUser = await createUserService(userInformation);
 
-        res.status(201).json(newUser);
+        // send an email to the user containing the reset emailConfirmationToken link
+        await sendConfirmEmailService(
+          newUser.email,
+          newUser.emailConfirmationToken!
+        );
+
+        res.status(201).json({ message: "Confirmation email sent", newUser });
       } else {
         res.status(500).send("Password required");
       }

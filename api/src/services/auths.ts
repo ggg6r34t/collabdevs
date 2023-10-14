@@ -1,7 +1,10 @@
+import dotenv from "dotenv";
+
 import { NotFoundError } from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
 import createTransporter from "../utils/createTransporter";
 
+dotenv.config();
 const SMTP_EMAIL = process.env.SMTP_EMAIL as string;
 
 // save reset token and expiration
@@ -19,6 +22,30 @@ export const saveResetTokenService = async (
       throw new NotFoundError(`No user found with ID ${userId}`);
     }
     return userById;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// update user email confirmation status and token by ID
+export const updateEmailConfirmationService = async (
+  userId: string,
+  isEmailConfirmed: boolean,
+  emailConfirmationToken: string | null
+): Promise<UserDocument> => {
+  try {
+    const updateFields = {
+      emailConfirmed: isEmailConfirmed,
+      emailConfirmationToken: emailConfirmationToken,
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateFields);
+
+    if (!updatedUser) {
+      throw new NotFoundError(`No user found with ID: ${userId}`);
+    }
+
+    return updatedUser;
   } catch (error) {
     throw error;
   }
@@ -65,10 +92,10 @@ export const sendResetEmailService = async (
   resetToken: string
 ): Promise<void> => {
   try {
-    const transporter = createTransporter(); // creates the Nodemailer transporter
+    const transporter = await createTransporter(); // creates the Nodemailer transporter
 
     const mailOptions = {
-      from: `"CollabDevs" <${SMTP_EMAIL}>`,
+      from: `"CollabDev" <${SMTP_EMAIL}>`,
       to: email,
       subject: "Password Reset Request",
       html: `
@@ -80,8 +107,8 @@ export const sendResetEmailService = async (
             <a href="https://bucolic-12d61d.netlify.app/auth/reset-password-confirm/${resetToken}" style="background-color: #010536; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
           </div>
           <p>If you didn't make this request, you can safely ignore this email.</p>
-          <p>This link will expire in 24 hours for security reasons.</p>
-          <p>If you encounter any issues, please contact our support team at <a href="mailto:support@collabdevs.com">support@collabdevs.com</a>.</p>
+          <p>This link will expire in 1 hour hour for security reasons.</p>
+          <p>If you encounter any issues, please contact our support team at <a href="mailto:support@collabdev.com">support@collabdev.com</a>.</p>
           <p>With ❤️,<br><br>The Collaborative DevLink Team</p>
         </div>
       `,
