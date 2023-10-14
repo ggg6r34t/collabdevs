@@ -47,7 +47,7 @@
   },
   "scripts": {
     "start:dev": "nodemon --watch \"src/*\" --ext \"ts,json\" --ignore \"src//.spec.ts\" --exec \"ts-node src/server.ts\"",
-    "start": "ts-node src/server.ts"
+    "start": "ts-node src/server.ts --max_old_space_size=4096 start"
   },
   "engines": {
     "node": ">=14.20.1"
