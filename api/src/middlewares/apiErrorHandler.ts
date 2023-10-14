@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
+import dotenv from "dotenv";
 
 import ApiError from "../helpers/apiError";
+
+dotenv.config();
 
 export default function (
   error: ApiError,
