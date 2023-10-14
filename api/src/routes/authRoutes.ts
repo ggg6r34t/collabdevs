@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import dotenv from "dotenv";
 
 import {
   githubAuthController,
@@ -10,8 +11,10 @@ import {
   changePasswordController,
   requestPasswordResetController,
   resetPasswordController,
+  emailConfirmationController,
 } from "../controllers/authControllers";
 
+dotenv.config();
 const router = Router();
 
 let CLIENT_URL: string | undefined;
@@ -49,9 +52,11 @@ router.post(
   resetPasswordController
 );
 
+router.get("/confirm-email/:token", emailConfirmationController);
+
 // twitter authentication
 router.get(
-  "/auth/twitter",
+  "/twitter",
   passport.authenticate("twitter", { scope: ["profile", "email"] })
 );
 
@@ -66,12 +71,12 @@ router.get(
 
 // gitHub authentication
 router.get(
-  "/auth/github",
+  "/github",
   passport.authenticate("github", { scope: ["profile", "email"] })
 );
 
 router.get(
-  "/auth/github/callback",
+  "/github/callback",
   passport.authenticate("github", {
     successRedirect: CLIENT_URL,
     failureRedirect: "/login",
@@ -81,12 +86,12 @@ router.get(
 
 // google authentication
 router.get(
-  "/auth/google",
+  "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 router.get(
-  "/auth/google/callback",
+  "/google/callback",
   passport.authenticate("google", {
     successRedirect: CLIENT_URL,
     failureRedirect: "/login",
