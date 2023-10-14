@@ -1,9 +1,15 @@
+import dotenv from "dotenv";
+
 import {
   AlreadyExist,
   InternalServerError,
   NotFoundError,
 } from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
+import createTransporter from "../utils/createTransporter";
+
+dotenv.config();
+const SMTP_EMAIL = process.env.SMTP_EMAIL as string;
 
 // Create a new user with validation
 export const createUserService = async (
@@ -31,6 +37,23 @@ export const findUserByEmailService = async (
       throw new NotFoundError(`User with ${email} not found`);
     }
     return foundUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// find a user by token
+export const findUserByTokenService = async (
+  token: string,
+  field: string, // field to search (e.g., 'emailConfirmationToken' or 'resetToken')
+  errorMessage: string // error message for the NotFoundError
+) => {
+  try {
+    const user = await User.findOne({ [field]: token }).exec();
+    if (!user) {
+      throw new NotFoundError(errorMessage);
+    }
+    return user;
   } catch (error) {
     throw error;
   }
@@ -78,21 +101,6 @@ export const updateUserByIdService = async (
       throw new NotFoundError(`No user found with ID ${userId}`);
     }
     return userById;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// find a user by reset token
-export const findUserByResetTokenService = async (
-  resetToken: string
-): Promise<UserDocument> => {
-  try {
-    const userByToken = await User.findOne({ resetToken });
-    if (!userByToken) {
-      throw new NotFoundError(`No user found with reset token: ${resetToken}`);
-    }
-    return userByToken;
   } catch (error) {
     throw error;
   }
@@ -215,5 +223,39 @@ export const findOrCreateUserService = async (
     throw new InternalServerError(
       "An error occurred while creating the account."
     );
+  }
+};
+
+// send a confirmation email with a confirmation token
+export const sendConfirmEmailService = async (
+  email: string,
+  confirmEmailToken: string
+): Promise<void> => {
+  try {
+    const transporter = await createTransporter(); // creates the Nodemailer transporter
+
+    const mailOptions = {
+      from: `"CollabDev" <${SMTP_EMAIL}>`,
+      to: email,
+      subject: "Email Confirmation",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color: #0078d4;">Email Confirmation</h2>
+          <p>Dear user,</p>
+          <p>Thank you for signing up. To confirm your email, click the button below:</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="https://bucolic-12d61d.netlify.app/auth/confirm-email/${confirmEmailToken}" style="background-color: #010536; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Confirm Email</a>
+          </div>
+          <p>If you didn't sign up for an account, you can safely ignore this email.</p>
+          <p>This link will expire in 1 hour for security reasons.</p>
+          <p>If you encounter any issues, please contact our support team at <a href="mailto:support@collabdev.com">support@collabdev.com</a>.</p>
+          <p>With ❤️,<br><br>The Collaborative DevLink Team</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw error;
   }
 };

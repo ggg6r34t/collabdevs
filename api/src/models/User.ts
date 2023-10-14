@@ -24,6 +24,9 @@ export type UserDocument = Document & {
     github: string | null;
     linkedin: string | null;
   };
+  emailConfirmed: boolean; // indicates if the email is confirmed
+  emailConfirmationToken: string | null; // stores the email confirmation token
+  confirmEmailTokenExpiration: Date | null;
 
   // more fields as needed
 };
@@ -69,6 +72,9 @@ const UserSchema = new Schema<UserDocument>(
       github: { type: String, default: null },
       linkedin: { type: String, default: null },
     },
+    emailConfirmed: { type: Boolean, default: false },
+    emailConfirmationToken: { type: String, default: null },
+    confirmEmailTokenExpiration: { type: Date, default: null },
   },
   { timestamps: true }
 );
