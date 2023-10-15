@@ -55,6 +55,7 @@ function ChangePasswordForm() {
               type="password"
               required
               placeholder="Current Password"
+              autoComplete="current-password"
               className="w-full dark:bg-slate-800 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
             />
           </div>
