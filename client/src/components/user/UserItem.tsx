@@ -1,12 +1,13 @@
-import { User } from "../../type/types";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import { User } from "../../type/types";
 
 type Props = {
   user: User;
 };
 
 const UserItem = ({ user }: Props) => {
-  //   const { profilePicture, username, firstName, headline, connections } = user;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const connections = 5;
@@ -38,8 +39,9 @@ const UserItem = ({ user }: Props) => {
           <h2 className="text-xl text-black dark:text-white font-semibold">
             {user.username || user.firstName}
           </h2>
-          {/* <p className="text-gray-600">{user.headline}</p> */}
-          <p className="text-gray-600 dark:text-gray-500">Frontend Developer</p>
+          <p className="text-gray-600 dark:text-gray-500">
+            {user.headline || "No headline provided"}
+          </p>
         </div>
       </div>
 
@@ -129,10 +131,11 @@ const UserItem = ({ user }: Props) => {
             </div>
           )}
         </div>
-
-        <button className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400">
-          View Profile
-        </button>
+        <Link to={`/profile/${user?._id}`}>
+          <button className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400">
+            View Profile
+          </button>
+        </Link>
       </div>
     </div>
   );

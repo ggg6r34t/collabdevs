@@ -1,26 +1,31 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
+import { AppDispatch, RootState } from "../../../redux/store";
+import { useUserSession } from "../../../hooks/authentication/useUserSession";
+import { getUserDetails } from "../../../redux/thunk/users";
 import Overview from "./Overview";
 import Settings from "./Settings";
 import UserPosts from "./UserPosts";
-import { RootState } from "../../../redux/store";
 import FollowersStats from "./FollowersStats";
 
 function Profile() {
-  const currentUser = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
+  const currentUser = useSelector((state: RootState) => state.user.userProfile);
   const [userMedia, setUserMedia] = useState({ avatar: null, banner: null });
   const [selectedTab, setSelectedTab] = useState("overview"); // default tab
+
+  const dispatch = useDispatch();
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  const { getUserSession } = useUserSession();
 
   const handleMediaChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     mediaType: string
   ) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target && e.target.result) {
@@ -38,39 +43,37 @@ function Profile() {
   const renderTabContent = () => {
     switch (selectedTab) {
       case "overview":
-        return (
-          <div>
-            {/* overview content */}
-            {<Overview />}
-          </div>
-        );
+        return <Overview />;
+
       case "posts":
-        return (
-          <div>
-            {/* posts content */}
-            {<UserPosts />}
-          </div>
-        );
+        return <UserPosts />;
+
       case "followersFollowing":
-        return (
-          <div>
-            {/* followers & following content */}
-            {<FollowersStats />}
-          </div>
-        );
+        return <FollowersStats />;
+
       case "settings":
-        return (
-          <div>
-            {/* settings content */}
-            {<Settings />}
-          </div>
-        );
+        return <Settings />;
+
       default:
         return null;
     }
   };
 
-  if (currentUser) {
+  const tabs = ["overview", "posts", "followersFollowing", "settings"];
+
+  const { userId } = useParams<{ userId: string | undefined }>();
+
+  useEffect(() => {
+    if (userId) {
+      fetchDispatch(getUserDetails(userId));
+    }
+  }, [dispatch, fetchDispatch, userId]);
+
+  const { profileOwnerId } = getUserSession();
+
+  const isProfileOwner = currentUser && currentUser._id === profileOwnerId;
+
+  if (isProfileOwner) {
     return (
       <div className="max-w-4xl min-h-[777px] mx-auto my-6 p-6 bg-white shadow-lg rounded-lg dark:bg-slate-800">
         {/* user banner */}
@@ -115,53 +118,50 @@ function Profile() {
 
         {/* tabs for navigation */}
         <div className="flex justify-center mt-8 mb-4">
-          <button
-            className={`px-4 py-2 mx-2 rounded-t-lg transition
-            duration-300 ease-in-out focus:outline-none ${
-              selectedTab === "overview"
-                ? "bg-[#010536] text-white"
-                : "bg-gray-300 text-gray-700"
-            }`}
-            onClick={() => setSelectedTab("overview")}
-          >
-            Overview
-          </button>
-          <button
-            className={`px-4 py-2 mx-2 rounded-t-lg transition
-            duration-300 ease-in-out focus:outline-none ${
-              selectedTab === "posts"
-                ? "bg-[#010536] text-white"
-                : "bg-gray-300 text-gray-700"
-            }`}
-            onClick={() => setSelectedTab("posts")}
-          >
-            Posts
-          </button>
-          <button
-            className={`px-4 py-2 mx-2 rounded-t-lg transition
-            duration-300 ease-in-out focus:outline-none ${
-              selectedTab === "followersFollowing"
-                ? "bg-[#010536] text-white"
-                : "bg-gray-300 text-gray-700"
-            }`}
-            onClick={() => setSelectedTab("followersFollowing")}
-          >
-            Followers & Following
-          </button>
-          <button
-            className={`px-4 py-2 mx-2 rounded-t-lg transition
-            duration-300 ease-in-out focus:outline-none ${
-              selectedTab === "settings"
-                ? "bg-[#010536] text-white"
-                : "bg-gray-300 text-gray-700"
-            }`}
-            onClick={() => setSelectedTab("settings")}
-          >
-            Settings
-          </button>
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`px-4 py-2 mx-2 rounded-t-lg transition duration-300 ease-in-out focus:outline-none ${
+                selectedTab === tab
+                  ? "bg-[#010536] text-white"
+                  : "bg-gray-300 text-gray-700"
+              }`}
+              onClick={() => setSelectedTab(tab)}
+            >
+              {tab === "followersFollowing"
+                ? "Followers & Following"
+                : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
         {/* render tab content */}
         {renderTabContent()}
+      </div>
+    );
+  } else if (!isProfileOwner) {
+    return (
+      <div className="max-w-4xl min-h-[777px] mx-auto my-6 p-6 bg-white shadow-lg rounded-lg dark:bg-slate-800">
+        {/* user banner */}
+        <div className="h-60 bg-gradient-to-r bg-center from-blue-500 to-purple-500 rounded-t-lg relative overflow-hidden">
+          <img
+            src={currentUser?.banner}
+            alt="User Banner"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        {/* user avatar */}
+        <div className="flex justify-center mt-[-64px]">
+          <label htmlFor="avatar-upload">
+            <div className="relative">
+              <img
+                src={currentUser?.avatar || "/default-avatar.jpg"}
+                alt="User Avatar"
+                className="w-32 h-32 rounded-full border-4 border-white"
+              />
+            </div>
+          </label>
+        </div>
+        <Overview />
       </div>
     );
   } else {

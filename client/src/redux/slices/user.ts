@@ -5,11 +5,13 @@ import { Post, User, UserGoogle } from "../../type/types";
 type SingleUser = {
   posts: Post[];
   userInformation: User | null;
+  userProfile: User | null;
   UserGoogle: UserGoogle;
   isLogin: boolean;
   isLoading: boolean;
   rememberMe: boolean;
   token: string | null;
+  userId: string | null;
 };
 
 const storedUserState = localStorage.getItem("userState");
@@ -18,6 +20,7 @@ const initialState: SingleUser = storedUserState
   : {
       posts: [],
       userInformation: null,
+      userProfile: null,
       UserGoogle: {
         _id: "",
         email: "",
@@ -30,6 +33,7 @@ const initialState: SingleUser = storedUserState
       isLoading: true,
       rememberMe: false,
       token: null,
+      userId: null,
     };
 
 const userSlice = createSlice({
@@ -41,6 +45,13 @@ const userSlice = createSlice({
       state.isLoading = true;
 
       localStorage.setItem("userState", JSON.stringify(state));
+    },
+    setUserId: (state, action: PayloadAction<string | null>) => {
+      state.userId = action.payload;
+    },
+    setUserProfile: (state, action: PayloadAction<User>) => {
+      state.userProfile = action.payload;
+      state.isLoading = true;
     },
     updateUserProfile: (state, action: PayloadAction<User>) => {
       state.userInformation = { ...state.userInformation, ...action.payload };

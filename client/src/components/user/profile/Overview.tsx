@@ -10,19 +10,20 @@ import {
 
 import { AppDispatch, RootState } from "../../../redux/store";
 import { useUpdateUserProfile } from "../../../hooks/userManagement/useUpdateUserProfile";
+import { useUserSession } from "../../../hooks/authentication/useUserSession";
 import { getPostByUserId } from "../../../redux/thunk/users";
 import { userActions } from "../../../redux/slices/user";
 import { User } from "../../../type/types";
 
 function Overview() {
-  const currentUser = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
+  const currentUser = useSelector((state: RootState) => state.user.userProfile);
   const [isEditing, setIsEditing] = useState(false);
 
   const dispatch = useDispatch();
   const fetchDispatch = useDispatch<AppDispatch>();
+
   const { updateUserProfile } = useUpdateUserProfile();
+  const { getUserSession } = useUserSession();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -100,6 +101,10 @@ function Overview() {
       }
     );
 
+    const { profileOwnerId } = getUserSession();
+
+    const isProfileOwner = currentUser && currentUser._id === profileOwnerId;
+
     return (
       <div className="p-2">
         <div className="max-w-4xl mx-auto my-6 p-6 bg-white rounded-lg dark:bg-slate-800">
@@ -139,7 +144,13 @@ function Overview() {
                 />
               </>
             ) : (
-              `${formData.firstName} ${formData.lastName}`
+              `${
+                formData.firstName.charAt(0).toUpperCase() +
+                formData.firstName.slice(1)
+              } ${
+                formData.lastName.charAt(0).toUpperCase() +
+                formData.lastName.slice(1)
+              }`
             )}
           </h2>
 
@@ -182,6 +193,7 @@ function Overview() {
               <p className="text-gray-600 dark:text-white">
                 Headline: {formData.headline || "No headline provided"}
               </p>
+
               {currentUser.email ? (
                 <p className="text-gray-600 dark:text-white">
                   Email: {currentUser.email}
@@ -191,12 +203,14 @@ function Overview() {
                   <p className="text-gray-600 dark:text-white">
                     Email: Not provided
                   </p>
-                  <button
-                    onClick={() => console.log("Clicked")}
-                    className="mt-2 px-4 py-2 bg-[#010536] text-white rounded-md transition duration-300 ease-in-out"
-                  >
-                    Provide Email
-                  </button>
+                  {isProfileOwner && (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="mt-2 px-4 py-2 bg-[#010536] text-white rounded-md transition duration-300 ease-in-out"
+                    >
+                      Provide Email
+                    </button>
+                  )}
                 </div>
               )}
               <p className="text-gray-600 dark:text-white">
@@ -343,21 +357,22 @@ function Overview() {
           </div>
 
           {/* edit and save Buttons */}
-          {isEditing ? (
-            <button
-              onClick={handleSaveProfile}
-              className="bg-[#010536] text-white py-2 px-4 mt-4 rounded-md transition duration-300 ease-in-out"
-            >
-              Save Profile
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-[#010536] text-white py-2 px-4 mt-4 rounded-md transition duration-300 ease-in-out"
-            >
-              Edit Profile
-            </button>
-          )}
+          {isProfileOwner &&
+            (isEditing ? (
+              <button
+                onClick={handleSaveProfile}
+                className="bg-[#010536] text-white py-2 px-4 mt-4 rounded-md transition duration-300 ease-in-out"
+              >
+                Save Profile
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-[#010536] text-white py-2 px-4 mt-4 rounded-md transition duration-300 ease-in-out"
+              >
+                Edit Profile
+              </button>
+            ))}
         </div>
       </div>
     );
