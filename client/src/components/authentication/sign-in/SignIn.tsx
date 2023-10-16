@@ -82,6 +82,8 @@ function SignIn() {
             <input
               onChange={getEmail}
               type="email"
+              autoComplete="username"
+              required
               className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Email"
             />
@@ -91,6 +93,8 @@ function SignIn() {
             <input
               onChange={getPassword}
               type="password"
+              autoComplete="current-password"
+              required
               className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Password"
             />
