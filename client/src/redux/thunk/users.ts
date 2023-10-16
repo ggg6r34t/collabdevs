@@ -30,15 +30,23 @@ export function getUserList() {
 }
 
 // function to get a user's details
-export function getUserDetails(singleUserURL: string) {
+export function getUserDetails(userId: string) {
+  const userURL = `${BASE_URL}/api/v1/users/${userId}`;
+  const token = localStorage.getItem("userToken");
+
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get(singleUserURL);
+      const response = await axios.get(userURL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const fetchedUserDetails: User = response.data;
-      dispatch(userActions.setUserData(fetchedUserDetails));
+      dispatch(userActions.setUserProfile(fetchedUserDetails));
     } catch (error) {
-      // Handle errors appropriately, e.g., dispatch an error action.
+      // handle errors appropriately, e.g., dispatch an error action.
       console.error("Error fetching user details:", error);
     }
   };

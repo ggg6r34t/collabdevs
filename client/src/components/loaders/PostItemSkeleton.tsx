@@ -8,7 +8,7 @@ function PostItemSkeleton() {
         >
           <div className="animate-pulse flex flex-row items-center justify-center">
             <div className="w-[106px] h-[115px] flex flex-col items-center p-2">
-              <div className="bg-slate-200 dark:bg-slate-700 border-2 rounded-full border-gray-700">
+              <div className="bg-slate-200 dark:bg-slate-700 border-2 rounded-full dark:border-gray-700">
                 {/* upvote button */}
                 <div className="w-[32px] h-[25px]"></div>
               </div>
@@ -19,7 +19,7 @@ function PostItemSkeleton() {
                 </p>
               </div>
               {/* downvote button */}
-              <div className="bg-slate-200 dark:bg-slate-700 border-2 rounded-full border-gray-700">
+              <div className="bg-slate-200 dark:bg-slate-700 border-2 rounded-full dark:border-gray-700">
                 <div className="w-[32px] h-[25px]"></div>
               </div>
             </div>
