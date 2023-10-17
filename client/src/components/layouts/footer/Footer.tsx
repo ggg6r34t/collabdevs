@@ -32,19 +32,19 @@ function Footer() {
         </Link>
         <div className="flex items-between mr-44 space-x-20">
           <Link
-            to="/"
+            to="legal/terms-of-service"
             className="text-gray-600 dark:text-white hover:text-gray-800"
           >
             Terms
           </Link>
           <Link
-            to="/"
+            to="legal/privacy-policy"
             className="text-gray-600 dark:text-white hover:text-gray-800"
           >
             Privacy
           </Link>
           <Link
-            to="/"
+            to="/about-us"
             className="text-gray-600 dark:text-white hover:text-gray-800"
           >
             About Us
@@ -62,7 +62,7 @@ function Footer() {
             Docs
           </Link>
           <Link
-            to="/"
+            to="/support/faq"
             className="text-gray-600 dark:text-white hover:text-gray-800"
           >
             FAQ
