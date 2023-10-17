@@ -14,6 +14,11 @@ import PasswordResetRequest from "./components/authentication/PasswordResetReque
 import PasswordResetForm from "./components/authentication/PasswordResetForm";
 import EmailConfirmation from "./components/emailConfirmation/EmailConfirmation";
 import ChangePasswordForm from "./components/authentication/ChangePasswordForm";
+import KnowledgeBase from "./components/faq/KnowledgeBase";
+import UserGuides from "./components/guides/UserGuides";
+import TermsOfService from "./components/legal/TermsOfService";
+import PrivacyPolicy from "./components/legal/PrivacyPolicy";
+import AboutUs from "./components/about/AboutUs";
 
 const routes = [
   {
@@ -96,16 +101,21 @@ const routes = [
     component: EmailConfirmation,
     key: "confirm-email",
   },
-  //   {
-  //     path: "/terms-privacy",
-  //     component: TermsPrivacy,
-  //     key: "terms-privacy",
-  //   },
-  //   {
-  //     path: "/about-us",
-  //     component: AboutUs,
-  //     key: "about-us",
-  //   },
+  {
+    path: "legal/terms-of-service",
+    component: TermsOfService,
+    key: "terms-of-service",
+  },
+  {
+    path: "legal/privacy-policy",
+    component: PrivacyPolicy,
+    key: "privacy-policy",
+  },
+  {
+    path: "/about-us",
+    component: AboutUs,
+    key: "about-us",
+  },
   //   {
   //     path: "/blog",
   //     component: Blog,
@@ -116,11 +126,16 @@ const routes = [
   //     component: Docs,
   //     key: "docs",
   //   },
-  //   {
-  //     path: "/faq",
-  //     component: FAQ,
-  //     key: "faq",
-  //   },
+  {
+    path: "/support/faq",
+    component: KnowledgeBase,
+    key: "faq",
+  },
+  {
+    path: "/support/user-guides",
+    component: UserGuides,
+    key: "user-guides",
+  },
   //   {
   //     path: "/help-desk",
   //     component: HelpDesk,
