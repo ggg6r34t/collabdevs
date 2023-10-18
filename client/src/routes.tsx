@@ -1,24 +1,25 @@
-import Home from "./pages/Home";
+import AboutUs from "./components/about/AboutUs";
+import BlogPost from "./components/blog/BlogPost";
+import ChangePasswordForm from "./components/authentication/ChangePasswordForm";
 import CommunityPage from "./pages/Community";
-import SupportPage from "./pages/SupportPage";
+import EmailConfirmation from "./components/emailConfirmation/EmailConfirmation";
+import FeedbackForm from "./components/forms/FeedbackForm";
+import FeedbackList from "./components/admin/feedbacklist/FeedbackList";
+import Home from "./pages/Home";
+import KnowledgeBase from "./components/faq/KnowledgeBase";
+import PasswordResetForm from "./components/authentication/PasswordResetForm";
+import PasswordResetRequest from "./components/authentication/PasswordResetRequest";
 import PostDetail from "./components/postDetail/PostDetails";
 import PostForm from "./components/forms/PostForm";
+import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import Profile from "./components/user/profile/Profile";
 import SignIn from "./components/authentication/sign-in/SignIn";
 import SignUp from "./components/authentication/sign-up/SignUp";
+import SupportPage from "./pages/SupportPage";
+import TermsOfService from "./components/legal/TermsOfService";
+import UserGuides from "./components/guides/UserGuides";
 import UserList from "./components/admin/userlist/UserList";
 import SavedPosts from "./components/savedPost/SavedPosts";
-import FeedbackList from "./components/admin/feedbacklist/FeedbackList";
-import FeedbackForm from "./components/forms/FeedbackForm";
-import PasswordResetRequest from "./components/authentication/PasswordResetRequest";
-import PasswordResetForm from "./components/authentication/PasswordResetForm";
-import EmailConfirmation from "./components/emailConfirmation/EmailConfirmation";
-import ChangePasswordForm from "./components/authentication/ChangePasswordForm";
-import KnowledgeBase from "./components/faq/KnowledgeBase";
-import UserGuides from "./components/guides/UserGuides";
-import TermsOfService from "./components/legal/TermsOfService";
-import PrivacyPolicy from "./components/legal/PrivacyPolicy";
-import AboutUs from "./components/about/AboutUs";
 
 const routes = [
   {
@@ -116,11 +117,11 @@ const routes = [
     component: AboutUs,
     key: "about-us",
   },
-  //   {
-  //     path: "/blog",
-  //     component: Blog,
-  //     key: "blog",
-  //   },
+  {
+    path: "/blog",
+    component: BlogPost,
+    key: "blog",
+  },
   //   {
   //     path: "/docs",
   //     component: Docs,

@@ -50,7 +50,7 @@ function Footer() {
             About Us
           </Link>
           <Link
-            to="/"
+            to="/blog"
             className="text-gray-600 dark:text-white hover:text-gray-800"
           >
             Blog
