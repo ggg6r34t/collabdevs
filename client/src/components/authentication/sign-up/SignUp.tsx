@@ -195,19 +195,22 @@ function SignUp() {
         <div className="w-65 flex flex-col mt-4">
           <p className="text-xs mb-2">
             By clicking{" "}
-            <Link to="/" className="font-medium underline">
+            <Link to="/signup" className="font-medium underline">
               “Sign up”
             </Link>
             , you agree to our{" "}
-            <Link to="/" className="font-medium underline">
+            <Link
+              to="/legal/terms-of-service"
+              className="font-medium underline"
+            >
               terms of service
             </Link>{" "}
             and acknowledge that you have read and understand our{" "}
-            <Link to="/" className="font-medium underline">
+            <Link to="/legal/privacy-policy" className="font-medium underline">
               privacy policy
             </Link>{" "}
             and{" "}
-            <Link to="/" className="font-medium underline">
+            <Link to="/legal/code-of-conduct" className="font-medium underline">
               code of conduct
             </Link>
             .
