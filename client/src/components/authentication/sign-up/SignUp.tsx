@@ -2,11 +2,13 @@ import axios from "axios";
 import { useState } from "react";
 import { confirmAlert } from "react-confirm-alert";
 import { Link, useNavigate } from "react-router-dom";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { BASE_URL } from "../../../api/api";
 
 function SignUp() {
-  const [signUpInformation, setSignUpInformation] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
@@ -14,86 +16,123 @@ function SignUp() {
     firstName: "",
     lastName: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    userName: "",
+    firstName: "",
+    lastName: "",
+  }); // store validation errors
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
   const navigate = useNavigate();
-  function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
-    setSignUpInformation({ ...signUpInformation, email: event.target.value });
-  }
 
-  function getPassword(event: React.ChangeEvent<HTMLInputElement>) {
-    setSignUpInformation({
-      ...signUpInformation,
-      password: event.target.value,
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
-  }
 
-  function getConfirmPassword(event: React.ChangeEvent<HTMLInputElement>) {
-    setSignUpInformation({
-      ...signUpInformation,
-      confirmPassword: event.target.value,
+    // reset validation errors for the changed input field
+    setErrors({
+      ...errors,
+      [name]: "",
     });
-  }
+  };
 
-  function getUserName(event: React.ChangeEvent<HTMLInputElement>) {
-    setSignUpInformation({
-      ...signUpInformation,
-      userName: event.target.value,
-    });
-  }
-  function getFirstName(event: React.ChangeEvent<HTMLInputElement>) {
-    setSignUpInformation({
-      ...signUpInformation,
-      firstName: event.target.value,
-    });
-  }
+  const validateForm = () => {
+    const validationErrors = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userName: "",
+      firstName: "",
+      lastName: "",
+    };
 
-  function getLastName(event: React.ChangeEvent<HTMLInputElement>) {
-    setSignUpInformation({
-      ...signUpInformation,
-      lastName: event.target.value,
-    });
-  }
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    if (!formData.userName.match(/^[A-Za-z0-9_]{3,10}$/)) {
+      validationErrors.userName =
+        "Username must be 3-10 characters and may contain numbers and underscores.";
+    }
 
-    function onSuccess() {
-      confirmAlert({
-        title: `Congratulation! ${signUpInformation.userName}`,
-        message: "You successfully created an account. Click OK to login.",
-        buttons: [
-          {
-            label: "OK",
-            onClick: () => navigate("/signin"),
-          },
-        ],
-      });
+    if (formData.password.trim().length < 8) {
+      validationErrors.password =
+        "Password must be at least 8 characters long.";
     }
 
     if (
-      signUpInformation.password?.toString().toLowerCase() !==
-      signUpInformation.confirmPassword?.toString().toLowerCase()
+      formData.password.trim().toLowerCase() !==
+      formData.confirmPassword.trim().toLowerCase()
     ) {
-      confirmAlert({
-        title: "Careful!",
-        message: "Password and Confirm Password does not match.",
-        buttons: [
-          {
-            label: "OK",
-          },
-        ],
-      });
-    } else {
+      validationErrors.confirmPassword =
+        "Password and Confirm Password do not match.";
+    }
+
+    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(formData.email)) {
+      validationErrors.email = "Invalid email address.";
+    }
+
+    if (!formData.firstName || !formData.lastName) {
+      validationErrors.firstName = "Please provide your first and last name.";
+    }
+
+    setErrors(validationErrors);
+
+    // check if there are no validation errors
+    const valid = Object.values(validationErrors).every(
+      (error) => error === ""
+    );
+
+    // set the isFormValid state
+    setIsFormValid(valid);
+
+    return valid;
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (validateForm()) {
       const endpoint = `${BASE_URL}/api/v1/users/register`;
       axios
-        .post(endpoint, signUpInformation)
-
+        .post(endpoint, formData)
         .then((response) => {
           if (response.status === 201) {
-            onSuccess();
+            confirmAlert({
+              title: `Congratulation! ${formData.userName}`,
+              message:
+                "You successfully created an account. Click OK to login.",
+              buttons: [
+                {
+                  label: "OK",
+                  onClick: () => navigate("/signin"),
+                },
+              ],
+            });
+            // clear form only if registration is successful
+            setFormData({
+              email: "",
+              password: "",
+              confirmPassword: "",
+              userName: "",
+              firstName: "",
+              lastName: "",
+            });
           }
         })
         .catch((error) => {
-          console.log(error);
-          if (error.response.status === 409) {
+          if (error.response && error.response.status === 409) {
             confirmAlert({
               title: "Error!",
               message: "User name or email already registered.",
@@ -103,94 +142,145 @@ function SignUp() {
                 },
               ],
             });
+          } else {
+            console.log(error);
           }
         });
     }
-
-    // clear form
-    setSignUpInformation({
-      email: "",
-      password: "",
-      confirmPassword: "",
-      userName: "",
-      firstName: "",
-      lastName: "",
-    });
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md dark:bg-slate-800">
-        <form action="post" onSubmit={handleSubmit}>
+        <form method="post" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-semibold mr-auto mb-4">Sign Up</h2>
           <div className="mb-4">
             <label className="block mb-2">First Name</label>
             <input
-              onChange={getFirstName}
-              type="firstName"
+              onChange={handleChange}
+              type="text"
+              name="firstName"
               required
-              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="First Name"
             />
           </div>
           <div className="mb-4">
             <label className="block mb-2">Last Name</label>
             <input
-              onChange={getLastName}
-              type="lastName"
+              onChange={handleChange}
+              type="text"
+              name="lastName"
               required
-              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Last Name"
             />
           </div>
           <div className="mb-4">
             <label className="block mb-2">Display Name</label>
             <input
-              onChange={getUserName}
-              type="userName"
+              onChange={handleChange}
+              type="text"
+              name="userName"
               required
-              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
+              autoComplete="username"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Dispaly Name"
             />
+            {errors.userName && (
+              <span className="text-red-500 text-xs mt-1">
+                {errors.userName}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label className="block mb-2">Email</label>
             <input
+              onChange={handleChange}
               type="email"
-              onChange={getEmail}
+              name="email"
               required
-              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2  border border-gray-400 rounded-[12px]"
+              autoComplete="username"
+              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
               placeholder="Email"
             />
           </div>
 
           <div className="mb-4">
             <label className="block mb-2">Password</label>
-            <input
-              onChange={getPassword}
-              type="password"
-              required
-              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
-              placeholder="Password"
-            />
+            <div className="relative">
+              <input
+                onChange={handleChange}
+                type={passwordVisible ? "text" : "password"}
+                name="password"
+                required
+                autoComplete="current-password"
+                className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
+                placeholder="Password"
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute top-2 right-3 text-gray-600"
+              >
+                {passwordVisible ? (
+                  <FontAwesomeIcon icon={faEyeSlash} />
+                ) : (
+                  <FontAwesomeIcon icon={faEye} />
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <span className="text-red-500 text-xs mt-1">
+                {errors.password}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label className="block mb-2">Confirm Password</label>
-            <input
-              onChange={getConfirmPassword}
-              type="password"
-              required
-              className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
-              placeholder="Confirm Password"
-            />
+            <div className="relative">
+              <input
+                onChange={handleChange}
+                type={confirmPasswordVisible ? "text" : "password"}
+                name="confirmPassword"
+                required
+                autoComplete="new-password"
+                className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
+                placeholder="Confirm Password"
+              />
+              <button
+                type="button"
+                onClick={toggleConfirmPasswordVisibility}
+                className="absolute top-2 right-3 text-gray-600"
+              >
+                {confirmPasswordVisible ? (
+                  <FontAwesomeIcon icon={faEyeSlash} />
+                ) : (
+                  <FontAwesomeIcon icon={faEye} />
+                )}
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <span className="text-red-500 text-xs mt-1">
+                {errors.confirmPassword}
+              </span>
+            )}
           </div>
           <p className="text-xs mb-4">
-            Passwords must contain at least eight characters, including at least
-            1 letter and 1 number.
+            Passwords must contain at least 8 characters, including at least 1
+            letter and 1 number.
           </p>
-          <button className="w-65 h-9.5 bg-white text-[#010536] hover:text-white py-2 border border-gray-400 rounded-[12px] hover:bg-[#010536]">
+          <button
+            type="submit"
+            className="w-65 h-9.5 bg-white text-[#010536] hover:text-white py-2 border border-gray-400 rounded-[12px] hover:bg-[#010536]"
+          >
             Sign Up
           </button>
+          {!isFormValid && (
+            <p className="text-red-500 text-xs mt-1">
+              Please fill out the form correctly before submitting.
+            </p>
+          )}
         </form>
         <div className="w-65 flex flex-col mt-4">
           <p className="text-xs mb-2">
