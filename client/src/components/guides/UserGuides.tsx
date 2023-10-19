@@ -30,7 +30,7 @@ function UserGuides() {
 
   return (
     <div className="min-h-screen p-6 mx-auto max-w-screen-xl mt-20">
-      <h1 className="text-3xl font-semibold mb-4 text-blue-600 dark:text-blue-300">
+      <h1 className="text-3xl font-semibold mb-6 text-blue-600 dark:text-blue-300">
         User Guides and Tutorials
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -43,7 +43,7 @@ function UserGuides() {
             <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-white">
               {guide.title}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-700 dark:text-gray-400">
               {guide.description}
             </p>
           </a>
