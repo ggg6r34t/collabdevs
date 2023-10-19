@@ -1,6 +1,7 @@
 import AboutUs from "./components/about/AboutUs";
 import BlogPost from "./components/blog/BlogPost";
 import ChangePasswordForm from "./components/authentication/ChangePasswordForm";
+import CodeOfConduct from "./components/legal/CodeOfConduct";
 import CommunityPage from "./pages/Community";
 import EmailConfirmation from "./components/emailConfirmation/EmailConfirmation";
 import FeedbackForm from "./components/forms/FeedbackForm";
@@ -111,6 +112,11 @@ const routes = [
     path: "legal/privacy-policy",
     component: PrivacyPolicy,
     key: "privacy-policy",
+  },
+  {
+    path: "legal/code-of-conduct",
+    component: CodeOfConduct,
+    key: "code-of-conduct",
   },
   {
     path: "/about-us",
