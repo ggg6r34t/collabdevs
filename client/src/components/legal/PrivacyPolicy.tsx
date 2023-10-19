@@ -49,17 +49,17 @@ const privacyPolicyContent = [
 function PrivacyPolicy() {
   return (
     <div className="min-h-screen dark:bg-slate-900 p-6 mx-auto max-w-screen-xl mt-20">
-      <h1 className="text-3xl font-semibold text-blue-600 dark:text-blue-300 mb-4">
+      <h1 className="text-3xl font-semibold text-blue-600 dark:text-blue-300 mb-6">
         Privacy Policy
       </h1>
-      <p className="text-gray-600 dark:text-gray-400">
+      <p className="text-gray-700 dark:text-gray-400">
         This Privacy Policy explains how we collect, use, and protect your
         personal information when you use CollabDev.
       </p>
       {privacyPolicyContent.map((item, index) => (
         <div key={index}>
           <h2 className="text-xl font-semibold mt-4">{item.title}</h2>
-          <p className="text-gray-600 dark:text-gray-400">{item.content}</p>
+          <p className="text-gray-700 dark:text-gray-400">{item.content}</p>
         </div>
       ))}
     </div>
