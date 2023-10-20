@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import DOMPurify from "dompurify";
 import { confirmAlert } from "react-confirm-alert";
 import { Link, useNavigate } from "react-router-dom";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
@@ -37,12 +38,17 @@ function SignUp() {
   };
   const navigate = useNavigate();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+  const sanitizeInput = (name: string, value: string) => {
+    const sanitizedValue = DOMPurify.sanitize(value);
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: sanitizedValue,
     });
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    sanitizeInput(name, value); // sanitize the input
 
     // reset validation errors for the changed input field
     setErrors({

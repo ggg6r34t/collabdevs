@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import DOMPurify from "dompurify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
@@ -29,6 +30,19 @@ function SignIn() {
     setPasswordVisible(!passwordVisible);
   };
 
+  const sanitizeInput = (name: string, value: string) => {
+    // check the input name to determine which field to sanitize
+    let sanitizedValue = value;
+
+    if (name === "email") {
+      sanitizedValue = DOMPurify.sanitize(value);
+      dispatch(formActions.setEmail(sanitizedValue));
+    } else if (name === "password") {
+      sanitizedValue = DOMPurify.sanitize(value);
+      dispatch(formActions.setPassword(sanitizedValue));
+    }
+  };
+
   function validateEmail(email: string) {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!email) {
@@ -50,14 +64,14 @@ function SignIn() {
 
   function getEmail(event: React.ChangeEvent<HTMLInputElement>) {
     const email = event.target.value;
-    dispatch(formActions.setEmail(email));
+    sanitizeInput("email", email); // sanitize the email input
     const error = validateEmail(email);
     setEmailError(error);
   }
 
   function getPassword(event: React.ChangeEvent<HTMLInputElement>) {
     const password = event.target.value;
-    dispatch(formActions.setPassword(password));
+    sanitizeInput("password", password); // sanitize the password input
     // const error = validatePassword(password);
     // setPasswordError(error);
   }
@@ -108,6 +122,7 @@ function SignIn() {
             <input
               onChange={getEmail}
               type="email"
+              name="email"
               autoComplete="username"
               required
               className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
@@ -123,6 +138,7 @@ function SignIn() {
               <input
                 onChange={getPassword}
                 type={passwordVisible ? "text" : "password"}
+                name="password"
                 autoComplete="current-password"
                 required
                 className="w-65 h-9.5 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-[12px]"
