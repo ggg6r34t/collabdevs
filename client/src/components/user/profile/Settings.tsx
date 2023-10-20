@@ -1,25 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import FeedbackReportingForm from "../../forms/FeedbackReportingForm";
 
 function Settings() {
   const [userMedia, setUserMedia] = useState({ avatar: null, banner: null });
-  const [feedback, setFeedback] = useState("");
-  const [isReporting, setIsReporting] = useState(false);
-  const [feedbackSent, setFeedbackSent] = useState(false);
-
-  const handleFeedbackChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setFeedback(event.target.value);
-  };
-
-  const handleSubmitFeedback = () => {
-    // logic to send feedback/report to the server here
-    setIsReporting(true);
-
-    // api request here
-    setTimeout(() => {
-      setFeedbackSent(true);
-    }, 2000);
-  };
 
   const handleMediaChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -167,37 +151,7 @@ function Settings() {
                 </button>
               </Link>
             </div>
-
-            <div>
-              <label
-                htmlFor="Feedback & Report"
-                className=" text-gray-600 dark:text-white block ml-2 mb-2"
-              >
-                Feedback & Report
-              </label>
-              {feedbackSent ? (
-                <p className="text-green-500">Feedback sent successfully!</p>
-              ) : (
-                <>
-                  <textarea
-                    placeholder="Provide your feedback or report an issue..."
-                    value={feedback}
-                    onChange={handleFeedbackChange}
-                    rows={4}
-                    className="w-full p-2 mb-2 dark:bg-slate-700 border rounded-md"
-                  ></textarea>
-                  <button
-                    onClick={handleSubmitFeedback}
-                    disabled={isReporting}
-                    className={`px-4 py-2 rounded-md transition duration-300 ease-in-out ${
-                      isReporting ? "bg-gray-400" : "bg-[#010536] text-white"
-                    }`}
-                  >
-                    {isReporting ? "Sending..." : "Send Feedback"}
-                  </button>
-                </>
-              )}
-            </div>
+            <FeedbackReportingForm />
           </div>
         </div>
       </div>
