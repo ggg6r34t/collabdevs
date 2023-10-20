@@ -8,6 +8,7 @@ import repliesReducer from "./slices/reply";
 import savedPostsReducer from "./slices/savedPost";
 import postDetailReducer from "./slices/postDetail";
 import themeReducer from "./slices/themeMode";
+import formReducer from "./slices/form";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     savedPosts: savedPostsReducer,
     comments: commentsReducer,
     replies: repliesReducer,
+    form: formReducer,
     themes: themeReducer,
   },
 });

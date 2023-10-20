@@ -16,6 +16,7 @@ type Props = {
 function CommentForm({ post }: Props) {
   const userToken = useSelector((state: RootState) => state.user.token);
   const [commentContent, setCommentContent] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleContentChange = (value: string) => {
     // remove <p> tags from the HTML content using DOMPurify
@@ -30,12 +31,24 @@ function CommentForm({ post }: Props) {
     postId: post._id,
   };
 
+  const validateInput = () => {
+    if (!commentContent.trim()) {
+      setValidationError("Comment content is required.");
+      return false;
+    }
+    return true;
+  };
+
   // function to create a new post
   const createComment = async (
     commentData: Partial<Post>,
 
     token: string | undefined
   ) => {
+    if (!validateInput()) {
+      return;
+    }
+
     try {
       await axios.post(`${BASE_URL}/api/v1/posts/comments`, commentData, {
         headers: {
@@ -56,6 +69,7 @@ function CommentForm({ post }: Props) {
         value={commentContent}
         onChange={handleContentChange}
       />
+      {validationError && <div className="text-red-500">{validationError}</div>}
       <div className="w-[605px] h-[45px] flex items-center justify-end m-2 ml-12 mb-6">
         <button
           className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none"

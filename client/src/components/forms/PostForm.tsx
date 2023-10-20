@@ -15,6 +15,10 @@ function PostForm() {
   const userToken = useSelector((state: RootState) => state.user.token);
   const [title, setTitle] = useState("");
   const [postContent, setPostContent] = useState("");
+  const [validationErrors, setValidationErrors] = useState({
+    title: "",
+    content: "",
+  });
 
   const navigate = useNavigate();
 
@@ -24,8 +28,10 @@ function PostForm() {
     setTitle(event.target.value);
   };
 
+  // sanitizing HTML content using DOMPurify
   const handleContentChange = (value: string) => {
     // remove <p> tags from the HTML content using DOMPurify
+
     const cleanedHTML = DOMPurify.sanitize(value, {
       ALLOWED_TAGS: [], // remove all HTML tags
     });
@@ -37,19 +43,40 @@ function PostForm() {
     content: postContent,
   };
 
+  const validateInputs = () => {
+    const errors = { title: "", content: "" };
+    let valid = true;
+
+    if (!title.trim()) {
+      errors.title = "Title is required.";
+      valid = false;
+    }
+
+    if (!postContent.trim()) {
+      errors.content = "Content is required.";
+      valid = false;
+    }
+
+    setValidationErrors(errors);
+    return valid;
+  };
+
   // function to create a new post
   const createPost = async (
     postData: Partial<Post>,
     token: string | undefined
   ) => {
+    if (!validateInputs()) {
+      return;
+    }
+
     try {
       await axios.post(`${BASE_URL}/api/v1/posts/`, postData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      // const response =
-      //  add it to the state or redirect to the post page
+
       navigate("/");
     } catch (error) {
       console.error("Error creating post:", error);
@@ -66,6 +93,9 @@ function PostForm() {
           value={title}
           onChange={handleTitleChange}
         />
+        {validationErrors.title && (
+          <div className="text-red-500">{validationErrors.title}</div>
+        )}
         <ReactQuill
           className="snow w-[724px] h-[242px] p-2 focus:outline-none focus:border-blue-50"
           scrollingContainer="null"
@@ -84,6 +114,9 @@ function PostForm() {
             ],
           }}
         />
+        {validationErrors.content && (
+          <div className="text-red-500">{validationErrors.content}</div>
+        )}
         <div className="w-[724px] h-[45px] flex items-center justify-end p-1 mt-4 ">
           <button
             className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400"

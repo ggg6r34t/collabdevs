@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DOMPurify from "dompurify";
 
 function ContactSupportForm() {
   const [name, setName] = useState("");
@@ -8,9 +9,71 @@ function ContactSupportForm() {
   const [feedbackType, setFeedbackType] = useState("Bug");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const sanitizeInput = (input: string) => {
+    return DOMPurify.sanitize(input, {
+      ALLOWED_TAGS: [], // Remove all HTML tags
+    });
+  };
+
+  const validateEmail = (email: string) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    let hasErrors = false;
+
+    const sanitizedName = sanitizeInput(name);
+    const sanitizedEmail = sanitizeInput(email);
+    const sanitizedSubject = sanitizeInput(subject);
+    const sanitizedMessage = sanitizeInput(message);
+
+    const newErrors = {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    };
+
+    if (!sanitizedName) {
+      newErrors.name = "Name is required";
+      hasErrors = true;
+    }
+
+    if (!sanitizedEmail || !validateEmail(sanitizedEmail)) {
+      newErrors.email = "Please enter a valid email address";
+      hasErrors = true;
+    }
+
+    if (!sanitizedSubject) {
+      newErrors.subject = "Subject is required";
+      hasErrors = true;
+    }
+
+    if (!sanitizedMessage) {
+      newErrors.message = "Message is required";
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // if no errors, you can proceed to submit the form
+    setErrors(newErrors);
     setSubmitted(true);
+
+    // sending sanitized data to your server or perform other actions.
+    // Remember to handle the server response and display a confirmation message.
   };
 
   return (
@@ -38,6 +101,7 @@ function ContactSupportForm() {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
+              <div className="text-red-500 text-sm mt-2">{errors.name}</div>
             </div>
 
             <div className="mb-4">
@@ -52,6 +116,7 @@ function ContactSupportForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              <div className="text-red-500 text-sm mt-2">{errors.email}</div>
             </div>
 
             <div className="mb-4">
@@ -69,6 +134,7 @@ function ContactSupportForm() {
                 onChange={(e) => setSubject(e.target.value)}
                 required
               />
+              <div className="text-red-500 text-sm mt-2">{errors.subject}</div>
             </div>
 
             <div className="mb-6">
@@ -86,6 +152,7 @@ function ContactSupportForm() {
                 rows={4}
                 required
               />
+              <div className="text-red-500 text-sm mt-2">{errors.message}</div>
             </div>
 
             <div className="mb-4">

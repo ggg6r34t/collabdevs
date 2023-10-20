@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import DOMPurify from "dompurify";
 
 import { RootState } from "../../redux/store";
 import { BASE_URL } from "../../api/api";
@@ -35,8 +36,13 @@ function FeedbackForm() {
     try {
       setFormState({ ...formState, isSubmitting: true });
 
+      // sanitize the feedback using DOMPurify
+      const sanitizedFeedback = DOMPurify.sanitize(feedback, {
+        ALLOWED_TAGS: [], // remove all HTML tags
+      });
+
       // submit feedback
-      await submitFeedback(feedback);
+      await submitFeedback(sanitizedFeedback);
 
       // reset form state on successful submission
       setFormState({

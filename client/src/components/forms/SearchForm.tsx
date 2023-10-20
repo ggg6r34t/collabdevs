@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import DOMPurify from "dompurify";
 
 import { postActions } from "../../redux/slices/post";
 import { usersActions } from "../../redux/slices/users"; // Import the users slice
@@ -9,8 +10,14 @@ function SearchForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
 
+  function sanitizeInput(input: string) {
+    return DOMPurify.sanitize(input, {
+      ALLOWED_TAGS: [], // Remove all HTML tags
+    });
+  }
+
   function onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    const newQuery = event.target.value;
+    const newQuery = sanitizeInput(event.target.value);
     setSearchQuery(newQuery);
     setErrorMessage("");
     if (newQuery.trim() === "") {
