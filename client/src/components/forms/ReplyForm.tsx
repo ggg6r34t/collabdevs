@@ -17,6 +17,7 @@ type Props = {
 function ReplyForm({ comment, post }: Props) {
   const userToken = useSelector((state: RootState) => state.user.token);
   const [replyContent, setReplyContent] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleContentChange = (value: string) => {
     // remove <p> tags from the HTML content using DOMPurify
@@ -32,11 +33,23 @@ function ReplyForm({ comment, post }: Props) {
     commentId: comment._id,
   };
 
+  const validateInput = () => {
+    if (!replyContent.trim()) {
+      setValidationError("Reply content is required.");
+      return false;
+    }
+    return true;
+  };
+
   // function to create a new post
   const createReply = async (
     replyData: Partial<Post>,
     token: string | undefined
   ) => {
+    if (!validateInput()) {
+      return;
+    }
+
     try {
       await axios.post(`${BASE_URL}/api/v1/replies/`, replyData, {
         headers: {
@@ -57,6 +70,7 @@ function ReplyForm({ comment, post }: Props) {
         value={replyContent}
         onChange={handleContentChange}
       />
+      {validationError && <div className="text-red-500">{validationError}</div>}
       <div className="w-[540px] h-[40px] flex items-center justify-end m-2 ml-12 mb-6">
         <button
           className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none"
