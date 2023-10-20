@@ -1,5 +1,6 @@
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
+
 import { BASE_URL } from "../../api/api";
 
 export function useSavePost(userId: string | undefined, postId: string) {
@@ -15,6 +16,7 @@ export function useSavePost(userId: string | undefined, postId: string) {
 
       if (response.status === 201) {
         setIsSaved(true);
+        localStorage.setItem(`saved_${userId}_${postId}`, "true");
       } else {
         setSavePostError(
           `Failed to save post. Status code: ${response.status}`
@@ -38,6 +40,7 @@ export function useSavePost(userId: string | undefined, postId: string) {
 
       if (response.status === 204) {
         setIsSaved(false);
+        localStorage.setItem(`saved_${userId}_${postId}`, "false");
       } else {
         setSavePostError(
           `Failed to remove saved post. Status code: ${response.status}`
@@ -53,5 +56,11 @@ export function useSavePost(userId: string | undefined, postId: string) {
     }
   };
 
-  return { isSaved, savePostError, handleSavePost, handleRemoveSavedPost };
+  return {
+    isSaved,
+    setIsSaved,
+    savePostError,
+    handleSavePost,
+    handleRemoveSavedPost,
+  };
 }

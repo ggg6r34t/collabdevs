@@ -3,15 +3,20 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as solidFaBookmark,
+  faUpLong,
+  faDownLong,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   faComment,
-  faBookmark,
+  faBookmark as regularFaBookmark,
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
 
 import CommentSection from "../comment/Comments";
 import ShareButtons from "../share/ShareButtons";
+import { useUserSession } from "../../hooks/authentication/useUserSession";
 import { useSavePost } from "../../hooks/userManagement/useSavePost";
 import { useVote } from "../../hooks/userManagement/useVote";
 import { postActions } from "../../redux/slices/post";
@@ -26,9 +31,6 @@ function PostItem({ post }: Props) {
   const voteScore = useSelector((state: RootState) => {
     return state.posts.posts.find((p) => p._id === post._id)?.voteScore || 0;
   });
-  const userInformation = useSelector(
-    (state: RootState) => state.user.userInformation
-  );
   const userToken = useSelector((state: RootState) => state.user.token);
   const currentOpenPostId = useSelector(
     (state: RootState) => state.posts.currentOpenPostId
@@ -40,6 +42,9 @@ function PostItem({ post }: Props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { getUserSession } = useUserSession();
+  const { userId } = getUserSession();
+
   // initialize the votes state with the value from localStorage if it exists
   useEffect(() => {
     localStorage.getItem(`voteScore_${post._id}`);
@@ -48,14 +53,12 @@ function PostItem({ post }: Props) {
 
   const { handleUpvote, handleDownvote } = useVote(
     post._id,
-    userInformation?._id,
+    userId!,
     userToken!
   );
 
-  const { isSaved, handleSavePost, handleRemoveSavedPost } = useSavePost(
-    userInformation?._id,
-    post._id
-  );
+  const { isSaved, setIsSaved, handleSavePost, handleRemoveSavedPost } =
+    useSavePost(userId!, post._id);
 
   const toggleCommentSection = () => {
     setShowComments(!showComments);
@@ -73,48 +76,86 @@ function PostItem({ post }: Props) {
 
   const handleUpvoteClick = () => {
     if (upvoted) {
+      // handle the removal of upvote and update local storage.
+      handleDownvote();
+      dispatch(postActions.downvotePost(post._id));
+      localStorage.setItem(`upvoted_${userId}_${post._id}`, "false");
+      setUpvoted(false);
+    } else {
+      // handle upvote and update local storage.
+      handleUpvote();
+      dispatch(postActions.upvotePost(post._id));
+      localStorage.setItem(`upvoted_${userId}_${post._id}`, "true");
+      setUpvoted(true);
       setDownvoted(false);
+      localStorage.removeItem(`downvoted_${userId}_${post._id}`); // remove the downvoted state.
     }
-
-    handleUpvote();
-    dispatch(postActions.upvotePost(post._id));
-    setUpvoted(true);
-    setDownvoted(false);
   };
 
   const handleDownvoteClick = () => {
     if (downvoted) {
+      // handle the removal of downvote and update local storage.
+      handleUpvote();
+      dispatch(postActions.upvotePost(post._id));
+      localStorage.setItem(`downvoted_${userId}_${post._id}`, "false");
+      setDownvoted(false);
+    } else {
+      // handle downvote and update local storage.
+      handleDownvote();
+      dispatch(postActions.downvotePost(post._id));
+      localStorage.setItem(`downvoted_${userId}_${post._id}`, "true");
+      setDownvoted(true);
+      setUpvoted(false);
+      localStorage.removeItem(`upvoted_${userId}_${post._id}`); // remove the upvoted state.
+    }
+  };
+
+  useEffect(() => {
+    // check the local storage for saved, upvoted, and downvoted states
+    const upvotedState = localStorage.getItem(`upvoted_${userId}_${post._id}`);
+    const downvotedState = localStorage.getItem(
+      `downvoted_${userId}_${post._id}`
+    );
+    const savedState = localStorage.getItem(`saved_${userId}_${post._id}`);
+
+    if (upvotedState === "true") {
+      setUpvoted(true);
+    } else {
+      setUpvoted(false);
+    }
+
+    if (downvotedState === "true") {
+      setDownvoted(true);
+    } else {
       setDownvoted(false);
     }
 
-    handleDownvote();
-    dispatch(postActions.downvotePost(post._id));
-    setDownvoted(true);
-    setUpvoted(false);
-  };
+    if (savedState === "true") {
+      setIsSaved(true);
+    } else {
+      setIsSaved(false);
+    }
+  }, [post._id, setIsSaved, userId]);
 
   return (
     <div>
       <div className="flex flex-row items-center justify-center">
         <div className="flex flex-col items-center p-2">
-          <button
-            className={`text-gray-600 border-2 rounded-full border-gray-400 ${
-              upvoted ? "border-blue-500" : ""
-            }`}
-            onClick={handleUpvoteClick}
-          >
-            <FontAwesomeIcon icon={faAngleUp} className="w-[2rem] h-[1.3rem]" />
+          <button onClick={handleUpvoteClick}>
+            <FontAwesomeIcon
+              icon={faUpLong}
+              size="2x"
+              color={upvoted ? "#00AA00" : "#9ca3af"}
+              className="h-6"
+            />
           </button>
           <p className="text-[20px] text-center">{voteScore}</p>
-          <button
-            className={`text-gray-600 border-2 rounded-full border-gray-400 ${
-              downvoted ? "border-red-500" : ""
-            }`}
-            onClick={handleDownvoteClick}
-          >
+          <button onClick={handleDownvoteClick}>
             <FontAwesomeIcon
-              icon={faAngleDown}
-              className="w-[2rem] h-[1.3rem]"
+              icon={faDownLong}
+              size="2x"
+              color={downvoted ? "#FF0000" : "#9ca3af"}
+              className="h-6"
             />
           </button>
         </div>
@@ -147,16 +188,24 @@ function PostItem({ post }: Props) {
               Share
             </button>
             <button
-              className={`${
-                !isSaved
-                  ? "text-gray-600"
-                  : "text-[#010536]  dark:text-gray-200"
-              } ml-auto mr-4`}
+              className="ml-auto mr-4"
               onClick={() =>
                 isSaved ? handleRemoveSavedPost() : handleSavePost()
               }
             >
-              <FontAwesomeIcon icon={faBookmark} className="w-40 h-40" />
+              {isSaved ? (
+                <FontAwesomeIcon
+                  icon={solidFaBookmark}
+                  color="#800080"
+                  className="w-40 h-40"
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={regularFaBookmark}
+                  color="#4b5563"
+                  className="w-40 h-40"
+                />
+              )}
             </button>
           </div>
         </div>
