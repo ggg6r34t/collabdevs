@@ -67,9 +67,9 @@ function SignUp() {
       lastName: "",
     };
 
-    if (!formData.userName.match(/^[A-Za-z0-9_]{3,10}$/)) {
+    if (!formData.userName.match(/^[A-Za-z0-9_]{3,30}$/)) {
       validationErrors.userName =
-        "Username must be 3-10 characters and may contain numbers and underscores.";
+        "Username must be 3-30 characters and may contain numbers and underscores.";
     }
 
     if (formData.password.trim().length < 8) {
