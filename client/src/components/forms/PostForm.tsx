@@ -83,6 +83,24 @@ function PostForm() {
     }
   };
 
+  const modules = {
+    toolbar: {
+      container: [
+        [{ header: [1, 2, 3, 4, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["blockquote", "code-block"],
+        [{ align: [] }],
+        ["link", "image", "video"],
+        ["clean"],
+      ],
+      // handlers: {
+      //   image: handleImageInsert,
+      //   link: handleLinkInsert,
+      // },
+    },
+  };
+
   return (
     <div className="h-screen bg-white dark:bg-slate-900 dark:text-white p-4 py-40 flex flex-row items-start justify-center">
       <div className="w-[738px] dark:bg-slate-800 dark:text-white flex flex-col items-center justify-center rounded shadow p-4">
@@ -99,20 +117,10 @@ function PostForm() {
         <ReactQuill
           className="snow w-[724px] h-[242px] p-2 focus:outline-none focus:border-blue-50"
           scrollingContainer="null"
-          placeholder="Your post goes here..."
+          placeholder="What projects are working on?"
           value={postContent}
           onChange={handleContentChange}
-          modules={{
-            toolbar: [
-              [{ header: [1, 2, 3, 4, false] }],
-              ["bold", "italic", "underline", "strike"],
-              [{ list: "ordered" }, { list: "bullet" }],
-              ["blockquote", "code-block"],
-              [{ align: [] }],
-              ["link", "image", "video"],
-              ["clean"],
-            ],
-          }}
+          modules={modules}
         />
         {validationErrors.content && (
           <div className="text-red-500">{validationErrors.content}</div>

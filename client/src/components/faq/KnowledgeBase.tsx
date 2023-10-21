@@ -83,11 +83,11 @@ function KnowledgeBase() {
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="bg-gray-100 dark:bg-slate-800 p-4 rounded-md shadow-md"
+            className="bg-gray-100 dark:bg-slate-800 p-4 rounded-md shadow-md transition duration-300 transform hover:scale-105"
           >
             <div
               onClick={() => toggleFaq(index)}
-              className="flex justify-between cursor-pointer hover:text-blue-600 dark:hover:text-gray-400"
+              className="flex justify-between cursor-pointer hover:text-[#02084b] dark:hover:text-gray-400"
             >
               <div className="font-semibold">{faq.question}</div>
               <div
