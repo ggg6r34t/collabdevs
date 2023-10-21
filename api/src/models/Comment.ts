@@ -5,7 +5,7 @@ export type CommentDocument = Document & {
   userId: mongoose.Types.ObjectId;
   userName: string;
   content: string;
-  createdAt: Date;
+   createdAt: Date;
   updatedAt: Date;
 };
 

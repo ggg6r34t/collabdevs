@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\Ghyorka\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @types/passport-gitlab2
+  C:\Program Files\nodejs\node.exe C:\Users\major\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add createClient
 
 PATH: 
-  C:\Program Files\PowerShell\7;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Users\Ghyorka\anaconda3\Lib\site-packages\imageio\plugins\ffmpeg.py;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Windows\SysWow64;C:\Program Files\nodejs\;C:\Program Files\PowerShell\7\;C:\Program Files\Amazon\AWSCLIV2\;C:\Users\Ghyorka\AppData\Local\Programs\Python\Python38\Scripts\;C:\Users\Ghyorka\AppData\Local\Programs\Python\Python38\;C:\Users\Ghyorka\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\PyCharm Community Edition 2020.2.3\bin;C:\Users\Ghyorka\AppData\Local\GitHubDesktop\bin;C:\Users\Ghyorka\AppData\Local\atom\bin;C:\Users\Ghyorka\AppData\Local\Microsoft\WindowsApps;C:\Users\Ghyorka\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\heroku\bin;C:\Program Files\nodejs;C:\Users\Ghyorka\AppData\Roaming\npm;
+  C:\Users\major\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\major\bin;C:\Python311\Scripts;C:\Python311;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\Microsoft SQL Server\150\Tools\Binn;C:\Program Files\dotnet;C:\Program Files\Microsoft SQL Server\130\Tools\Binn;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn;C:\Program Files\Microsoft SQL Server\150\DTS\Binn;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn;C:\Program Files\Azure Data Studio\bin;C:\Program Files (x86)\dotnet;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\Amazon\AWSCLIV2;C:\Program Files\PuTTY;C:\Program Files\Docker\Docker\resources\bin;C:\Users\major\AppData\Local\Microsoft\WindowsApps;C:\Users\major\.dotnet\tools;C:\Program Files\Azure Data Studio\bin;C:\Users\major\AppData\Local\Programs\Microsoft VS Code\bin;C:\Zaka\flutter\flutter\bin;C:\Users\major\AppData\Local\GitHubDesktop\bin;C:\Users\major\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
 
 Yarn version: 
   1.22.19
@@ -14,13 +14,13 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fpassport-gitlab2: Not found
-      at params.callback [as _callback] (C:\Users\Ghyorka\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66145:18)
-      at self.callback (C:\Users\Ghyorka\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140890:22)
+  Error: https://registry.yarnpkg.com/createClient: Not found
+      at params.callback [as _callback] (C:\Users\major\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66145:18)
+      at self.callback (C:\Users\major\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140890:22)
       at Request.emit (node:events:513:28)
-      at Request.<anonymous> (C:\Users\Ghyorka\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141862:10)
+      at Request.<anonymous> (C:\Users\major\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141862:10)
       at Request.emit (node:events:513:28)
-      at IncomingMessage.<anonymous> (C:\Users\Ghyorka\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141784:12)
+      at IncomingMessage.<anonymous> (C:\Users\major\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141784:12)
       at Object.onceWrapper (node:events:627:28)
       at IncomingMessage.emit (node:events:525:35)
       at endReadableNT (node:internal/streams/readable:1359:12)
@@ -46,6 +46,7 @@ npm manifest:
       "@types/passport-github2": "^1.2.5",
       "@types/passport-google-oauth20": "^2.0.11",
       "@types/passport-jwt": "^3.0.9",
+      "@types/passport-twitter": "^1.0.38",
       "@types/uuid": "^9.0.4",
       "axios": "^1.4.0",
       "bcrypt": "^5.1.1",
@@ -54,18 +55,21 @@ npm manifest:
       "cors": "^2.8.5",
       "dotenv": "^16.3.1",
       "express": "^4.18.2",
+      "express-rate-limit": "^7.0.2",
       "express-session": "^1.17.3",
       "mongoose": "^7.4.4",
       "multer": "^1.4.5-lts.1",
       "nodemon": "^3.0.1",
       "passport": "^0.6.0",
       "passport-github2": "^0.1.12",
-      "passport-gitlab2": "^5.0.0",
       "passport-google-oauth20": "^2.0.0",
       "passport-jwt": "^4.0.1",
+      "passport-twitter": "^1.0.4",
+      "rate-limiter-flexible": "^3.0.0",
       "redis": "^4.6.10",
       "ts-node": "^10.9.1",
-      "typescript": "^5.1.6"
+      "typescript": "^5.1.6",
+      "uuid": "^9.0.1"
     },
     "scripts": {
       "start:dev": "nodemon --watch \"src/*\" --ext \"ts,json\" --ignore \"src//.spec.ts\" --exec \"ts-node src/server.ts\"",
@@ -322,6 +326,14 @@ Lockfile:
     version "0.2.35"
     resolved "https://registry.yarnpkg.com/@types/passport-strategy/-/passport-strategy-0.2.35.tgz#e52f5212279ea73f02d9b06af67efe9cefce2d0c"
     integrity sha512-o5D19Jy2XPFoX2rKApykY15et3Apgax00RRLf0RUotPDUsYrQa7x4howLYr9El2mlUApHmCMv5CZ1IXqKFQ2+g==
+    dependencies:
+      "@types/express" "*"
+      "@types/passport" "*"
+  
+  "@types/passport-twitter@^1.0.38":
+    version "1.0.38"
+    resolved "https://registry.yarnpkg.com/@types/passport-twitter/-/passport-twitter-1.0.38.tgz#e3c0a45a037f21197acf5c24ccd600ddccd7af25"
+    integrity sha512-li49ru8vWT3cfBsgGC9yZnIRJ9oMg4+/09vSwAYG0AkWWJ5i+qqtL6AJXB4cVv0H103sZLtav2Z8byQxpzZ9IQ==
     dependencies:
       "@types/express" "*"
       "@types/passport" "*"
@@ -761,6 +773,11 @@ Lockfile:
     version "1.8.1"
     resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
     integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
+  
+  express-rate-limit@^7.0.2:
+    version "7.0.2"
+    resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-7.0.2.tgz#0257a823d1547bca35c268d4111e2c7da2473407"
+    integrity sha512-EZoojG9civtJ6GRR7vE0JErow5q/ltbIl0RGbYhrNJKwBC9/kp2HckpdAvQkkE0sRAAtFDBvILvwZSR2kQroDw==
   
   express-session@^1.17.3:
     version "1.17.3"
@@ -1360,13 +1377,6 @@ Lockfile:
     dependencies:
       passport-oauth2 "1.x.x"
   
-  passport-gitlab2@^5.0.0:
-    version "5.0.0"
-    resolved "https://registry.yarnpkg.com/passport-gitlab2/-/passport-gitlab2-5.0.0.tgz#ea37e5285321c026a02671e87469cac28cce9b69"
-    integrity sha512-cXQMgM6JQx9wHVh7JLH30D8fplfwjsDwRz+zS0pqC8JS+4bNmc1J04NGp5g2M4yfwylH9kQRrMN98GxMw7q7cg==
-    dependencies:
-      passport-oauth2 "^1.4.0"
-  
   passport-google-oauth20@^2.0.0:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/passport-google-oauth20/-/passport-google-oauth20-2.0.0.tgz#0d241b2d21ebd3dc7f2b60669ec4d587e3a674ef"
@@ -1382,7 +1392,16 @@ Lockfile:
       jsonwebtoken "^9.0.0"
       passport-strategy "^1.0.0"
   
-  passport-oauth2@1.x.x, passport-oauth2@^1.4.0:
+  passport-oauth1@1.x.x:
+    version "1.3.0"
+    resolved "https://registry.yarnpkg.com/passport-oauth1/-/passport-oauth1-1.3.0.tgz#5d57f1415c8e28e46b461a12ec1b492934f7c354"
+    integrity sha512-8T/nX4gwKTw0PjxP1xfD0QhrydQNakzeOpZ6M5Uqdgz9/a/Ag62RmJxnZQ4LkbdXGrRehQHIAHNAu11rCP46Sw==
+    dependencies:
+      oauth "0.9.x"
+      passport-strategy "1.x.x"
+      utils-merge "1.x.x"
+  
+  passport-oauth2@1.x.x:
     version "1.7.0"
     resolved "https://registry.yarnpkg.com/passport-oauth2/-/passport-oauth2-1.7.0.tgz#5c4766c8531ac45ffe9ec2c09de9809e2c841fc4"
     integrity sha512-j2gf34szdTF2Onw3+76alNnaAExlUmHvkc7cL+cmaS5NzHzDP/BvFHJruueQ9XAeNOdpI+CH+PWid8RA7KCwAQ==
@@ -1397,6 +1416,14 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
     integrity sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==
+  
+  passport-twitter@^1.0.4:
+    version "1.0.4"
+    resolved "https://registry.yarnpkg.com/passport-twitter/-/passport-twitter-1.0.4.tgz#01a799e1f760bf2de49f2ba5fba32282f18932d7"
+    integrity sha512-qvdauqCqCJJci82mJ9hZZQ6nAv7aSHV31svL8+9H7mRlDdXCdfU6AARQrmmJu3DRmv9fvIebM7zzxR7mVufN3A==
+    dependencies:
+      passport-oauth1 "1.x.x"
+      xtraverse "0.1.x"
   
   passport@^0.6.0:
     version "0.6.0"
@@ -1471,6 +1498,11 @@ Lockfile:
     version "1.2.1"
     resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
     integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+  
+  rate-limiter-flexible@^3.0.0:
+    version "3.0.0"
+    resolved "https://registry.yarnpkg.com/rate-limiter-flexible/-/rate-limiter-flexible-3.0.0.tgz#1dba6de44d4d5a5e6494774c2ff7657e82856673"
+    integrity sha512-janAJkWxWxmLka0hV+XvCTo0M8keeSeOuz8ZL33cTXrkS4ek9mQ2VJm9ri7fm03oTVth19Sfqb1ijCmo7K/vAg==
   
   raw-body@2.5.1:
     version "2.5.1"
@@ -1808,6 +1840,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
     integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
   
+  uuid@^9.0.1:
+    version "9.0.1"
+    resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
+    integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
+  
   v8-compile-cache-lib@^3.0.1:
     version "3.0.1"
     resolved "https://registry.yarnpkg.com/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz#6336e8d71965cb3d35a1bbb7868445a7c05264bf"
@@ -1856,10 +1893,22 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
     integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
   
+  xmldom@0.1.x:
+    version "0.1.31"
+    resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
+    integrity sha512-yS2uJflVQs6n+CyjHoaBmVSqIDevTAWrzMmjG1Gc7h1qQ7uVozNhEPJAwZXWyGQ/Gafo3fCwrcaokezLPupVyQ==
+  
   xtend@^4.0.0:
     version "4.0.2"
     resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
     integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
+  
+  xtraverse@0.1.x:
+    version "0.1.0"
+    resolved "https://registry.yarnpkg.com/xtraverse/-/xtraverse-0.1.0.tgz#b741bad018ef78d8a9d2e83ade007b3f7959c732"
+    integrity sha512-MANQdlG2hl1nQobxz1Rv8hsS1RuBS0C1N6qTOupv+9vmfrReePdxhmB2ecYjvsp4stJ80HD7erjkoF1Hd/FK9A==
+    dependencies:
+      xmldom "0.1.x"
   
   yallist@4.0.0, yallist@^4.0.0:
     version "4.0.0"

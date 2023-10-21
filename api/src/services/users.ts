@@ -163,7 +163,6 @@ export const findOrCreateUserService = async (
     // match the corresponding field for the authentication provider
     const query = { [`${provider}Id`]: payload[`${provider}Id`] };
     const user = await User.findOne(query);
-
     if (user) {
       return user; // user already exists
     } else {

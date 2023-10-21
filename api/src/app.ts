@@ -20,6 +20,7 @@ import {
   twitterStrategy,
 } from "./config/passport";
 import replyRoutes from "./routes/replyRoutes";
+import notificationRoutes from "./routes/notificaitonRoutes";
 import savedPostRoutes from "./routes/savedPostRoutes";
 
 const SESSION_SECRET = process.env.SESSION_SECRET!;
@@ -102,6 +103,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes, commentRoutes);
 app.use("/api/v1/savedposts", savedPostRoutes);
 app.use("/api/v1/replies", replyRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 
 // error handler
 app.use(apiErrorHandler);
