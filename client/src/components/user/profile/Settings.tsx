@@ -29,7 +29,7 @@ function Settings() {
 
   return (
     <div className="p-2">
-      <div className="max-w-4xl mx-auto my-6 p-6 bg-white rounded-lg dark:bg-slate-800">
+      <div className="max-w-4xl mx-auto my-6 p-6 bg-gray-100 rounded-lg dark:bg-slate-800">
         <div className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* change banner */}
@@ -64,7 +64,7 @@ function Settings() {
               </label>
               <select
                 id="email-notifications"
-                className="dark:bg-slate-800 dark:text-white border rounded-md p-2"
+                className="bg-gray-100 dark:bg-slate-800 dark:text-white border border-gray-400 rounded-md p-2"
               >
                 <option value="all">All Notifications</option>
                 <option value="important">Important Only</option>

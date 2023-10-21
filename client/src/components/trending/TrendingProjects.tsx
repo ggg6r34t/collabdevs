@@ -22,7 +22,7 @@ function TrendingProjects() {
   }, [fetchDispatch]);
 
   return (
-    <div className="bg-white dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow">
+    <div className="bg-gray-100 dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow">
       <h3 className="text-xl font-semibold mb-4 flex items-center">
         Trending Topics
         <span className="flex flex-row ml-2">

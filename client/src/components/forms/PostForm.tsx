@@ -103,10 +103,10 @@ function PostForm() {
 
   return (
     <div className="h-screen bg-white dark:bg-slate-900 dark:text-white p-4 py-40 flex flex-row items-start justify-center">
-      <div className="w-[738px] dark:bg-slate-800 dark:text-white flex flex-col items-center justify-center rounded shadow p-4">
+      <div className="w-[738px] bg-gray-100 dark:bg-slate-800 dark:text-white flex flex-col items-center justify-center rounded shadow p-4">
         <input
           type="text"
-          className="w-[708px] h-[40px] dark:bg-slate-800 dark:text-white mb-4 px-2 border rounded focus:outline-none focus:border-blue-500"
+          className="w-[708px] h-[40px] bg-gray-100 dark:bg-slate-800 dark:text-white mb-4 px-2 border border-gray-400 rounded focus:outline-none focus:border-blue-500"
           placeholder="Title"
           value={title}
           onChange={handleTitleChange}
@@ -115,9 +115,9 @@ function PostForm() {
           <div className="text-red-500">{validationErrors.title}</div>
         )}
         <ReactQuill
-          className="snow w-[724px] h-[242px] p-2 focus:outline-none focus:border-blue-50"
+          className="snow w-[708px] h-[242px] border border-gray-400 rounded focus:outline-none hover:border-blue-500"
           scrollingContainer="null"
-          placeholder="What projects are working on?"
+          placeholder="What projects are you working on?"
           value={postContent}
           onChange={handleContentChange}
           modules={modules}

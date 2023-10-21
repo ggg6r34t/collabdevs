@@ -76,7 +76,7 @@ function KnowledgeBase() {
 
   return (
     <div className="min-h-screen p-6 mx-auto max-w-screen-xl mt-20">
-      <h1 className="text-3xl font-semibold mb-6 text-blue-600 dark:text-blue-300">
+      <h1 className="text-3xl font-bold mb-6 text-blue-600 dark:text-blue-300">
         Frequently Asked Questions
       </h1>
       <div className="space-y-4">

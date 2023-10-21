@@ -78,7 +78,7 @@ function ContactSupportForm() {
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold text-blue-600 dark:text-blue-300 mb-6 text-center">
+      <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-300 mb-6 text-center">
         Contact Support
       </h1>
 
