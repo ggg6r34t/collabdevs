@@ -62,7 +62,8 @@ function App() {
             {/* "Not Found" route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-          <Footer />
+          {/* Conditionally render the footer based on the current route */}
+          {pathname !== "/" && pathname !== "/community" && <Footer />}
         </div>
       )}
     </div>

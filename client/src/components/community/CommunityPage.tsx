@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Posts from "./Posts";
@@ -37,6 +38,15 @@ function CommunityPage() {
     const newSort = event.target.value;
     dispatch(postActions.setSelectedSort(newSort));
   };
+
+  const footerLinks = [
+    { text: "Terms", url: "/legal/terms-of-service" },
+    { text: "Privacy", url: "/legal/privacy-policy" },
+    { text: "About Us", url: "/about-us" },
+    { text: "Blog", url: "/blog" },
+    { text: "Code of Conduct", url: "legal/code-of-conduct" },
+    { text: "FAQ", url: "/support/faq" },
+  ];
 
   return (
     <div className="container max-w-[1195px] min-h-[779px] mx-auto mt-12">
@@ -90,6 +100,28 @@ function CommunityPage() {
                 ))}
               </ul>
             </div>
+          </div>
+
+          {/* footer Links */}
+          <div className="mt-6 text-center">
+            <div className="p-4 ">
+              <ul className="flex justify-between space-x-4">
+                {footerLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      to={link.url}
+                      className="text-blue-600 hover:underline transition duration-300"
+                    >
+                      {link.text}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Copyright notice */}
+            <p className="mt-2 text-gray-600">
+              Made with ❤️ by The Collaborative DevLink Team
+            </p>
           </div>
         </div>
 
