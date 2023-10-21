@@ -90,11 +90,11 @@ function FeedbackForm() {
 
   return (
     <div className="container max-w-xl min-h-[793px] mx-auto">
-      <div className="my-8 p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md">
+      <div className="my-8 p-4 bg-gray-100 dark:bg-slate-800 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Give Feedback</h2>
         <form onSubmit={handleSubmit}>
           <textarea
-            className={`w-full dark:bg-slate-800 px-3 py-2 border rounded-md focus:outline-none focus:ring ${
+            className={`w-full bg-gray-100 dark:bg-slate-800 px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring ${
               formState.isValid ? "focus:border-blue-400" : "border-red-500"
             }`}
             rows={4}

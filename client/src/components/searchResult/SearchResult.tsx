@@ -26,7 +26,7 @@ function SearchResult() {
               {postSearchResults.map((post) => (
                 <div
                   key={post._id}
-                  className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
+                  className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
                 >
                   <PostItem post={post} />
                 </div>

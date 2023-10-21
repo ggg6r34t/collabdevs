@@ -27,7 +27,7 @@ function BlogPost() {
 
   return (
     <div className="min-h-screen p-6 mx-auto max-w-screen-xl mt-20">
-      <h1 className="text-3xl font-semibold text-blue-600 dark:text-blue-300 mb-6">
+      <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-300 mb-6">
         Blog Posts
       </h1>
       <div className="grid grid-cols-1 gap-8">

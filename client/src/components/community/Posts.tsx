@@ -62,7 +62,7 @@ function Posts() {
   return (
     <div className="col-span-2">
       {location.pathname === "/" || isSearchActive ? null : (
-        <div className="w-full bg-white dark:bg-slate-800 h-4 p-2 mb-4 rounded-lg shadow flex flex-row items-center justify-center">
+        <div className="w-full bg-gray-100 dark:bg-slate-800 h-4 p-2 mb-4 rounded-lg shadow flex flex-row items-center justify-center">
           <div className="flex-shrink-0 w-10 h-10 bg-gray-300 rounded-full mr-4">
             <img
               src="https://e7.pngegg.com/pngimages/973/940/png-clipart-laptop-computer-icons-user-programmer-laptop-electronics-computer-thumbnail.png"
@@ -72,7 +72,7 @@ function Posts() {
           </div>
           <div onClick={handleQuillClick}>
             <ReactQuill
-              className="my-custom-quill w-[40rem] h-[3rem] border rounded p-2 focus:outline-none focus:border-blue-500"
+              className="my-custom-quill w-[40rem] h-[3rem] border border-gray-400 rounded p-2 focus:outline-none focus:border-blue-500"
               theme="bubble"
               scrollingContainer="null"
               placeholder="What are you working on?"
@@ -97,7 +97,7 @@ function Posts() {
           sortedPosts.map((post) => (
             <div
               key={post._id}
-              className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
+              className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow mb-4"
             >
               <Post post={post} />
             </div>

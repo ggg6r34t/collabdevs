@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Posts from "./Posts";
@@ -38,12 +39,21 @@ function CommunityPage() {
     dispatch(postActions.setSelectedSort(newSort));
   };
 
+  const footerLinks = [
+    { text: "Terms", url: "/legal/terms-of-service" },
+    { text: "Privacy", url: "/legal/privacy-policy" },
+    { text: "About Us", url: "/about-us" },
+    { text: "Blog", url: "/blog" },
+    { text: "Code of Conduct", url: "legal/code-of-conduct" },
+    { text: "FAQ", url: "/support/faq" },
+  ];
+
   return (
     <div className="container max-w-[1195px] min-h-[779px] mx-auto mt-12">
       <div className="grid grid-cols-3 gap-4">
         {/* search, filter, and trending topics */}
         <div className="mr-2 col-span-1">
-          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
+          <div className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow">
             {/* search input */}
             <SearchForm />
             {/* sorting options */}
@@ -52,7 +62,7 @@ function CommunityPage() {
               <select
                 value={selectedSort}
                 onChange={handleSortChange}
-                className="w-full dark:bg-slate-800 dark:text-white px-2 py-1 border rounded-md"
+                className="w-full bg-gray-100 dark:bg-slate-800 dark:text-white px-2 py-1 border border-gray-400 rounded-md"
               >
                 <option value="latest">Latest</option>
                 <option value="popular">Popular</option>
@@ -73,7 +83,7 @@ function CommunityPage() {
 
           {/* user profiles */}
           <div className=" mt-4 col-span-1">
-            <div className="bg-white dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow">
+            <div className="bg-gray-100 dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">
                 Recommended Connections
               </h2>
@@ -90,6 +100,28 @@ function CommunityPage() {
                 ))}
               </ul>
             </div>
+          </div>
+
+          {/* footer Links */}
+          <div className="mt-6 text-center">
+            <div className="p-4 ">
+              <ul className="flex justify-between space-x-4">
+                {footerLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      to={link.url}
+                      className="text-blue-600 hover:underline transition duration-300"
+                    >
+                      {link.text}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Copyright notice */}
+            <p className="mt-2 text-gray-600">
+              Made with ❤️ by The Collaborative DevLink Team
+            </p>
           </div>
         </div>
 

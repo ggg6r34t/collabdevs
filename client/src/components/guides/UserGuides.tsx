@@ -30,7 +30,7 @@ function UserGuides() {
 
   return (
     <div className="min-h-screen p-6 mx-auto max-w-screen-xl mt-20">
-      <h1 className="text-3xl font-semibold mb-6 text-blue-600 dark:text-blue-300">
+      <h1 className="text-3xl font-bold mb-6 text-blue-600 dark:text-blue-300">
         User Guides and Tutorials
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

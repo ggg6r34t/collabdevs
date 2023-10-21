@@ -107,7 +107,7 @@ function Overview() {
 
     return (
       <div className="p-2">
-        <div className="max-w-4xl mx-auto my-6 p-6 bg-white rounded-lg dark:bg-slate-800">
+        <div className="max-w-4xl mx-auto my-6 p-6 bg-gray-100 rounded-lg dark:bg-slate-800">
           {/* user bio and information */}
           <h2 className={isEditing ? undefined : "text-lg font-semibold"}>
             {isEditing ? (

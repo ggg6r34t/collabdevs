@@ -60,7 +60,7 @@ function FollowersStats() {
   const followingCount = following.length;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">
           Followers ({followerCount})

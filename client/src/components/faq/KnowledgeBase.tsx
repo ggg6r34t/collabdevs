@@ -76,18 +76,18 @@ function KnowledgeBase() {
 
   return (
     <div className="min-h-screen p-6 mx-auto max-w-screen-xl mt-20">
-      <h1 className="text-3xl font-semibold mb-6 text-blue-600 dark:text-blue-300">
+      <h1 className="text-3xl font-bold mb-6 text-blue-600 dark:text-blue-300">
         Frequently Asked Questions
       </h1>
       <div className="space-y-4">
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="bg-gray-100 dark:bg-slate-800 p-4 rounded-md shadow-md"
+            className="bg-gray-100 dark:bg-slate-800 p-4 rounded-md shadow-md transition duration-300 transform hover:scale-105"
           >
             <div
               onClick={() => toggleFaq(index)}
-              className="flex justify-between cursor-pointer hover:text-blue-600 dark:hover:text-gray-400"
+              className="flex justify-between cursor-pointer hover:text-[#02084b] dark:hover:text-gray-400"
             >
               <div className="font-semibold">{faq.question}</div>
               <div

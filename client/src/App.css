@@ -18,28 +18,31 @@
 }
 
 .snow .ql-container {
-  width: 708px;
-  height: 183px;
+  width: 706px;
+  height: 200px;
   border-color: #e5e7eb !important;
 }
 
-.snow .ql-container:hover {
+/* .snow .ql-container:hover {
   border-color: #3b82f680 !important;
-}
+} */
 
-.snow .ql-editor {
+/* .snow .ql-editor {
   border-top: unset;
-}
+} */
 
 .snow .ql-toolbar {
-  background-color: #f6f7f8;
-  border-color: #e5e7eb !important;
-  border-bottom: unset !important;
+  background-color: #faf9f6;
+  /* border-color: #9ca3af !important;
+  border-bottom: unset !important; */
+  border-top: unset !important;
+  border-left: unset !important;
+  border-right: unset !important;
 }
 
-.snow .ql-toolbar:hover {
+/* .snow .ql-toolbar:hover {
   border-color: #3b82f680 !important;
-}
+} */
 
 /* NAVBAR */
 

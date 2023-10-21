@@ -78,7 +78,7 @@ function ContactSupportForm() {
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold text-blue-600 dark:text-blue-300 mb-6 text-center">
+      <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-300 mb-6 text-center">
         Contact Support
       </h1>
 
@@ -96,7 +96,7 @@ function ContactSupportForm() {
               <input
                 type="text"
                 id="name"
-                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
+                className="w-full bg-gray-100 dark:bg-slate-800 px-4 py-2 border border-gray-400 rounded-md"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -111,7 +111,7 @@ function ContactSupportForm() {
               <input
                 type="email"
                 id="email"
-                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
+                className="w-full bg-gray-100 dark:bg-slate-800 px-4 py-2 border border-gray-400 rounded-md"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -129,7 +129,7 @@ function ContactSupportForm() {
               <input
                 type="text"
                 id="subject"
-                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
+                className="w-full bg-gray-100 dark:bg-slate-800 px-4 py-2 border border-gray-400 rounded-md"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
@@ -146,7 +146,7 @@ function ContactSupportForm() {
               </label>
               <textarea
                 id="message"
-                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
+                className="w-full bg-gray-100 dark:bg-slate-800 px-4 py-2 border border-gray-400 rounded-md"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={4}
@@ -164,7 +164,7 @@ function ContactSupportForm() {
               </label>
               <select
                 id="feedbackType"
-                className="w-full dark:bg-slate-800 px-4 py-2 border rounded-md"
+                className="w-full bg-gray-100 dark:bg-slate-800 px-4 py-2 border border-gray-400 rounded-md"
                 value={feedbackType}
                 onChange={(e) => setFeedbackType(e.target.value)}
                 required
@@ -178,7 +178,7 @@ function ContactSupportForm() {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border-blue-400"
+                className="px-4 py-2 bg-[#010536] text-white rounded-md focus:outline-none focus:ring focus:border border-gray-400-blue-400"
               >
                 Submit
               </button>

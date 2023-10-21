@@ -157,7 +157,7 @@ function SignUp() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md dark:bg-slate-800">
+      <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md bg-gray-100 dark:bg-slate-800">
         <form method="post" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-semibold mr-auto mb-4">Sign Up</h2>
           <div className="mb-4">

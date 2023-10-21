@@ -54,7 +54,7 @@ function FeedbackReportingForm() {
             value={feedback}
             onChange={handleFeedbackChange}
             rows={4}
-            className="w-full mb-2 p-2 dark:bg-slate-700 border rounded-md"
+            className="w-full mb-2 p-2 bg-gray-100 dark:bg-slate-700 border border-gray-400 rounded-md"
           ></textarea>
           {error && <p className="text-red-500 mb-2">{error}</p>}
           <button

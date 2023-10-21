@@ -59,15 +59,17 @@ function UserList() {
     return <div>Restricted access!</div>;
   } else {
     return (
-      <div className="max-w-md mx-auto mt-6">
-        <h2 className="text-2xl font-semibold mb-4">User Accounts</h2>
+      <div className="max-w-md mx-auto mt-20">
+        <h2 className="text-3xl font-bold mb-6 text-blue-600 dark:text-blue-300">
+          User Accounts
+        </h2>
         <ul className="grid grid-cols-1 gap-4">
           {userList.map((user) => (
             <li
               key={user._id}
-              className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md flex items-center"
+              className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow-md flex items-center"
             >
-              <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
+              <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
               <div>
                 <h3 className="text-lg font-semibold">
                   First Name:{" "}
