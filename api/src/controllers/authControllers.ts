@@ -340,7 +340,7 @@ export const twitterAuthController = async (
 ) => {
   try {
     const userData = req.user as UserDocument;
-    const token = generateJwtToken(userData, undefined);
+    const token = generateJwtToken(userData, EXPIRATION_TIME);
 
     if (!userData) {
       res
@@ -365,7 +365,7 @@ export const githubAuthController = async (
 ) => {
   try {
     const userData = req.user as UserDocument;
-    const token = generateJwtToken(userData, undefined);
+    const token = generateJwtToken(userData, EXPIRATION_TIME);
 
     if (!userData) {
       res
@@ -390,7 +390,7 @@ export const googleAuthController = async (
 ) => {
   try {
     const userData = req.user as UserDocument;
-    const token = generateJwtToken(userData, undefined);
+    const token = generateJwtToken(userData, EXPIRATION_TIME);
 
     if (!userData) {
       res
