@@ -99,7 +99,7 @@ function SignIn() {
   const formIsValid = !emailError && !passwordError;
 
   return (
-    <div className="flex justify-center items-center min-h-[825px]">
+    <div className="min-h-[899px] flex justify-center items-center">
       <div className="w-1/6 flex flex-col justify-center items-center p-6 border rounded-[12px] shadow-md bg-gray-100 dark:bg-slate-800">
         <AuthWithGoogle />
         <AuthWithGitHub />

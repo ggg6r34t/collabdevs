@@ -102,7 +102,7 @@ function PostForm() {
   };
 
   return (
-    <div className="h-screen bg-white dark:bg-slate-900 dark:text-white p-4 py-40 flex flex-row items-start justify-center">
+    <div className="min-h-screen bg-white dark:bg-slate-900 dark:text-white p-4 py-40 flex flex-row items-start justify-center">
       <div className="w-[738px] bg-gray-100 dark:bg-slate-800 dark:text-white flex flex-col items-center justify-center rounded shadow p-4">
         <input
           type="text"

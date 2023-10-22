@@ -12,7 +12,7 @@ function PasswordResetRequest() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-[830px]">
       <div className="max-w-md w-full p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md">
         <h1 className="text-3xl font-semibold mb-4 text-center">
           Password Reset Request
