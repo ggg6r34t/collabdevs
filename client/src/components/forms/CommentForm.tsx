@@ -69,7 +69,9 @@ function CommentForm({ post }: Props) {
         value={commentContent}
         onChange={handleContentChange}
       />
-      {validationError && <div className="text-red-500">{validationError}</div>}
+      {validationError && (
+        <div className="text-red-500 text-sm">{validationError}</div>
+      )}
       <div className="w-[605px] h-[45px] flex items-center justify-end m-2 ml-12 mb-6">
         <button
           className="bg-[#010536] text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"

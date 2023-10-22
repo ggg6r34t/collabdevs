@@ -112,7 +112,7 @@ function PostForm() {
           onChange={handleTitleChange}
         />
         {validationErrors.title && (
-          <div className="text-red-500">{validationErrors.title}</div>
+          <div className="text-red-500 text-sm">{validationErrors.title}</div>
         )}
         <ReactQuill
           className="snow w-[708px] h-[242px] border border-gray-400 rounded focus:outline-none hover:border-blue-500"
@@ -123,7 +123,7 @@ function PostForm() {
           modules={modules}
         />
         {validationErrors.content && (
-          <div className="text-red-500">{validationErrors.content}</div>
+          <div className="text-red-500 text-sm">{validationErrors.content}</div>
         )}
         <div className="w-[724px] h-[45px] flex items-center justify-end p-1 mt-4 ">
           <button
