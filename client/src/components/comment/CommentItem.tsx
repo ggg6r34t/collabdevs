@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment } from "@fortawesome/free-regular-svg-icons";
+import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 import ReplySection from "../reply/Replies";
 import { RootState } from "../../redux/store";
@@ -40,7 +40,7 @@ function CommentItem({ comment, post }: Props) {
         <p className="p-2">{comment.content}</p>
         <div className="flex justify-between pl-2 pb-4 border-b border-gray-400">
           <button className="text-gray-600" onClick={toggleReplySection}>
-            <FontAwesomeIcon icon={faComment} className="w-4.5 h-4.5 mr-2" />
+            <FontAwesomeIcon icon={faReply} className="w-4.5 h-4.5 mr-2" />
             Reply
           </button>
         </div>

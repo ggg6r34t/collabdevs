@@ -18,7 +18,7 @@ function AuthWithGitHub() {
 
   return (
     <div>
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
 
       <button
         className="w-65 h-9.5 flex flex-row items-center justify-center bg-[#181717] text-white py-2 border rounded-[12px] dark:hover:bg-gray-500 hover:bg-blue-200 mb-2"

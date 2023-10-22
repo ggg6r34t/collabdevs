@@ -7,6 +7,7 @@ import Navbar from "./components/layouts/navbar/Navbar";
 import Footer from "./components/layouts/footer/Footer";
 import Banner from "./components/homePage/Banner";
 import { useAutoSignOut } from "./hooks/authentication/useAutoSignOut";
+import BackToTopButton from "./components/backToTopButton/BackToTopButton";
 
 const TOKEN_EXPIRATION_CHECK_INTERVAL = 900000; // 15 mins
 
@@ -64,6 +65,11 @@ function App() {
             {/* "Not Found" route */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
+          {pathname === "/" ||
+          pathname === "/community" ||
+          pathname.includes("/posts/") ? (
+            <BackToTopButton />
+          ) : null}
           {/* Conditionally render the footer based on the current route */}
           {pathsWithoutFooter.includes(pathname) ? null : <Footer />}
         </div>

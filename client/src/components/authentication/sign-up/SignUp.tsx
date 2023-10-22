@@ -194,7 +194,7 @@ function SignUp() {
               placeholder="Dispaly Name"
             />
             {errors.userName && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="text-red-500 text-xs ml-3 mt-1">
                 {errors.userName}
               </span>
             )}
@@ -237,7 +237,7 @@ function SignUp() {
               </button>
             </div>
             {errors.password && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="text-red-500 text-xs ml-3 mt-1">
                 {errors.password}
               </span>
             )}
@@ -267,7 +267,7 @@ function SignUp() {
               </button>
             </div>
             {errors.confirmPassword && (
-              <span className="text-red-500 text-xs mt-1">
+              <span className="text-red-500 text-xs ml-3 mt-1">
                 {errors.confirmPassword}
               </span>
             )}
@@ -283,7 +283,7 @@ function SignUp() {
             Sign Up
           </button>
           {!isFormValid && (
-            <p className="text-red-500 text-xs mt-1">
+            <p className="text-red-500 text-xs ml-3 mt-1">
               Please fill out the form correctly before submitting.
             </p>
           )}
