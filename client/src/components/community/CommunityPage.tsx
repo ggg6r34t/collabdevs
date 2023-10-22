@@ -49,7 +49,7 @@ function CommunityPage() {
   ];
 
   return (
-    <div className="container max-w-[1195px] min-h-[779px] mx-auto mt-12">
+    <div className="container max-w-[1195px] min-h-[785px] mx-auto mt-12">
       <div className="grid grid-cols-3 gap-4">
         {/* search, filter, and trending topics */}
         <div className="mr-2 col-span-1">
@@ -117,7 +117,7 @@ function CommunityPage() {
             </div>
             {/* Copyright notice */}
             <p className="text-gray-600 mb-1">
-              Made with ❤️ by The Collaborative DevLink Team
+              Built with ❤️ by the Collaborative DevLink Team
             </p>
             <p className="text-gray-600">
               © 2023 CollabDev. All rights reserved.

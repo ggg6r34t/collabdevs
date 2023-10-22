@@ -8,7 +8,7 @@ function EmailConfirmation() {
   const message = useEmailConfirmation(token!);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="min-h-[830px] flex flex-col items-center justify-center">
       <div className="max-w-md w-full p-6 bg-white dark:bg-gray-800 border rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-4 text-center text-primary dark:text-secondary">
           Email Confirmation

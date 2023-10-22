@@ -48,6 +48,8 @@ function App() {
       <Route path={route.path} element={<route.component />} key={route.path} />
     ));
 
+  const pathsWithoutFooter = ["/home", "/community", "/signup", "/signin"];
+
   return (
     <div
       className={localStorage.getItem("darkMode") === "true" ? "dark" : "light"}
@@ -63,7 +65,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
           {/* Conditionally render the footer based on the current route */}
-          {pathname !== "/" && pathname !== "/community" && <Footer />}
+          {pathsWithoutFooter.includes(pathname) ? null : <Footer />}
         </div>
       )}
     </div>
