@@ -39,7 +39,7 @@ const savedPostsSlice = createSlice({
     removeSavedPost: (state, action: PayloadAction<string>) => {
       const postIdToRemove = action.payload;
       state.savedPosts = state.savedPosts.filter(
-        (post) => post._id !== postIdToRemove
+        (savedPost) => savedPost.postId._id !== postIdToRemove
       );
       state.error = null;
     },
