@@ -129,7 +129,9 @@ function SignIn() {
               placeholder="Email"
             />
             {emailError && (
-              <span className="text-red-500 text-xs mt-1">{emailError}</span>
+              <span className="text-red-500 text-xs ml-3 mt-1">
+                {emailError}
+              </span>
             )}
           </div>
           <div className="mb-4">
@@ -157,7 +159,9 @@ function SignIn() {
               </button>
             </div>
             {passwordError && (
-              <span className="text-red-500 text-xs mt-1">{passwordError}</span>
+              <span className="text-red-500 text-xs ml-3 mt-1">
+                {passwordError}
+              </span>
             )}
           </div>
 
