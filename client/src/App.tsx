@@ -49,7 +49,7 @@ function App() {
       <Route path={route.path} element={<route.component />} key={route.path} />
     ));
 
-  const pathsWithoutFooter = ["/home", "/community", "/signup", "/signin"];
+  const pathsWithoutFooter = ["/", "/community", "/signup", "/signin"];
 
   return (
     <div
