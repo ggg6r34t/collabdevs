@@ -111,7 +111,7 @@ function HomePage() {
             </div>
             {/* Copyright notice */}
             <p className="text-gray-600 mb-1">
-              Made with ❤️ by The Collaborative DevLink Team
+              Built with ❤️ by the Collaborative DevLink Team
             </p>
             <p className="text-gray-600">
               © 2023 CollabDev. All rights reserved.
