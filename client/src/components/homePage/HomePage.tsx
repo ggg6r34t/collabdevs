@@ -53,7 +53,7 @@ function HomePage() {
   const footerLinks = [
     { text: "Terms", url: "/legal/terms-of-service" },
     { text: "Privacy", url: "/legal/privacy-policy" },
-    { text: "About Us", url: "/about-us" },
+    { text: "About", url: "/about-us" },
     { text: "Blog", url: "/blog" },
     { text: "Code of Conduct", url: "legal/code-of-conduct" },
     { text: "FAQ", url: "/support/faq" },
@@ -102,10 +102,7 @@ function HomePage() {
               <ul className="flex justify-between space-x-4">
                 {footerLinks.map((link, index) => (
                   <li key={index}>
-                    <Link
-                      to={link.url}
-                      className="text-blue-600 hover:underline transition duration-300"
-                    >
+                    <Link to={link.url} className="text-gray-600">
                       {link.text}
                     </Link>
                   </li>
@@ -113,8 +110,11 @@ function HomePage() {
               </ul>
             </div>
             {/* Copyright notice */}
-            <p className="mt-2 text-gray-600">
+            <p className="text-gray-600 mb-1">
               Made with ❤️ by The Collaborative DevLink Team
+            </p>
+            <p className="text-gray-600">
+              © 2023 CollabDev. All rights reserved.
             </p>
           </div>
         </div>

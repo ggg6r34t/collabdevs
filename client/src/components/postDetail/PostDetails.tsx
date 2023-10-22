@@ -1,126 +1,79 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as solidFaBookmark,
+  faUpLong,
+  faDownLong,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   faComment,
-  faBookmark,
+  faBookmark as regularFaBookmark,
   faShareFromSquare,
 } from "@fortawesome/free-regular-svg-icons";
 
-import CommentSection from "../comment/Comments";
-import ShareButtons from "../share/ShareButtons";
+import { useUserSession } from "../../hooks/authentication/useUserSession";
+import { useSavePost } from "../../hooks/userManagement/useSavePost";
+import useFormattedNumber from "../../hooks/util/useFormattedNumber";
+import { postDetailActions } from "../../redux/slices/postDetail";
+import { useVote } from "../../hooks/userManagement/useVote";
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchPostDetails } from "../../redux/thunk/posts";
-import { postDetailActions } from "../../redux/slices/postDetail";
-import { BASE_URL } from "../../api/api";
+import { postActions } from "../../redux/slices/post";
+import CommentSection from "../comment/Comments";
+import ShareButtons from "../share/ShareButtons";
 
 function PostDetails() {
   const postDetail = useSelector(
     (state: RootState) => state.postDetails.postDetail
   );
+  const voteScore = useSelector((state: RootState) => {
+    return (
+      state.posts.posts.find((p) => p._id === postDetail?._id)?.voteScore || 0
+    );
+  });
   const isLoading = useSelector(
     (state: RootState) => state.postDetails.isLoading
-  );
-  const userInformation = useSelector(
-    (state: RootState) => state.user.userInformation
   );
   const userToken = useSelector((state: RootState) => state.user.token);
   const currentOpenPostId = useSelector(
     (state: RootState) => state.postDetails.currentOpenPostId
   );
 
-  const [votes, setVotes] = useState(0);
-  const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(true);
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
 
   const fetchDispatch = useDispatch<AppDispatch>();
   const dispatch = useDispatch();
+
+  const formattedVoteScore = useFormattedNumber(voteScore);
+
+  const { getUserSession } = useUserSession();
+  const { userId } = getUserSession();
 
   const param = useParams();
   const postId = param.postId as string | undefined;
 
   useEffect(() => {
+    localStorage.getItem(`voteScore_${postDetail?._id}`);
     if (postId) {
       fetchDispatch(fetchPostDetails(postId, userToken!));
     }
-  }, [fetchDispatch, postId, param, userToken]);
+  }, [fetchDispatch, postId, param, userToken, postDetail?._id]);
 
-  // function to upvote the post
-  const handleUpvote = async (postId: string) => {
-    try {
-      const response = await axios.put(
-        `${BASE_URL}/api/v1/posts/${postId}/upvote`
-      );
-      const newVoteScore = response.data.voteScore;
+  const postDetailId = postDetail?._id;
 
-      localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
+  const { handleUpvote, handleDownvote } = useVote(
+    postDetailId!,
+    userId!,
+    userToken!
+  );
 
-      setVotes(newVoteScore);
-    } catch (error) {
-      console.error("Error upvoting post:", error);
-    }
-  };
-
-  // function to downvote the post
-  const handleDownvote = async (postId: string) => {
-    try {
-      const response = await axios.put(
-        `${BASE_URL}/api/v1/posts/${postId}/downvote`
-      );
-      const newVoteScore = response.data.voteScore;
-
-      localStorage.setItem(`voteScore_${postId}`, newVoteScore.toString());
-
-      setVotes(newVoteScore);
-    } catch (error) {
-      console.error("Error downvoting post:", error);
-    }
-  };
-
-  // function to save a post
-  const handleSavePost = async (userId: string | undefined, postId: string) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/api/v1/savedposts/save`, {
-        userId,
-        postId,
-      });
-
-      if (response.status === 201) {
-        setIsSaved(false);
-      } else {
-        console.error("Failed to save post. Status code:", response.status);
-      }
-    } catch (error) {
-      console.error("Error saving post:", error);
-    }
-  };
-
-  // function to remove a saved post
-  const handleRemoveSavedPost = async (
-    userId: string | undefined,
-    postId: string
-  ) => {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/api/v1/savedposts/${userId}/${postId}`
-      );
-
-      if (response.status === 204) {
-        setIsSaved(!isSaved);
-      } else {
-        console.error(
-          "Failed to remove saved post. Status code:",
-          response.status
-        );
-      }
-    } catch (error) {
-      console.error("Error removing saved post:", error);
-    }
-  };
+  const { isSaved, setIsSaved, handleSavePost, handleRemoveSavedPost } =
+    useSavePost(userId!, postDetailId!);
 
   const toggleCommentSection = () => {
     setShowComments(!showComments);
@@ -137,6 +90,71 @@ function PostDetails() {
       })
     );
   };
+
+  const handleUpvoteClick = () => {
+    if (upvoted) {
+      // handle the removal of upvote and update local storage.
+      handleDownvote();
+      dispatch(postActions.downvotePost(postDetailId!));
+      localStorage.setItem(`upvoted_${userId}_${postDetailId!}`, "false");
+      setUpvoted(false);
+    } else {
+      // handle upvote and update local storage.
+      handleUpvote();
+      dispatch(postActions.upvotePost(postDetailId!));
+      localStorage.setItem(`upvoted_${userId}_${postDetailId!}`, "true");
+      setUpvoted(true);
+      setDownvoted(false);
+      localStorage.removeItem(`downvoted_${userId}_${postDetailId!}`); // remove the downvoted state.
+    }
+  };
+
+  const handleDownvoteClick = () => {
+    if (downvoted) {
+      // handle the removal of downvote and update local storage.
+      handleUpvote();
+      dispatch(postActions.upvotePost(postDetailId!));
+      localStorage.setItem(`downvoted_${userId}_${postDetailId!}`, "false");
+      setDownvoted(false);
+    } else {
+      // handle downvote and update local storage.
+      handleDownvote();
+      dispatch(postActions.downvotePost(postDetailId!));
+      localStorage.setItem(`downvoted_${userId}_${postDetailId!}`, "true");
+      setDownvoted(true);
+      setUpvoted(false);
+      localStorage.removeItem(`upvoted_${userId}_${postDetailId!}`); // remove the upvoted state.
+    }
+  };
+
+  useEffect(() => {
+    // check the local storage for saved, upvoted, and downvoted states
+    const upvotedState = localStorage.getItem(
+      `upvoted_${userId}_${postDetailId!}`
+    );
+    const downvotedState = localStorage.getItem(
+      `downvoted_${userId}_${postDetailId!}`
+    );
+    const savedState = localStorage.getItem(`saved_${userId}_${postDetailId!}`);
+
+    if (upvotedState === "true") {
+      setUpvoted(true);
+    } else {
+      setUpvoted(false);
+    }
+
+    if (downvotedState === "true") {
+      setDownvoted(true);
+    } else {
+      setDownvoted(false);
+    }
+
+    if (savedState === "true") {
+      setIsSaved(true);
+    } else {
+      setIsSaved(false);
+    }
+  }, [postDetailId, setIsSaved, userId]);
 
   if (!postDetail) {
     return (
@@ -161,19 +179,21 @@ function PostDetails() {
       <div className="w-[700px] bg-gray-100 dark:bg-slate-800 shadow rounded-lg mt-4">
         <div className="flex flex-row items-center justify-center">
           <div className="flex flex-col items-center p-2">
-            <button className="text-gray-600">
+            <button onClick={handleUpvoteClick}>
               <FontAwesomeIcon
-                icon={faAngleUp}
-                className="w-[2rem] h-[1.3rem]"
-                onClick={() => handleUpvote(postDetail._id)}
+                icon={faUpLong}
+                size="2x"
+                color={upvoted ? "#00AA00" : "#9ca3af"}
+                className="h-6"
               />
             </button>
-            <p className="text-[20px] text-center">{votes}</p>
-            <button className="text-gray-600">
+            <p className="text-[20px] text-center">{formattedVoteScore}</p>
+            <button onClick={handleDownvoteClick}>
               <FontAwesomeIcon
-                icon={faAngleDown}
-                className="w-[2rem] h-[1.3rem]"
-                onClick={() => handleDownvote(postDetail._id)}
+                icon={faDownLong}
+                size="2x"
+                color={downvoted ? "#FF0000" : "#9ca3af"}
+                className="h-6"
               />
             </button>
           </div>
@@ -202,19 +222,24 @@ function PostDetails() {
                 Share
               </button>
               <button
-                className={`text-${
-                  !isSaved ? "[#010536]" : "gray"
-                }-600 ml-auto mr-4`}
+                className="ml-auto mr-4"
                 onClick={() =>
-                  isSaved
-                    ? handleSavePost(userInformation?._id, postDetail._id)
-                    : handleRemoveSavedPost(
-                        userInformation?._id,
-                        postDetail._id
-                      )
+                  isSaved ? handleRemoveSavedPost() : handleSavePost()
                 }
               >
-                <FontAwesomeIcon icon={faBookmark} className="w-40 h-40" />
+                {isSaved ? (
+                  <FontAwesomeIcon
+                    icon={solidFaBookmark}
+                    color="#800080"
+                    className="w-40 h-40"
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={regularFaBookmark}
+                    color="#4b5563"
+                    className="w-40 h-40"
+                  />
+                )}
               </button>
             </div>
           </div>

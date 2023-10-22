@@ -1,11 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
+import { savedPostActions } from "../../redux/slices/savedPost";
 import { BASE_URL } from "../../api/api";
 
 export function useSavePost(userId: string | undefined, postId: string) {
   const [isSaved, setIsSaved] = useState<boolean | undefined>(undefined);
   const [savePostError, setSavePostError] = useState<string | null>(null);
+
+  const dispatch = useDispatch();
 
   const handleSavePost = async () => {
     try {
@@ -41,6 +45,7 @@ export function useSavePost(userId: string | undefined, postId: string) {
       if (response.status === 204) {
         setIsSaved(false);
         localStorage.setItem(`saved_${userId}_${postId}`, "false");
+        dispatch(savedPostActions.removeSavedPost(postId));
       } else {
         setSavePostError(
           `Failed to remove saved post. Status code: ${response.status}`

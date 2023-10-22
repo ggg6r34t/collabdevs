@@ -73,7 +73,7 @@ function ReplyForm({ comment, post }: Props) {
       {validationError && <div className="text-red-500">{validationError}</div>}
       <div className="w-[540px] h-[40px] flex items-center justify-end m-2 ml-12 mb-6">
         <button
-          className="h-[35px] py-1 px-2 text-blue-500 border-2 rounded-[12px] hover:bg-blue-50 focus:outline-none"
+          className="bg-[#010536] text-white py-2 px-4 rounded-md transition duration-300 ease-in-out"
           onClick={() => {
             createReply(replyData, userToken!);
           }}

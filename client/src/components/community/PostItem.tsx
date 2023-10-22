@@ -18,6 +18,7 @@ import CommentSection from "../comment/Comments";
 import ShareButtons from "../share/ShareButtons";
 import { useUserSession } from "../../hooks/authentication/useUserSession";
 import { useSavePost } from "../../hooks/userManagement/useSavePost";
+import useFormattedNumber from "../../hooks/util/useFormattedNumber";
 import { useVote } from "../../hooks/userManagement/useVote";
 import { postActions } from "../../redux/slices/post";
 import { RootState } from "../../redux/store";
@@ -41,6 +42,8 @@ function PostItem({ post }: Props) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const formattedVoteScore = useFormattedNumber(voteScore);
 
   const { getUserSession } = useUserSession();
   const { userId } = getUserSession();
@@ -149,7 +152,7 @@ function PostItem({ post }: Props) {
               className="h-6"
             />
           </button>
-          <p className="text-[20px] text-center">{voteScore}</p>
+          <p className="text-[20px] text-center">{formattedVoteScore}</p>
           <button onClick={handleDownvoteClick}>
             <FontAwesomeIcon
               icon={faDownLong}
