@@ -72,14 +72,13 @@ export const createCommentController = async (
       return res.status(404).json({ error: "Post not found." });
     }
 
-    const comment = new Comment({
+    const newComment = await createCommentService(
       content,
       postId,
       userId,
-      userName,
-    });
+      userName
+    );
 
-    const newComment = await createCommentService(comment);
     res.status(201).json(newComment);
   } catch (error) {
     next(error);

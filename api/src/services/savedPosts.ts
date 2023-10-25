@@ -1,21 +1,39 @@
 import { NotFoundError } from "../helpers/apiError";
-import SavedPosts, { SavedPostsDocument } from "../models/SavedPost";
+import Post from "../models/Post";
+import SavedPost, { SavedPostDocument } from "../models/SavedPost";
 
 export const savePostService = async (
   userId: string,
   postId: string
-): Promise<SavedPostsDocument> => {
-  const savedPost = new SavedPosts({
-    userId,
-    postId,
-  });
-  return savedPost.save();
+): Promise<SavedPostDocument> => {
+  try {
+    // create a new SavedPost record
+    const savedPost = new SavedPost({
+      userId,
+      postId,
+    });
+
+    const newSavedPost = savedPost.save();
+
+    // update the post's saveCount
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    post.saveCount += 1;
+    await post.save();
+
+    return newSavedPost;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getSavedPostsByIdService = async (
   postId: string
-): Promise<SavedPostsDocument> => {
-  const savedPost = await SavedPosts.findById(postId);
+): Promise<SavedPostDocument> => {
+  const savedPost = await SavedPost.findById(postId);
   if (!savedPost) {
     throw new NotFoundError(`Saved post ${postId} not found.`);
   }
@@ -24,8 +42,8 @@ export const getSavedPostsByIdService = async (
 
 export const getSavedPostsService = async (
   userId: string
-): Promise<SavedPostsDocument[]> => {
-  const savedPost = await SavedPosts.find({ userId: userId }).populate({
+): Promise<SavedPostDocument[]> => {
+  const savedPost = await SavedPost.find({ userId: userId }).populate({
     path: "postId",
   });
 
@@ -41,5 +59,5 @@ export const removeSavedPostService = async (
   userId: string,
   postId: string
 ): Promise<void> => {
-  await SavedPosts.deleteOne({ userId, postId });
+  await SavedPost.deleteOne({ userId, postId });
 };
