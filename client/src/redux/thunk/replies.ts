@@ -4,7 +4,7 @@ import { replyActions } from "../slices/reply";
 import { AppDispatch } from "../store";
 
 export function fetchReplyData(commentId: string) {
-  const replyUrl = `${BASE_URL}/api/v1/replies/${commentId}`;
+  const replyUrl = `${BASE_URL}/api/v1/posts/${commentId}`;
   return async (dispatch: AppDispatch) => {
     try {
       const response = await axios.get(replyUrl);

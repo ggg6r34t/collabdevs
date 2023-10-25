@@ -51,7 +51,7 @@ function ReplyForm({ comment, post }: Props) {
     }
 
     try {
-      await axios.post(`${BASE_URL}/api/v1/replies/`, replyData, {
+      await axios.post(`${BASE_URL}/api/v1/posts/`, replyData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
