@@ -27,7 +27,18 @@ export type UserDocument = Document & {
   emailConfirmed: boolean; // indicates if the email is confirmed
   emailConfirmationToken: string | null; // stores the email confirmation token
   confirmEmailTokenExpiration: Date | null;
-
+  engagementScore: number;
+  similarity: number;
+  behaviour: number[];
+  votes: mongoose.Types.ObjectId[];
+  comments: mongoose.Types.ObjectId[];
+  replies: mongoose.Types.ObjectId[];
+  shares: mongoose.Types.ObjectId[];
+  followers: mongoose.Types.ObjectId[];
+  mutualFollowers: mongoose.Types.ObjectId[];
+  stars: mongoose.Types.ObjectId[];
+  collaborationRequests: mongoose.Types.ObjectId[];
+  messages: [{ sender: mongoose.Types.ObjectId[]; content: string }];
   // more fields as needed
 };
 export enum Role {
@@ -75,6 +86,25 @@ const UserSchema = new Schema<UserDocument>(
     emailConfirmed: { type: Boolean, default: false },
     emailConfirmationToken: { type: String, default: null },
     confirmEmailTokenExpiration: { type: Date, default: null },
+    engagementScore: { type: Number, default: 0 },
+    similarity: { type: Number, default: 0 },
+    behaviour: [Number],
+    votes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    shares: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    mutualFollowers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    stars: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    collaborationRequests: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    ],
+    messages: [
+      {
+        sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        content: { type: String, default: null },
+      },
+    ],
   },
   { timestamps: true }
 );

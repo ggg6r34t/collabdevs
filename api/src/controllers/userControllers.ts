@@ -1,6 +1,7 @@
+import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,6 +19,7 @@ import {
   uploadMediaService,
 } from "../services/users";
 import User, { UserDocument } from "../models/User";
+import { redisClient as client } from "../app";
 import { getPostByUserIdService } from "../services/posts";
 
 interface MulterFile {
@@ -38,7 +40,12 @@ declare module "express-serve-static-core" {
   }
 }
 
+type Payload = JwtPayload & {
+  _id: string;
+};
+
 dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 // generate an email confirmation token with a 1-hour expiration
 const generateConfirmEmailToken = () => {
@@ -49,6 +56,185 @@ const generateConfirmEmailToken = () => {
   ); // 1 hour expiration
 
   return { emailConfirmationToken, confirmEmailTokenExpiration };
+};
+
+const BEHAVIOR_WEIGHTS = {
+  votes: 2,
+  comments: 3,
+  replies: 2,
+  shares: 1,
+  followers: 4,
+  stars: 4,
+  collaborationRequests: 8,
+};
+
+/**
+ * Calculate the similarity between two users based on behavior.
+ * @param {UserDocument} userA - The first user.
+ * @param {UserDocument} userB - The second user.
+ * @returns {number} - The similarity score.
+ */
+const calculateSimilarity = (
+  userA: UserDocument,
+  userB: UserDocument
+): number => {
+  const behaviorA = userA.behaviour;
+  const behaviorB = userB.behaviour;
+
+  let dotProduct = 0;
+  let magnitudeA = 0;
+  let magnitudeB = 0;
+
+  for (let i = 0; i < behaviorA.length; i++) {
+    const valA = Number(behaviorA[i]);
+    const valB = Number(behaviorB[i]);
+
+    dotProduct += valA * valB;
+    magnitudeA += valA ** 2;
+    magnitudeB += valB ** 2;
+  }
+
+  magnitudeA = Math.sqrt(magnitudeA);
+  magnitudeB = Math.sqrt(magnitudeB);
+
+  if (magnitudeA === 0 || magnitudeB === 0) {
+    return 0;
+  }
+
+  const similarity = dotProduct / (magnitudeA * magnitudeB);
+
+  return similarity;
+};
+
+/**
+ * Calculate the engagement score for a user based on their behavior.
+ * @param {UserDocument} user - The user.
+ * @returns {number} - The engagement score.
+ */
+const calculateEngagementScore = (user: UserDocument): number => {
+  const behavior = {
+    votes: BEHAVIOR_WEIGHTS.votes * user.votes.length,
+    comments: BEHAVIOR_WEIGHTS.comments * user.comments.length,
+    replies: BEHAVIOR_WEIGHTS.replies * user.replies.length,
+    shares: BEHAVIOR_WEIGHTS.shares * user.shares.length,
+    followers: BEHAVIOR_WEIGHTS.followers * user.followers.length,
+    stars: BEHAVIOR_WEIGHTS.stars * user.stars.length,
+    collaborationRequests:
+      BEHAVIOR_WEIGHTS.collaborationRequests *
+      user.collaborationRequests.length,
+  };
+
+  user.behaviour = Object.values(behavior);
+
+  return Object.values(behavior).reduce((sum, value) => sum + value, 0);
+};
+
+/**
+ * Sort users by similarity and engagement score.
+ * @param {UserDocument} currentUser - The current user.
+ * @param {UserDocument[]} users - The list of users to sort.
+ */
+const sortUsers = async (currentUser: UserDocument, users: UserDocument[]) => {
+  users.forEach((user) => {
+    user.similarity = calculateSimilarity(currentUser, user);
+    user.engagementScore = calculateEngagementScore(user);
+  });
+
+  users.sort((userA, userB) => {
+    if (userA.similarity > userB.similarity) {
+      return -1;
+    } else if (userA.similarity < userB.similarity) {
+      return 1;
+    } else {
+      if (userA.engagementScore > userB.engagementScore) {
+        return -1;
+      } else if (userA.engagementScore < userB.engagementScore) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  });
+};
+
+/**
+ * Get recommended users for the current user, considering mutual followers.
+ */
+export const getRecommendedUsersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as Payload;
+    const decodedUserId = decoded._id;
+
+    const currentUser = await User.findById(decodedUserId);
+
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // retrieve all users' profiles
+    const allUsers = await getUserListService();
+
+    // // Fetch mutual followers for the current user
+    // const currentUserFollowers = currentUser.followers.map((follower) =>
+    //   follower.toString()
+    // );
+
+    // // Filter recommended users to include only those who are mutual followers
+    // const recommendedUsers = allUsers.filter((otherUser) => {
+    //   const otherUserFollowers = otherUser.followers.map((follower) =>
+    //     follower.toString()
+    //   );
+    //   return (
+    //     otherUser._id.toString() !== currentUser._id.toString() && // exclude the current user from recommendedUsers
+    //     currentUserFollowers.includes(otherUser._id.toString()) && // check for mutual followers
+    //     otherUserFollowers.includes(currentUser._id.toString()) // check if the otherUser is following the current user.
+    //   );
+    // });
+
+    // set and get engagement scores for all users
+    const promises = allUsers.map(async (otherUser) => {
+      const userId = otherUser._id.toString();
+
+      // attempt to retrieve the user's engagement score from Redis
+      const cachedScore = await client.get(`user:${userId}:engagementScore`);
+
+      if (cachedScore !== null) {
+        // use the cached engagement score
+        otherUser.engagementScore = parseFloat(cachedScore);
+      } else {
+        // if the score is not in the cache, calculate it and update the cache
+        otherUser.engagementScore = calculateEngagementScore(otherUser);
+        // store the calculated score in Redis
+        const redisKey = `user:${userId}:engagementScore`;
+        await client.set(redisKey, otherUser.engagementScore);
+      }
+    });
+
+    await Promise.all(promises);
+
+    // exclude the current user from recommendedUsers
+    const recommendedUsers = allUsers.filter(
+      (otherUser) => otherUser._id.toString() !== currentUser._id.toString()
+    );
+
+    sortUsers(currentUser, recommendedUsers);
+
+    const topRecommendedUsers = recommendedUsers.slice(0, 4);
+
+    res.json(topRecommendedUsers);
+  } catch (error) {
+    next(error);
+  }
 };
 
 //post: Create a new user

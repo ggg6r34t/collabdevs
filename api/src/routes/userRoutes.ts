@@ -6,6 +6,7 @@ import {
   createUserController,
   deleteUserByIdController,
   getPostsByUserIdController,
+  getRecommendedUsersController,
   getUserByIdController,
   getUserListController,
   updateRestrictionController,
@@ -44,8 +45,19 @@ const storage = multer.diskStorage({
 // multer instance with the configured storage
 const upload = multer({ storage });
 
+//get:  get the list of users
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  // adminCheck, // lets think of what to do here so users can search other users
+  getUserListController
+);
+
 //get: register user
 router.post("/register", createUserController);
+
+// get all recommended users
+router.get("/recommended-users", getRecommendedUsersController);
 
 //get: get userbyID
 router.get(
@@ -59,14 +71,6 @@ router.get(
   "/:id/posts",
   passport.authenticate("jwt", { session: false }),
   getPostsByUserIdController
-);
-
-//get:  get the list of users
-router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  // adminCheck, // lets think of what to do here so users can search other users
-  getUserListController
 );
 
 //put: update user info
