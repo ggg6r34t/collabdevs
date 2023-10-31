@@ -29,6 +29,27 @@ export function getUserList() {
   };
 }
 
+export function fetchRecommendedUsers() {
+  const usersUrl = `${BASE_URL}/api/v1/users/recommended-users/`;
+  const token = localStorage.getItem("userToken");
+
+  return async (dispatch: AppDispatch) => {
+    try {
+      const response = await axios.get(usersUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const recommendedUserData = response.data;
+      dispatch(usersActions.setRecommendedUsers(recommendedUserData));
+    } catch (error) {
+      console.error("Error fetching recommended user data:", error);
+      dispatch(usersActions.fetchUserError(error as Error));
+    }
+  };
+}
+
 // function to get a user's details
 export function getUserDetails(userId: string) {
   const userURL = `${BASE_URL}/api/v1/users/${userId}`;
