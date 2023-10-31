@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import { NotFoundError } from "../helpers/apiError";
 import Comment, { CommentDocument } from "../models/Comment";
 import Post from "../models/Post";
+import User from "../models/User";
 
 export const createCommentService = async (
   content: string,
@@ -27,6 +29,16 @@ export const createCommentService = async (
 
     post.commentCount += 1;
     await post.save();
+
+    // update the user's comments
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const postIdObject = new mongoose.Types.ObjectId(postId);
+    user.comments.push(postIdObject);
+    await user.save();
 
     return newComment;
   } catch (error) {

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { NotFoundError } from "../helpers/apiError";
 import Post, { PostDocument } from "../models/Post";
 import Share, { ShareDocument } from "../models/Share";
+import User from "../models/User";
 
 export const sharePostService = async (
   postId: string,
@@ -24,6 +25,16 @@ export const sharePostService = async (
 
     post.shareCount += 1;
     await post.save();
+
+    // update the user's shared posts
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const postIdObject = new mongoose.Types.ObjectId(postId);
+    user.shares.push(postIdObject);
+    await user.save();
 
     return savedShare;
   } catch (error) {

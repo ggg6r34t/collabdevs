@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import { NotFoundError } from "../helpers/apiError";
 import Post from "../models/Post";
 import Reply, { ReplyDocument } from "../models/Reply";
+import User from "../models/User";
 
 export const getRepliesByPostIdService = async (commentId: string) => {
   try {
@@ -40,6 +42,16 @@ export const createReplyService = async (
 
     post.replyCount += 1;
     await post.save();
+
+    // update the user's replies
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const postIdObject = new mongoose.Types.ObjectId(postId);
+    user.replies.push(postIdObject);
+    await user.save();
 
     return newReply;
   } catch (error) {
