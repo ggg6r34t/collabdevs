@@ -7,19 +7,7 @@ import SearchForm from "../forms/SearchForm";
 import { AppDispatch, RootState } from "../../redux/store";
 import { postActions } from "../../redux/slices/post";
 import { fetchTrendingTopics } from "../../redux/thunk/posts";
-
-const mockUserProfiles = [
-  {
-    id: 101,
-    username: "janedev",
-    fullName: "Jane Smith",
-  },
-  {
-    id: 102,
-    username: "john0xc5",
-    fullName: "Jone Doe",
-  },
-];
+import { fetchRecommendedUsers } from "../../redux/thunk/users";
 
 function CommunityPage() {
   const selectedSort = useSelector(
@@ -28,11 +16,15 @@ function CommunityPage() {
   const trendingTopics = useSelector(
     (state: RootState) => state.posts.trendingTopics
   );
+  const recommendedProfiles = useSelector(
+    (state: RootState) => state.userList.recommendedUsers
+  );
 
   const fetchDispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     fetchDispatch(fetchTrendingTopics());
+    fetchDispatch(fetchRecommendedUsers());
   }, [fetchDispatch]);
 
   const dispatch = useDispatch();
@@ -93,12 +85,14 @@ function CommunityPage() {
                 Recommended Connections
               </h2>
               <ul>
-                {mockUserProfiles.map((profile) => (
-                  <li key={profile.id} className="mb-2">
+                {recommendedProfiles.map((profile) => (
+                  <li key={profile._id} className="mb-2">
                     <div className="flex items-center">
-                      <span className="font-semibold">{profile.username}</span>
-                      <span className="text-gray-500 ml-2">
-                        @{profile.username}
+                      <span className="font-semibold">
+                        {profile.firstName.charAt(0).toUpperCase() +
+                          profile.firstName.slice(1)}{" "}
+                        {profile.lastName.charAt(0).toUpperCase() +
+                          profile.lastName.slice(1)}
                       </span>
                     </div>
                   </li>

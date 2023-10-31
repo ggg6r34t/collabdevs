@@ -7,6 +7,7 @@ import {
 } from "../helpers/apiError";
 import User, { UserDocument } from "../models/User";
 import createTransporter from "../utils/createTransporter";
+import mongoose from "mongoose";
 
 dotenv.config();
 const SMTP_EMAIL = process.env.SMTP_EMAIL as string;
@@ -77,7 +78,12 @@ export const getUserByIdService = async (
 // get a list of all users
 export const getUserListService = async (): Promise<UserDocument[]> => {
   try {
-    const userList = await User.find();
+    const userList = await User.find().exec();
+
+    if (!userList || userList.length === 0) {
+      throw new NotFoundError(`Users not found`);
+    }
+
     return userList;
   } catch (error) {
     throw error;

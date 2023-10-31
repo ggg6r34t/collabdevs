@@ -64,15 +64,9 @@ export const getTrendingPostsController = async (
       return postAgeInHours;
     });
 
-    // number of recent posts
-    console.log(`Found ${recentPosts.length} recent posts`);
-
     // retrieve the engagement scores for recent posts from the cache
     for (const post of recentPosts) {
       const postId = post._id.toString(); // convert the ID to a string if needed
-
-      // post ID being processed
-      console.log("Processing post ID:", postId);
 
       try {
         const cachedScore = await client.get(postId);
@@ -84,7 +78,8 @@ export const getTrendingPostsController = async (
           // if the score is not in the cache, calculate it and update the cache
           post.engagementScore = postEngagementController(post);
           // set the engagement score in the cache
-          await client.set(postId, post.engagementScore);
+          const redisKey = `post:${postId}:engagementScore`;
+          await client.set(redisKey, post.engagementScore);
         }
       } catch (cacheError) {
         console.error("Error accessing Redis cache:", cacheError);

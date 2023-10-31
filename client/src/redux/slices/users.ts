@@ -3,6 +3,8 @@ import { User } from "../../type/types";
 
 type UserList = {
   users: User[];
+  recommendedUsers: User[];
+  error: Error | null;
   isLoading: boolean;
   searchResults: User[];
   isSearchActive: boolean;
@@ -10,6 +12,8 @@ type UserList = {
 
 const initialState: UserList = {
   users: [],
+  recommendedUsers: [],
+  error: null,
   isLoading: true,
   searchResults: [],
   isSearchActive: false,
@@ -21,6 +25,10 @@ const usersSlice = createSlice({
   reducers: {
     setUserList: (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
+      state.isLoading = false;
+    },
+    setRecommendedUsers: (state, action: PayloadAction<User[]>) => {
+      state.recommendedUsers = action.payload;
       state.isLoading = false;
     },
     searchUser: (
@@ -57,6 +65,9 @@ const usersSlice = createSlice({
       // reset the search results by fetching the original posts
       state.searchResults = [];
       state.isSearchActive = false;
+    },
+    fetchUserError: (state, action: PayloadAction<Error | null>) => {
+      state.error = action.payload;
     },
   },
 });

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { getUserList } from "../../redux/thunk/users";
+import { fetchRecommendedUsers, getUserList } from "../../redux/thunk/users";
 import Posts from "../community/Posts";
 import { fetchTrendingTopics } from "../../redux/thunk/posts";
 
@@ -15,38 +15,41 @@ import { fetchTrendingTopics } from "../../redux/thunk/posts";
 //   "Web Development",
 // ];
 
-const mockRecommendedConnections = [
-  {
-    id: 101,
-    name: "Jane Smith",
-    mutualConnections: 5,
-  },
-  {
-    id: 102,
-    name: "John Doe",
-    mutualConnections: 23,
-  },
-  {
-    id: 103,
-    name: "Celine James",
-    mutualConnections: 15,
-  },
-];
+// const mockRecommendedConnections = [
+//   {
+//     id: 101,
+//     name: "Jane Smith",
+//     mutualConnections: 5,
+//   },
+//   {
+//     id: 102,
+//     name: "John Doe",
+//     mutualConnections: 23,
+//   },
+//   {
+//     id: 103,
+//     name: "Celine James",
+//     mutualConnections: 15,
+//   },
+// ];
 
 function HomePage() {
   const trendingTopics = useSelector(
     (state: RootState) => state.posts.trendingTopics
   );
-  const [recommendedConnections, setRecommendedConnections] = useState<
-    { id: number; name: string; mutualConnections: number }[]
-  >([]);
+  const recommendedProfiles = useSelector(
+    (state: RootState) => state.userList.recommendedUsers
+  );
+  // const [recommendedConnections, setRecommendedConnections] = useState<
+  //   { id: number; name: string; mutualConnections: number }[]
+  // >([]);
 
   const fetchDispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     // fetch data from an API here
     fetchDispatch(fetchTrendingTopics());
-    setRecommendedConnections(mockRecommendedConnections);
+    fetchDispatch(fetchRecommendedUsers());
     fetchDispatch(getUserList());
   }, [fetchDispatch]);
 
@@ -84,12 +87,17 @@ function HomePage() {
                 Recommended Connections
               </h2>
               <ul>
-                {recommendedConnections.map((connection) => (
-                  <li key={connection.id} className="mb-2">
+                {recommendedProfiles.map((profile) => (
+                  <li key={profile._id} className="mb-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-semibold">{connection.name}</span>
+                      <span className="font-semibold">
+                        {profile.firstName.charAt(0).toUpperCase() +
+                          profile.firstName.slice(1)}{" "}
+                        {profile.lastName.charAt(0).toUpperCase() +
+                          profile.lastName.slice(1)}
+                      </span>
                       <span className="text-gray-500">
-                        {connection.mutualConnections} mutual connections
+                        5 mutual connections
                       </span>
                     </div>
                   </li>
