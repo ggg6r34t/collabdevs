@@ -9,7 +9,8 @@ import {
   getPostByIdService,
   upvotePostService,
 } from "../services/posts";
-import Post from "../models/Post";
+import Post, { PostDocument } from "../models/Post";
+import { redisClient as client } from "../app";
 import User from "../models/User";
 
 type Payload = JwtPayload & {
@@ -18,6 +19,89 @@ type Payload = JwtPayload & {
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
+
+// calculate post engagement score for a post
+// this is for showing trending posts/projects based on post engagement
+export const postEngagementController = (post: PostDocument) => {
+  const upvotes = post.upvotes;
+  const downvotes = post.downvotes;
+  const shares = post.shareCount;
+  const saves = post.saveCount;
+  const comments = post.commentCount;
+  const replies = post.replyCount;
+
+  // weights for each count
+  const upvoteWeight = 2;
+  const downvoteWeight = -1;
+  const shareWeight = 1;
+  const saveWeight = 1;
+  const commentWeight = 3;
+  const replyWeight = 2;
+
+  // calculate the engagement score
+  return (
+    upvoteWeight * upvotes.length +
+    downvoteWeight * downvotes.length +
+    shareWeight * shares +
+    saveWeight * saves +
+    commentWeight * comments +
+    replyWeight * replies
+  );
+};
+
+export const getTrendingPostsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const posts = await getAllPostService();
+
+    // define the time frame for recent posts (e.g., last 24 hours)
+    const recentPosts = posts.filter((post) => {
+      const timestamp = Number(post.createdAt);
+      const postAgeInHours = (Date.now() - timestamp) / (1000 * 3600);
+      return postAgeInHours;
+    });
+
+    // number of recent posts
+    console.log(`Found ${recentPosts.length} recent posts`);
+
+    // retrieve the engagement scores for recent posts from the cache
+    for (const post of recentPosts) {
+      const postId = post._id.toString(); // convert the ID to a string if needed
+
+      // post ID being processed
+      console.log("Processing post ID:", postId);
+
+      try {
+        const cachedScore = await client.get(postId);
+
+        if (cachedScore !== null) {
+          // use the cached engagement score
+          post.engagementScore = parseFloat(cachedScore);
+        } else {
+          // if the score is not in the cache, calculate it and update the cache
+          post.engagementScore = postEngagementController(post);
+          // set the engagement score in the cache
+          await client.set(postId, post.engagementScore);
+        }
+      } catch (cacheError) {
+        console.error("Error accessing Redis cache:", cacheError);
+        // continue processing even if there's an issue with the cache
+      }
+    }
+
+    // sort the recent posts by their engagement scores in descending order
+    recentPosts.sort((postA, postB) => {
+      return postB.engagementScore - postA.engagementScore;
+    });
+
+    res.status(200).json(recentPosts);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getpostController = async (
   req: Request,
@@ -66,6 +150,13 @@ export const createPostController = async (
     });
 
     const post = await createPostService(newPost);
+
+    // calculate engagement score
+    const engagementScore = postEngagementController(newPost);
+
+    // store the score in Redis
+    client.set(newPost._id, engagementScore);
+
     res.status(201).json(post);
   } catch (error) {
     next(error);
@@ -110,6 +201,12 @@ export const upvotePostController = async (
     const postId = req.params.id;
     const post = await upvotePostService(postId, userId);
 
+    // calculate engagement score
+    const engagementScore = postEngagementController(post);
+
+    // store the score in Redis
+    client.set(postId, engagementScore);
+
     res.status(200).json(post);
   } catch (error) {
     next(error);
@@ -139,6 +236,13 @@ export const downvotePostController = async (
 
     const postId = req.params.id;
     const post = await downvotePostService(postId, userId);
+
+    // calculate engagement score
+    const engagementScore = postEngagementController(post);
+
+    // store the score in Redis
+    client.set(postId, engagementScore);
+
     res.status(200).json(post);
   } catch (error) {
     next(error);

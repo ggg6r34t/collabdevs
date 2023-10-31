@@ -1,9 +1,37 @@
+import { NotFoundError } from "../helpers/apiError";
 import Comment, { CommentDocument } from "../models/Comment";
+import Post from "../models/Post";
 
 export const createCommentService = async (
-  comment: CommentDocument
+  content: string,
+  postId: string,
+  userId: string,
+  userName: string
 ): Promise<CommentDocument> => {
-  return await comment.save();
+  try {
+    // create a new Comment record
+    const comment = new Comment({
+      content,
+      postId,
+      userId,
+      userName,
+    });
+
+    const newComment = await comment.save();
+
+    // update the post's commentCount
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    post.commentCount += 1;
+    await post.save();
+
+    return newComment;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getCommentsByPostIdService = async (postId: string) => {

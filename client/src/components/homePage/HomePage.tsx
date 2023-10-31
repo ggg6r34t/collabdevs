@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { getUserList } from "../../redux/thunk/users";
 import Posts from "../community/Posts";
+import { fetchTrendingTopics } from "../../redux/thunk/posts";
 
-// sample data for trending topics, and recommended connections
-const mockTrendingTopics = [
-  "ReactJS",
-  "Node.js",
-  "JavaScript",
-  "Web Development",
-];
+// // sample data for trending topics, and recommended connections
+// const mockTrendingTopics = [
+//   "ReactJS",
+//   "Node.js",
+//   "JavaScript",
+//   "Web Development",
+// ];
 
 const mockRecommendedConnections = [
   {
@@ -33,20 +34,19 @@ const mockRecommendedConnections = [
 ];
 
 function HomePage() {
-  const [trendingTopics, setTrendingTopics] = useState<string[]>([]);
+  const trendingTopics = useSelector(
+    (state: RootState) => state.posts.trendingTopics
+  );
   const [recommendedConnections, setRecommendedConnections] = useState<
     { id: number; name: string; mutualConnections: number }[]
   >([]);
 
-  useEffect(() => {
-    // fetch data from an API here
-    setTrendingTopics(mockTrendingTopics);
-    setRecommendedConnections(mockRecommendedConnections);
-  }, []);
-
   const fetchDispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    // fetch data from an API here
+    fetchDispatch(fetchTrendingTopics());
+    setRecommendedConnections(mockRecommendedConnections);
     fetchDispatch(getUserList());
   }, [fetchDispatch]);
 
@@ -67,9 +67,11 @@ function HomePage() {
           <div className="bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Trending Topics</h2>
             <ul>
-              {trendingTopics.map((topic, index) => (
-                <li key={index} className="mb-2">
-                  <span className="text-blue-500">#{topic}</span>
+              {trendingTopics.slice(0, 4).map((topic) => (
+                <li key={topic._id} className="mb-1">
+                  <span className="text-blue-500">
+                    #{topic.title.slice(0, 12)}
+                  </span>
                 </li>
               ))}
             </ul>

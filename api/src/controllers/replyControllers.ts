@@ -77,15 +77,13 @@ export const createReplyController = async (
       return res.status(404).json({ error: "Post not found." });
     }
 
-    const reply = new Reply({
+    const newReply = await createReplyService(
       content,
       commentId,
       postId,
       userId,
-      userName,
-    });
-
-    const newReply = await createReplyService(reply);
+      userName
+    );
     res.status(201).json(newReply);
   } catch (error) {
     next(error);

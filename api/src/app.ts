@@ -24,6 +24,7 @@ import {
   jwtStrategy,
   twitterStrategy,
 } from "./config/passport";
+import shareRoutes from "./routes/shareRoutes";
 
 dotenv.config();
 
@@ -121,9 +122,8 @@ app.use(restoreSession);
 // routes
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/posts", postRoutes, commentRoutes);
+app.use("/api/v1/posts", postRoutes, commentRoutes, replyRoutes, shareRoutes);
 app.use("/api/v1/savedposts", savedPostRoutes);
-app.use("/api/v1/replies", replyRoutes);
 
 // error handler
 app.use(apiErrorHandler);

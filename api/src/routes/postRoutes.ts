@@ -7,12 +7,16 @@ import {
   getPostById,
   upvotePostController,
   downvotePostController,
+  getTrendingPostsController,
 } from "../controllers/postControllers";
 
 const router = express.Router();
 
 // get all posts (public route)
 router.get("/", getpostController);
+
+// get all trending topics
+router.get("/trending-topics", getTrendingPostsController);
 
 // create a new post (protected route, requires authentication)
 router.post(

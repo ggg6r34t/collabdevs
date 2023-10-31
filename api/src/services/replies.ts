@@ -1,3 +1,5 @@
+import { NotFoundError } from "../helpers/apiError";
+import Post from "../models/Post";
 import Reply, { ReplyDocument } from "../models/Reply";
 
 export const getRepliesByPostIdService = async (commentId: string) => {
@@ -12,9 +14,37 @@ export const getRepliesByPostIdService = async (commentId: string) => {
 };
 
 export const createReplyService = async (
-  reply: ReplyDocument
+  content: string,
+  commentId: string,
+  postId: string,
+  userId: string,
+  userName: string
 ): Promise<ReplyDocument> => {
-  return await reply.save();
+  try {
+    // create a new Reply record
+    const reply = new Reply({
+      content,
+      commentId,
+      postId,
+      userId,
+      userName,
+    });
+
+    const newReply = await reply.save();
+
+    // update the post's replyCount
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    post.replyCount += 1;
+    await post.save();
+
+    return newReply;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const editReplyService = async (replyId: string, newContent: string) => {

@@ -20,6 +20,20 @@ export function fetchPostData() {
   };
 }
 
+export function fetchTrendingTopics() {
+  const postUrl = `${BASE_URL}/api/v1/posts/trending-topics/`;
+  return async (dispatch: AppDispatch) => {
+    try {
+      const response = await axios.get(postUrl);
+      const trendingTopicsData = response.data;
+      dispatch(postActions.setTrendingTopics(trendingTopicsData));
+    } catch (error) {
+      console.error("Error fetching trending topics data:", error);
+      dispatch(postActions.fetchPostError(error as Error));
+    }
+  };
+}
+
 export function createPost(postData: Partial<Post>) {
   const postUrl = `${BASE_URL}/api/v1/posts/`;
   return async (dispatch: AppDispatch) => {

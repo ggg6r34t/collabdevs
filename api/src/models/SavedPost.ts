@@ -1,12 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export type SavedPostsDocument = Document & {
+export type SavedPostDocument = Document & {
   userId: mongoose.Types.ObjectId;
   postId: mongoose.Types.ObjectId;
   savedAt: Date;
 };
 
-const savedPostsSchema = new Schema<SavedPostsDocument>({
+const savedPostSchema = new Schema<SavedPostDocument>({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -23,9 +23,9 @@ const savedPostsSchema = new Schema<SavedPostsDocument>({
   },
 });
 
-const SavedPosts = mongoose.model<SavedPostsDocument>(
-  "SavedPosts",
-  savedPostsSchema
+const SavedPost = mongoose.model<SavedPostDocument>(
+  "SavedPost",
+  savedPostSchema
 );
 
-export default SavedPosts;
+export default SavedPost;

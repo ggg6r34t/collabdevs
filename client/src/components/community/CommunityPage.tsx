@@ -1,19 +1,12 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Posts from "./Posts";
 import SearchForm from "../forms/SearchForm";
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { postActions } from "../../redux/slices/post";
-
-// sample data for posts, trending topics, and user profiles
-const mockTrendingTopics = [
-  "ReactJS",
-  "Node.js",
-  "JavaScript",
-  "Web Development",
-];
+import { fetchTrendingTopics } from "../../redux/thunk/posts";
 
 const mockUserProfiles = [
   {
@@ -32,6 +25,16 @@ function CommunityPage() {
   const selectedSort = useSelector(
     (state: RootState) => state.posts.selectedSort
   );
+  const trendingTopics = useSelector(
+    (state: RootState) => state.posts.trendingTopics
+  );
+
+  const fetchDispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    fetchDispatch(fetchTrendingTopics());
+  }, [fetchDispatch]);
+
   const dispatch = useDispatch();
 
   const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -72,9 +75,11 @@ function CommunityPage() {
             <div>
               <h2 className="text-xl font-semibold mb-2">Trending Topics</h2>
               <ul>
-                {mockTrendingTopics.map((topic, index) => (
-                  <li key={index} className="mb-1">
-                    <span className="text-blue-500">#{topic}</span>
+                {trendingTopics.slice(0, 4).map((topic) => (
+                  <li key={topic._id} className="mb-1">
+                    <span className="text-blue-500">
+                      #{topic.title.slice(0, 12)}
+                    </span>
                   </li>
                 ))}
               </ul>

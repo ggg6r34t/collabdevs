@@ -4,6 +4,7 @@ import { Post, User } from "../../type/types";
 
 type PostState = {
   posts: Post[];
+  trendingTopics: Post[];
   voteScores: number;
   postsByUserId: Post[];
   users: User[];
@@ -19,6 +20,7 @@ type PostState = {
 
 const initialState: PostState = {
   posts: [],
+  trendingTopics: [],
   voteScores: 0,
   postsByUserId: [],
   users: [],
@@ -38,6 +40,10 @@ const postsSlice = createSlice({
   reducers: {
     getPost: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
+      state.isLoading = false;
+    },
+    setTrendingTopics: (state, action: PayloadAction<Post[]>) => {
+      state.trendingTopics = action.payload;
       state.isLoading = false;
     },
     setPostsByUserId: (state, action: PayloadAction<Post[]>) => {
